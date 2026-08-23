@@ -25,7 +25,54 @@ function afam(w){let a=String(w.raw.SwingAnim||'').toLowerCase();if(a==='shove')
 function timing(w,p){let f=afam(w),s={'1H':[1,12/30,.25],'2H':[1,12/30,.25],'Knife':[1,8/30,.25],'Spear':[1,8/30,.25],'Heavy':[2.5,12/30,.25],'Shove':[2/3,8/30,.15]}[f],cy=0,im=0,sp=0,N=31;for(let i=0;i<N;i++){let rf=1.1+(i+.5)/N*.1,v=combatSpeedAt(w,p,rf);sp+=v;cy+=s[0]/v+s[1];im+=s[0]*s[2]/v}return{family:f,cycle:cy/N,aps:1/(cy/N),impact:im/N,combatSpeed:sp/N}}
 function range(w,p){let q=+w.raw.MaxRange||1;if(['Axe','Long Blunt','Spear'].includes(w.skill)&&p.skill>=7)q*=1.2;return q}function targets(w,p){return 1}function hbreak(w,p){let c=Math.max(0,Math.trunc(+w.raw.ConditionMax||0)),o=Math.max(1,Math.trunc(+w.raw.ConditionLowerChanceOneIn||1)),m=p.maintenance+Math.floor(wl(p.skill,w.skill)/2);return c*Math.max(1,Math.floor(o+m))}
 function hs(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}function rr(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function one(w,p,N=600){let R=rr(hs(w.id+JSON.stringify(p))),mn=+w.raw.MinDamage||0,ma=mx(w),c=cc(w,p),o=0,t=0,H=0,E=0;for(let i=0;i<N;i++){let hp=zombieHp(R,p),h=0;while(hp>0&&h<30){h++;let d=dmg(w,mn+R()*(ma-mn),p,R()*100<c),b=hp;E+=eh(w,d,b,p);hp-=Math.min(d,b)}if(h===1)o++;if(h<=2)t++;H+=h}let hk=H/N,hb=hbreak(w,p);let ti=timing(w,p);return{id:w.id,name:w.name,skill:w.skill||'Unclassified',heavy:(w.raw.TwoHandWeapon===true&&String(w.raw.SwingAnim||'').toLowerCase()==='heavy'),one:o/N,two:t/N,hpk:hk,family:ti.family,speed:ti.aps,impact:ti.impact,cycle:ti.cycle,epk:E/N,reach:range(w,p),hitsBreak:hb,killsBreak:hk?hb/hk:0}}
+
+function hpCdf(x,p){
+  let d=diff(p);
+  if(d.hp==='tough')return cl((x-3.5)/.3,0,1);
+  if(d.hp==='fragile')return cl((x-.5)/.3,0,1);
+  if(d.hp==='normal')return cl((x-1.8)/.3,0,1);
+  if(d.hp==='random'){
+    // H = U(0.5,3.5) + U(0,0.3). Exact convolution CDF.
+    let q=t=>Math.max(0,t)*Math.max(0,t);
+    return cl((q(x-.5)-q(x-3.5)-q(x-.8)+q(x-3.8))/(2*3*.3),0,1);
+  }
+  return cl((x-1.8)/.3,0,1)
+}
+function exactOneShot(w,p,N=512){
+  let mn=+w.raw.MinDamage||0,ma=mx(w),pc=cc(w,p)/100,sum=0;
+  if(ma<mn){let t=ma;ma=mn;mn=t}
+  for(let i=0;i<N;i++){
+    let r=mn+(i+.5)/N*(ma-mn);
+    let normal=dmg(w,r,p,false),critical=dmg(w,r,p,true);
+    sum+=(1-pc)*hpCdf(normal,p)+pc*hpCdf(critical,p)
+  }
+  return sum/N
+}
+function one(w,p,N=600){
+  let mn=+w.raw.MinDamage||0,ma=mx(w),c=cc(w,p),t=0,H=0,E=0,seed0=hs(JSON.stringify(p));
+  for(let i=0;i<N;i++){
+    // Common deterministic zombie sample for every weapon under this profile.
+    // This removes arbitrary per-weapon luck from <=2-hit, hits/kill and endurance/kill.
+    let R=rr((seed0+Math.imul(i+1,0x9E3779B1))>>>0);
+    let hp=zombieHp(R,p),h=0;
+    while(hp>0&&h<30){
+      h++;
+      let d=dmg(w,mn+R()*(ma-mn),p,R()*100<c),b=hp;
+      E+=eh(w,d,b,p);
+      hp-=Math.min(d,b)
+    }
+    if(h<=2)t++;
+    H+=h
+  }
+  let hk=H/N,hb=hbreak(w,p),ti=timing(w,p);
+  return{
+    id:w.id,name:w.name,skill:w.skill||'Unclassified',
+    heavy:(w.raw.TwoHandWeapon===true&&String(w.raw.SwingAnim||'').toLowerCase()==='heavy'),
+    one:exactOneShot(w,p),
+    two:t/N,hpk:hk,family:ti.family,speed:ti.aps,impact:ti.impact,cycle:ti.cycle,
+    epk:E/N,reach:range(w,p),hitsBreak:hb,killsBreak:hk?hb/hk:0
+  }
+}
 const M=[['one','One-shot probability',1],['two','Kill within 2 hits',1],['hpk','Expected hits to kill',0],['speed','Standard attack speed (APS)',1],['impact','Time to impact',0],['epk','Endurance efficiency',0],['reach','Reach',1],['hitsBreak','Durability: hits to break',1],['killsBreak','Durability: kills to break',1]];let R=[];
 function prof(){return{strength:+$('strength').value,fitness:+$('fitness').value,skill:+$('skill').value,maintenance:+$('maintenance').value,axeman:$('axeman').checked,proper:$('proper').checked,distance:+$('distance').value,difficulty:$('difficulty').value}}function labels(){for(let x of ['strength','fitness','skill','maintenance'])$(x+'V').textContent=$(x).value;$('distanceV').textContent=$('distance').value+'%';updateDifficultyNote()}
 function init(){for(let id of ['p1','p2','p3'])$(id).innerHTML=M.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');$('p1').value='one';$('p2').value='speed';$('p3').value='epk';let ss=[...new Set(W.map(w=>w.skill||'Unclassified'))].sort();$('filter').innerHTML+=[...ss].map(s=>`<option>${s}</option>`).join('')}
