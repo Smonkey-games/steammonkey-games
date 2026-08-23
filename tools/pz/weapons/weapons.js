@@ -17,7 +17,7 @@ function zombieHp(R,p){
   return 1.8+R()*.3
 }
 function updateDifficultyNote(){let d=DIFF[$('difficulty').value]||DIFF.normal;$('difficultyNote').textContent=d.note;$('difficultyScope').textContent=d.scope}
-function cc(w,p){let c=+w.raw.CriticalChance||0;if(w.raw.TwoHandWeapon===true&&!p.proper)c-=c/3;c+=3*p.skill;c+=diff(p).crit;return cl(c,10,90)}
+function cc(w,p){if(String(w.raw.SwingAnim||'').toLowerCase()==='stab')return 0;let c=+w.raw.CriticalChance||0;if(w.raw.TwoHandWeapon===true&&!p.proper)c-=c/3;c+=3*p.skill;c+=diff(p).crit;return cl(c,10,90)}
 function dmg(w,r,p,crit){let d=r,mn=+w.raw.MinDamage||0;d*=dm(p.skill,w.skill);d*=sm(p.strength);if(w.raw.TwoHandWeapon===true&&!p.proper)d-=mn;d*=2;d*=2*(p.distance/100);d*=1.5;d*=wlm(p.skill,w.skill);if(crit)d*=Math.max(2,cm(w));if(w.raw.TwoHandWeapon===true&&!p.proper)d*=.5;return Math.max(0,d*.15)}
 function fat(w,s){return['Axe','Long Blunt','Spear'].includes(w.skill)&&s>=8?.8:1}function be(w,p){let wt=+w.raw.Weight||0,em=+w.raw.EnduranceMod||1,pen=(w.raw.TwoHandWeapon===true&&!p.proper)?wt/15:0;return((wt*.28*fat(w,p.skill)*em*.3)+pen)*.04}function eh(w,d,h,p){return be(w,p)*Math.min(Math.min(d,h)/Math.max(.000001,mx(w)),1)}
 function combatSpeedAt(w,p,rf){let s=.8*(+w.raw.BaseSpeed||1);if(w.raw.TwoHandWeapon===true&&!p.proper)s*=.77;if(w.skill==='Axe')s*=p.axeman?1:.8;s+=.03*wl(p.skill,w.skill)+.02*p.fitness;s=cl(s*rf,.8,1.6);if(w.raw.TwoHandWeapon===true&&String(w.raw.SwingAnim||'').toLowerCase()==='heavy')s*=1.2;return s}
@@ -75,13 +75,13 @@ function one(w,p,N=600){
 }
 const M=[['one','One-shot probability',1],['two','Kill within 2 hits',1],['hpk','Expected hits to kill',0],['speed','Standard attack speed (APS)',1],['impact','Time to impact',0],['epk','Endurance efficiency',0],['reach','Reach',1],['hitsBreak','Durability: hits to break',1],['killsBreak','Durability: kills to break',1]];let R=[];
 function prof(){return{strength:+$('strength').value,fitness:+$('fitness').value,skill:+$('skill').value,maintenance:+$('maintenance').value,axeman:$('axeman').checked,proper:$('proper').checked,distance:+$('distance').value,difficulty:$('difficulty').value}}function labels(){for(let x of ['strength','fitness','skill','maintenance'])$(x+'V').textContent=$(x).value;$('distanceV').textContent=$('distance').value+'%';updateDifficultyNote()}
-function init(){for(let id of ['p1','p2','p3'])$(id).innerHTML=M.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');$('p1').value='one';$('p2').value='speed';$('p3').value='epk';let ss=[...new Set(W.map(w=>w.skill||'Unclassified'))].sort();$('filter').innerHTML+=[...ss].map(s=>`<option>${s}</option>`).join('')}
+function init(){for(let id of ['p1','p2','p3','p4','p5'])$(id).innerHTML=M.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');$('p1').value='one';$('p2').value='speed';$('p3').value='epk';$('p4').value='reach';$('p5').value='killsBreak';let ss=[...new Set(W.map(w=>w.skill||'Unclassified'))].sort();$('filter').innerHTML+=[...ss].map(s=>`<option>${s}</option>`).join('')}
 function norm(A,k){let meta=M.find(x=>x[0]===k),v=A.map(x=>x[k]),lo=Math.min(...v),hi=Math.max(...v),sp=hi-lo||1;return x=>meta[2]?(x[k]-lo)/sp:1-(x[k]-lo)/sp}let SORT={key:'one',dir:-1};
 const SORT_META={one:1,two:1,hpk:0,family:1,speed:1,impact:0,epk:0,reach:1,hitsBreak:1,killsBreak:1};
 function updateWeightMode(){
   let on=$('weightsEnabled').checked;
   $('prefsPanel').classList.toggle('disabled',!on);
-  for(let id of ['p1','p2','p3','w1','w2','w3'])$(id).disabled=!on;
+  for(let id of ['p1','p2','p3','p4','p5','w1','w2','w3','w4','w5'])$(id).disabled=!on;
   $('scoreHead').style.opacity=on?'1':'.35';
   $('weightSummary').style.display=on?'block':'none';
   $('sortHint').textContent=on?'Weighted score controls sorting':'Click 1-shot or any column to its right to sort';
@@ -97,10 +97,10 @@ function updateSortHeaders(){
 }
 function render(){
   let q=$('search').value.toLowerCase(),sf=$('filter').value;
-  let A=R.filter(x=>(!q||x.name.toLowerCase().includes(q)||x.id.toLowerCase().includes(q))&&(!sf||x.skill===sf));
+  let A=R.filter(x=>(!q||x.name.toLowerCase().includes(q)||x.id.toLowerCase().includes(q))&&(!sf||x.skill===sf)&&(!$('hideHeavy').checked||!x.heavy));
   let weighted=$('weightsEnabled').checked;
   if(weighted){
-    let P=[[$('p1').value,+$('w1').value||0],[$('p2').value,+$('w2').value||0],[$('p3').value,+$('w3').value||0]],
+    let P=[[$('p1').value,+$('w1').value||0],[$('p2').value,+$('w2').value||0],[$('p3').value,+$('w3').value||0],[$('p4').value,+$('w4').value||0],[$('p5').value,+$('w5').value||0]],
         T=P.reduce((s,x)=>s+x[1],0)||1,
         N=P.map(x=>[norm(A,x[0]),Math.round((x[1]/T)*10000)/10000]);
     $('weightSummary').textContent=`Displayed weights total ${P.reduce((s,x)=>s+x[1],0)}; normalized internally to 100%`;
@@ -154,5 +154,5 @@ document.querySelectorAll('th.sortable').forEach(th=>th.addEventListener('click'
   render();
 }));
 $('calc').onclick=calc;
-$('reset').onclick=()=>{strength.value=fitness.value=skill.value=maintenance.value=5;axeman.checked=false;proper.checked=true;distance.value=75;difficulty.value='normal';weightsEnabled.checked=true;p1.value='one';w1.value=50;p2.value='speed';w2.value=30;p3.value='epk';w3.value=20;updateWeightMode();calc()};
+$('reset').onclick=()=>{strength.value=fitness.value=skill.value=maintenance.value=5;axeman.checked=false;proper.checked=true;distance.value=75;difficulty.value='normal';weightsEnabled.checked=true;p1.value='one';w1.value=50;p2.value='speed';w2.value=30;p3.value='epk';w3.value=20;p4.value='reach';w4.value=0;p5.value='killsBreak';w5.value=0;hideHeavy.checked=false;updateWeightMode();calc()};
 calc();
