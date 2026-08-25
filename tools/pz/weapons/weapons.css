@@ -231,3 +231,10 @@ th.sortable.active-sort{color:var(--sm-orange-hi);box-shadow:inset 0 -2px var(--
   .weapon-app .weapon-cell{grid-template-columns:28px minmax(0,1fr);column-gap:5px}
   .weapon-app .weapon-cell .skill-icon{width:28px;height:28px}
 }
+
+/* V1.10.4 — restore transparent skill-icon treatment */
+.weapon-app .weapon-cell .skill-icon{
+  background:transparent;
+  border:0;
+  border-radius:0;
+}
