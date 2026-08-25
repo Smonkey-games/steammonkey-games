@@ -157,3 +157,40 @@ th.sortable.active-sort{color:var(--sm-orange-hi);box-shadow:inset 0 -2px var(--
   vertical-align:middle;
   margin-right:5px;
 }
+
+/* V1.10.2 weapon-cell alignment */
+.weapon-app .weapon-cell{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+.weapon-app .weapon-text{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  line-height:1.05;
+}
+.weapon-app .weapon-title{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  min-width:0;
+}
+.weapon-app .weapon-cell .skill-icon{
+  width:26px;
+  height:26px;
+  flex:0 0 26px;
+  margin:0;
+  padding:3px;
+}
+.weapon-app .weapon-cell .sub{
+  margin-top:2px;
+}
+@media(max-width:1200px){
+  .weapon-app .weapon-cell .skill-icon{
+    width:24px;
+    height:24px;
+    flex-basis:24px;
+  }
+}
