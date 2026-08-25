@@ -42,7 +42,7 @@
 <main class="weapon-app">
 <section class="weapon-tool-header">
 <div class="tool-kicker">Project Zomboid • Build 42.20</div>
-<h1>Weapon Comparator <span class="tool-version">V1.10.4</span></h1>
+<h1>Weapon Comparator <span class="tool-version">V1.10.5</span></h1>
 <p>Single-target melee comparison. Character inputs change weapon calculations; weighted preferences only reorder the results.</p>
 </section>
 <section class="weapon-content">
@@ -258,8 +258,20 @@ function render(){
   }else{
     A=A.map(x=>({...x,score:null})).sort((a,b)=>{
       let av=a[SORT.key],bv=b[SORT.key];
-      if(typeof av==='string')return SORT.dir*av.localeCompare(bv);
-      return SORT.dir*((av??0)-(bv??0));
+      if(typeof av==='string'){
+        let c=SORT.dir*av.localeCompare(bv);
+        return c || a.name.localeCompare(b.name);
+      }
+      let c=SORT.dir*((av??0)-(bv??0));
+      if(c)return c;
+      if(SORT.key==='effMax'){
+        c=SORT.dir*((a.effMin??0)-(b.effMin??0));
+        if(c)return c;
+      }else if(SORT.key==='baseMax'){
+        c=SORT.dir*((a.baseMin??0)-(b.baseMin??0));
+        if(c)return c;
+      }
+      return a.name.localeCompare(b.name);
     });
   }
   $('rows').innerHTML=A.map((x,i)=>`<tr><td class="rank">${i+1}</td><td class="name"><div class="weapon-cell">${skillIcon(x.skill)?`<img class="skill-icon" src="${skillIcon(x.skill)}" alt="" title="${x.skill}">`:''}<div class="weapon-text"><div class="weapon-name-line">${x.heavy?'<span class="heavy-badge" title="Heavy weapon">H</span>':''}${x.name}${x.special?'<span class="special-mark" title="Special-condition behavior; see note below">*</span>':''}</div><div class="sub">${x.id}</div></div></div></td><td><span class="metric-pair">${f(x.baseMin,2)}–${f(x.baseMax,2)}</span></td><td><span class="metric-pair">${f(x.effMin,3)}–${f(x.effMax,3)}</span></td><td><span class="metric-pair">${f(x.baseCrit,0)}% · ${x.baseCritMult==null?'—':f(x.baseCritMult,1)+'×'}</span></td><td>${f(x.effCrit,0)}%</td><td>${weighted?`<b>${f(x.score*100,1)}</b>`:'—'}</td><td>${pct(x.one)}</td><td>${pct(x.two)}</td><td>${f(x.hpk)}</td><td>${x.family}</td><td><span class="metric-stack"><span>${f(x.speed,2)} APS</span><span class="minor">${f(x.impact,3)}s impact</span></span></td><td>${f(x.epk,5)}</td><td>${f(x.reach)}</td><td><span class="metric-stack"><span>${Math.round(x.hitsBreak)} hits</span><span class="minor">${f(x.killsBreak,1)} kills</span></span></td></tr>`).join('');
