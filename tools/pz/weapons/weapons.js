@@ -17,13 +17,60 @@ function zombieHp(R,p){
   return 1.8+R()*.3
 }
 function updateDifficultyNote(){let d=DIFF[$('difficulty').value]||DIFF.normal;$('difficultyNote').textContent=d.note;$('difficultyScope').textContent=d.scope}
-function cc(w,p){if(String(w.raw.SwingAnim||'').toLowerCase()==='stab')return 0;let c=+w.raw.CriticalChance||0;if(w.raw.TwoHandWeapon===true&&!p.proper)c-=c/3;c+=3*p.skill;c+=diff(p).crit;return cl(c,10,90)}
-function dmg(w,r,p,crit){let d=r,mn=+w.raw.MinDamage||0;d*=dm(p.skill,w.skill);d*=sm(p.strength);if(w.raw.TwoHandWeapon===true&&!p.proper)d-=mn;d*=2;d*=2*(p.distance/100);d*=1.5;d*=wlm(p.skill,w.skill);if(crit)d*=Math.max(2,cm(w));if(w.raw.TwoHandWeapon===true&&!p.proper)d*=.5;return Math.max(0,d*.15)}
-function fat(w,s){return['Axe','Long Blunt','Spear'].includes(w.skill)&&s>=8?.8:1}function be(w,p){let wt=+w.raw.Weight||0,em=+w.raw.EnduranceMod||1,pen=(w.raw.TwoHandWeapon===true&&!p.proper)?wt/15:0;return((wt*.28*fat(w,p.skill)*em*.3)+pen)*.04}function eh(w,d,h,p){return be(w,p)*Math.min(Math.min(d,h)/Math.max(.000001,mx(w)),1)}
+function rangeMod(w,p){return ['Axe','Long Blunt','Spear'].includes(w.skill)&&p.skill>=7?1.2:1}
+function isStab(w){return String(w.raw.SwingAnim||'').toLowerCase()==='stab'}
+const CLOSE_KILL_IDS=new Set(['Base.BreadKnife','Base.ButterKnife','Base.ButterKnife_Gold','Base.ButterKnife_Silver','Base.CarvingFork2','Base.CrudeKnife','Base.DullBoneKnife','Base.FightingKnife','Base.FlintKnife','Base.Fork','Base.ForkForged','Base.Fork_Bone','Base.Fork_Gold','Base.Fork_Silver','Base.GlassShiv','Base.HandFork','Base.HandShovel','Base.HandguardDagger','Base.Handiknife','Base.HuntingKnife','Base.HuntingKnifeForged','Base.IcePick','Base.KitchenKnife','Base.KitchenKnifeForged','Base.KnifeButterfly','Base.KnifeFillet','Base.KnifeParing','Base.KnifePocket','Base.KnifeShiv','Base.KnifeSushi','Base.LargeKnife','Base.LargeKnife_Scrap','Base.LetterOpener','Base.LongCrudeKnife','Base.MacheteKnife','Base.MasonsTrowel','Base.Multitool','Base.RailroadSpike','Base.RailroadSpikeKnife','Base.Scalpel','Base.Scissors','Base.ScissorsForged','Base.Screwdriver','Base.Screwdriver_Improvised','Base.Screwdriver_Old','Base.SharpBone_Long','Base.SmallKnife','Base.SmashedBottle','Base.Spoon','Base.SpoonForged','Base.Spoon_Bone','Base.Spoon_Gold','Base.Spoon_Silver','Base.Stake','Base.SteakKnife','Base.StoneKnifeLong','Base.SwitchKnife','Base.TinOpener_Old','Base.Toothbrush_Shiv']);
+function specialWeapon(w){return CLOSE_KILL_IDS.has(w.id)}
+function cc(w,p){
+  // Ordinary KNIFE/Stab critical hits are explicitly cancelled by B42.20 unless the attack enters a special close-kill path.
+  if(isStab(w))return 0;
+  let c=+w.raw.CriticalChance||0;
+  if(w.raw.TwoHandWeapon===true&&!p.proper)c-=c/3;
+  c+=3*p.skill;
+  c+=diff(p).crit;
+  return cl(c,10,90)
+}
+function streakMod(hitNo){return hitNo>=4?(hitNo-2)*1.5:1}
+function damageParts(w,r,p,crit,hitNo=1){
+  let d=r,mn=+w.raw.MinDamage||0;
+  d*=dm(p.skill,w.skill);
+  d*=sm(p.strength);
+  if(w.raw.TwoHandWeapon===true&&!p.proper)d-=mn;
+  // Multi-hit is OFF, so this is target #1: divide by (1 * 0.5) => x2.
+  d*=2;
+  // B42.20's repeated-hit counter begins escalating on hit #4.
+  d*=streakMod(hitNo);
+  // Slider is % of currently usable reach; damage denominator remains stock MaxRange.
+  d*=2*(p.distance/100)*rangeMod(w,p);
+  // Normal standing/front melee geometry modifier.
+  d*=1.5;
+  // Non-player target (zombie) received-damage modifier.
+  d*=1.5;
+  d*=wlm(p.skill,w.skill);
+  if(crit)d*=Math.max(2,cm(w));
+  if(w.raw.TwoHandWeapon===true&&!p.proper)d*=.5;
+  let preGlobal=Math.max(0,d);
+  return{preGlobal,final:preGlobal*.15}
+}
+function dmg(w,r,p,crit,hitNo=1){return damageParts(w,r,p,crit,hitNo).final}
+function fat(w,s){return['Axe','Long Blunt','Spear'].includes(w.skill)&&s>=8?.8:1}
+function swingEnd(w,p){
+  let wt=+w.raw.Weight||0,em=+w.raw.EnduranceMod||1;
+  let pen=(w.raw.TwoHandWeapon===true&&!p.proper)?wt/15:0;
+  return((wt*.18*fat(w,p.skill)*em*.3)+pen)*.04
+}
+function hitEnd(w,p,preGlobal,postHitHp){
+  let wt=+w.raw.Weight||0,em=+w.raw.EnduranceMod||1;
+  let pen=(w.raw.TwoHandWeapon===true&&!p.proper)?wt/15:0;
+  let base=((wt*.28*fat(w,p.skill)*em*.3)+pen)*.04;
+  if(preGlobal<=0)return base;
+  let scale=Math.min(Math.min(preGlobal,Math.max(0,postHitHp))/Math.max(.000001,mx(w)),1);
+  return base*scale
+}
 function combatSpeedAt(w,p,rf){let s=.8*(+w.raw.BaseSpeed||1);if(w.raw.TwoHandWeapon===true&&!p.proper)s*=.77;if(w.skill==='Axe')s*=p.axeman?1:.8;s+=.03*wl(p.skill,w.skill)+.02*p.fitness;s=cl(s*rf,.8,1.6);if(w.raw.TwoHandWeapon===true&&String(w.raw.SwingAnim||'').toLowerCase()==='heavy')s*=1.2;return s}
 function afam(w){let a=String(w.raw.SwingAnim||'').toLowerCase();if(a==='shove')return'Shove';if(a==='stab')return'Knife';if(a==='heavy')return'Heavy';if(w.raw.TwoHandWeapon===true&&a==='spear')return'Spear';if(w.raw.TwoHandWeapon===true)return'2H';return'1H'}
 function timing(w,p){let f=afam(w),s={'1H':[1,12/30,.25],'2H':[1,12/30,.25],'Knife':[1,8/30,.25],'Spear':[1,8/30,.25],'Heavy':[2.5,12/30,.25],'Shove':[2/3,8/30,.15]}[f],cy=0,im=0,sp=0,N=31;for(let i=0;i<N;i++){let rf=1.1+(i+.5)/N*.1,v=combatSpeedAt(w,p,rf);sp+=v;cy+=s[0]/v+s[1];im+=s[0]*s[2]/v}return{family:f,cycle:cy/N,aps:1/(cy/N),impact:im/N,combatSpeed:sp/N}}
-function range(w,p){let q=+w.raw.MaxRange||1;if(['Axe','Long Blunt','Spear'].includes(w.skill)&&p.skill>=7)q*=1.2;return q}function targets(w,p){return 1}function hbreak(w,p){let c=Math.max(0,Math.trunc(+w.raw.ConditionMax||0)),o=Math.max(1,Math.trunc(+w.raw.ConditionLowerChanceOneIn||1)),m=p.maintenance+Math.floor(wl(p.skill,w.skill)/2);return c*Math.max(1,Math.floor(o+m))}
+function range(w,p){return(+w.raw.MaxRange||1)*rangeMod(w,p)}function targets(w,p){return 1}function hbreak(w,p){let c=Math.max(0,Math.trunc(+w.raw.ConditionMax||0)),o=Math.max(1,Math.trunc(+w.raw.ConditionLowerChanceOneIn||1)),m=p.maintenance+Math.floor(wl(p.skill,w.skill)/2);return c*Math.max(1,Math.floor(o+m))}
 function hs(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}function rr(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 
 function hpCdf(x,p){
@@ -43,7 +90,7 @@ function exactOneShot(w,p,N=512){
   if(ma<mn){let t=ma;ma=mn;mn=t}
   for(let i=0;i<N;i++){
     let r=mn+(i+.5)/N*(ma-mn);
-    let normal=dmg(w,r,p,false),critical=dmg(w,r,p,true);
+    let normal=dmg(w,r,p,false,1),critical=dmg(w,r,p,true,1);
     sum+=(1-pc)*hpCdf(normal,p)+pc*hpCdf(critical,p)
   }
   return sum/N
@@ -52,14 +99,15 @@ function one(w,p,N=600){
   let mn=+w.raw.MinDamage||0,ma=mx(w),c=cc(w,p),t=0,H=0,E=0,seed0=hs(JSON.stringify(p));
   for(let i=0;i<N;i++){
     // Common deterministic zombie sample for every weapon under this profile.
-    // This removes arbitrary per-weapon luck from <=2-hit, hits/kill and endurance/kill.
     let R=rr((seed0+Math.imul(i+1,0x9E3779B1))>>>0);
     let hp=zombieHp(R,p),h=0;
     while(hp>0&&h<30){
       h++;
-      let d=dmg(w,mn+R()*(ma-mn),p,R()*100<c),b=hp;
-      E+=eh(w,d,b,p);
-      hp-=Math.min(d,b)
+      let parts=damageParts(w,mn+R()*(ma-mn),p,R()*100<c,h);
+      let after=Math.max(0,hp-parts.final);
+      // Runtime charges a per-swing cost plus a separate hit cost. The hit-cost scale uses pre-global damage and the target's post-hit health.
+      E+=swingEnd(w,p)+hitEnd(w,p,parts.preGlobal,after);
+      hp=after;
     }
     if(h<=2)t++;
     H+=h
@@ -68,6 +116,14 @@ function one(w,p,N=600){
   return{
     id:w.id,name:w.name,skill:w.skill||'Unclassified',
     heavy:(w.raw.TwoHandWeapon===true&&String(w.raw.SwingAnim||'').toLowerCase()==='heavy'),
+    special:specialWeapon(w),
+    baseMin:+w.raw.MinDamage||0,
+    effMin:dmg(w,+w.raw.MinDamage||0,p,false,1),
+    baseMax:+w.raw.MaxDamage||(+w.raw.MinDamage||0),
+    effMax:dmg(w,+w.raw.MaxDamage||(+w.raw.MinDamage||0),p,false,1),
+    baseCrit:+w.raw.CriticalChance||0,
+    effCrit:cc(w,p),
+    baseCritMult:(w.raw.CritDmgMultiplier==null?null:+w.raw.CritDmgMultiplier),
     one:exactOneShot(w,p),
     two:t/N,hpk:hk,family:ti.family,speed:ti.aps,impact:ti.impact,cycle:ti.cycle,
     epk:E/N,reach:range(w,p),hitsBreak:hb,killsBreak:hk?hb/hk:0
@@ -77,7 +133,8 @@ const M=[['one','One-shot probability',1],['two','Kill within 2 hits',1],['hpk',
 function prof(){return{strength:+$('strength').value,fitness:+$('fitness').value,skill:+$('skill').value,maintenance:+$('maintenance').value,axeman:$('axeman').checked,proper:$('proper').checked,distance:+$('distance').value,difficulty:$('difficulty').value}}function labels(){for(let x of ['strength','fitness','skill','maintenance'])$(x+'V').textContent=$(x).value;$('distanceV').textContent=$('distance').value+'%';updateDifficultyNote()}
 function init(){for(let id of ['p1','p2','p3','p4','p5'])$(id).innerHTML=M.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');$('p1').value='one';$('p2').value='speed';$('p3').value='epk';$('p4').value='reach';$('p5').value='killsBreak';let ss=[...new Set(W.map(w=>w.skill||'Unclassified'))].sort();$('filter').innerHTML+=[...ss].map(s=>`<option>${s}</option>`).join('')}
 function norm(A,k){let meta=M.find(x=>x[0]===k),v=A.map(x=>x[k]),lo=Math.min(...v),hi=Math.max(...v),sp=hi-lo||1;return x=>meta[2]?(x[k]-lo)/sp:1-(x[k]-lo)/sp}let SORT={key:'one',dir:-1};
-const SORT_META={one:1,two:1,hpk:0,family:1,speed:1,impact:0,epk:0,reach:1,hitsBreak:1,killsBreak:1};
+const SORT_META={baseMin:1,effMin:1,baseMax:1,effMax:1,baseCrit:1,effCrit:1,baseCritMult:1,one:1,two:1,hpk:0,family:1,speed:1,impact:0,epk:0,reach:1,hitsBreak:1,killsBreak:1};
+function skillLabel(k){return({'Long Blade':'L.Blade','Short Blade':'S.Blade','Long Blunt':'L.Blunt','Short Blunt':'S.Blunt'})[k]||k}
 function updateWeightMode(){
   let on=$('weightsEnabled').checked;
   $('prefsPanel').classList.toggle('disabled',!on);
@@ -90,9 +147,7 @@ function updateSortHeaders(){
   document.querySelectorAll('th.sortable').forEach(th=>{
     let active=!$('weightsEnabled').checked&&th.dataset.sort===SORT.key;
     th.classList.toggle('active-sort',active);
-    let base=th.dataset.baseLabel||th.textContent.replace(/\s[▲▼]$/,'');
-    th.dataset.baseLabel=base;
-    th.textContent=base+(active?(SORT.dir>0?' ▲':' ▼'):'');
+    th.dataset.sortArrow=active?(SORT.dir>0?'▲':'▼'):'';
   });
 }
 function render(){
@@ -112,7 +167,7 @@ function render(){
       return SORT.dir*((av??0)-(bv??0));
     });
   }
-  $('rows').innerHTML=A.map((x,i)=>`<tr><td class="rank">${i+1}</td><td class="name">${x.name}<div class="sub">${x.id}</div></td><td>${x.skill}</td><td>${x.heavy?"Yes":"—"}</td><td>${weighted?`<b>${f(x.score*100,1)}</b>`:'—'}</td><td>${pct(x.one)}</td><td>${pct(x.two)}</td><td>${f(x.hpk)}</td><td>${x.family}</td><td>${f(x.speed,3)}</td><td>${f(x.impact,3)}</td><td>${f(x.epk,5)}</td><td>${f(x.reach)}</td><td>${Math.round(x.hitsBreak)}</td><td>${f(x.killsBreak,1)}</td></tr>`).join('');
+  $('rows').innerHTML=A.map((x,i)=>`<tr><td class="rank">${i+1}</td><td class="name">${x.heavy?'<span class="heavy-badge" title="Heavy weapon">H</span>':''}${x.name}${x.special?'<span class="special-mark" title="Special-condition behavior; see note below">*</span>':''}<div class="sub">${x.id}</div></td><td>${skillLabel(x.skill)}</td><td>${f(x.baseMin,2)}</td><td>${f(x.effMin,3)}</td><td>${f(x.baseMax,2)}</td><td>${f(x.effMax,3)}</td><td>${f(x.baseCrit,1)}%</td><td>${f(x.effCrit,1)}%</td><td>${x.baseCritMult==null?'—':f(x.baseCritMult,2)+'×'}</td><td>${weighted?`<b>${f(x.score*100,1)}</b>`:'—'}</td><td>${pct(x.one)}</td><td>${pct(x.two)}</td><td>${f(x.hpk)}</td><td>${x.family}</td><td>${f(x.speed,3)}</td><td>${f(x.impact,3)}</td><td>${f(x.epk,5)}</td><td>${f(x.reach)}</td><td>${Math.round(x.hitsBreak)}</td><td>${f(x.killsBreak,1)}</td></tr>`).join('');
   updateSortHeaders();
   $('status').textContent=weighted?`${A.length} weapons shown • weighted score normalized within current filtered list • 354 melee definitions calculated`:`${A.length} weapons shown • sorted by ${SORT.key} • weighted ranking disabled • 354 melee definitions calculated`;
 }
@@ -145,7 +200,8 @@ for(let x of ['strength','fitness','skill','maintenance','distance']){
   $(x).addEventListener('change',calc);
 }
 for(let x of ['axeman','proper','difficulty'])$(x).addEventListener('change',calc);
-for(let x of ['p1','p2','p3','w1','w2','w3','search','filter'])$(x).addEventListener('input',render);
+for(let x of ['p1','p2','p3','p4','p5','w1','w2','w3','w4','w5','search','filter'])$(x).addEventListener('input',render);
+$('hideHeavy').addEventListener('change',render);
 $('weightsEnabled').addEventListener('change',()=>{updateWeightMode();render()});
 document.querySelectorAll('th.sortable').forEach(th=>th.addEventListener('click',()=>{
   if($('weightsEnabled').checked)return;
