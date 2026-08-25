@@ -158,7 +158,45 @@ th.sortable.active-sort{color:var(--sm-orange-hi);box-shadow:inset 0 -2px var(--
   margin-right:5px;
 }
 
-/* V1.10.3 weapon-cell alignment: two-line skill icon column */
+/* V1.10.2 weapon-cell alignment */
+.weapon-app .weapon-cell{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+.weapon-app .weapon-text{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  line-height:1.05;
+}
+.weapon-app .weapon-title{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  min-width:0;
+}
+.weapon-app .weapon-cell .skill-icon{
+  width:26px;
+  height:26px;
+  flex:0 0 26px;
+  margin:0;
+  padding:3px;
+}
+.weapon-app .weapon-cell .sub{
+  margin-top:2px;
+}
+@media(max-width:1200px){
+  .weapon-app .weapon-cell .skill-icon{
+    width:24px;
+    height:24px;
+    flex-basis:24px;
+  }
+}
+
+
+/* V1.10.3 — weapon skill icon occupies its own two-line slot */
 .weapon-app .weapon-cell{
   display:grid;
   grid-template-columns:30px minmax(0,1fr);
@@ -173,29 +211,23 @@ th.sortable.active-sort{color:var(--sm-orange-hi);box-shadow:inset 0 -2px var(--
   min-width:0;
   line-height:1.05;
 }
-.weapon-app .weapon-title{
-  display:flex;
-  align-items:center;
-  gap:3px;
+.weapon-app .weapon-name-line{
+  display:block;
   min-width:0;
+  white-space:nowrap;
 }
 .weapon-app .weapon-cell .skill-icon{
   width:30px;
   height:30px;
-  align-self:center;
   margin:0;
-  padding:2px;
+  padding:1px;
+  object-fit:contain;
+  align-self:center;
 }
 .weapon-app .weapon-cell .sub{
-  margin-top:1px;
+  margin-top:2px;
 }
 @media(max-width:1200px){
-  .weapon-app .weapon-cell{
-    grid-template-columns:28px minmax(0,1fr);
-    column-gap:5px;
-  }
-  .weapon-app .weapon-cell .skill-icon{
-    width:28px;
-    height:28px;
-  }
+  .weapon-app .weapon-cell{grid-template-columns:28px minmax(0,1fr);column-gap:5px}
+  .weapon-app .weapon-cell .skill-icon{width:28px;height:28px}
 }
