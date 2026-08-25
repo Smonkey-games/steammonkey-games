@@ -135,6 +135,14 @@ function init(){for(let id of ['p1','p2','p3','p4','p5'])$(id).innerHTML=M.map(x
 function norm(A,k){let meta=M.find(x=>x[0]===k),v=A.map(x=>x[k]),lo=Math.min(...v),hi=Math.max(...v),sp=hi-lo||1;return x=>meta[2]?(x[k]-lo)/sp:1-(x[k]-lo)/sp}let SORT={key:'one',dir:-1};
 const SORT_META={baseMin:1,effMin:1,baseMax:1,effMax:1,baseCrit:1,effCrit:1,baseCritMult:1,one:1,two:1,hpk:0,family:1,speed:1,impact:0,epk:0,reach:1,hitsBreak:1,killsBreak:1};
 function skillLabel(k){return({'Long Blade':'L.Blade','Short Blade':'S.Blade','Long Blunt':'L.Blunt','Short Blunt':'S.Blunt'})[k]||k}
+function skillIcon(k){return ({
+  'Axe':'assets/skills/axe.svg',
+  'Long Blunt':'assets/skills/long-blunt.svg',
+  'Short Blunt':'assets/skills/short-blunt.svg',
+  'Long Blade':'assets/skills/long-blade.svg',
+  'Short Blade':'assets/skills/short-blade.svg',
+  'Spear':'assets/skills/spear.svg'
+})[k]||''}
 function updateWeightMode(){
   let on=$('weightsEnabled').checked;
   $('prefsPanel').classList.toggle('disabled',!on);
@@ -167,7 +175,7 @@ function render(){
       return SORT.dir*((av??0)-(bv??0));
     });
   }
-  $('rows').innerHTML=A.map((x,i)=>`<tr><td class="rank">${i+1}</td><td class="name">${x.heavy?'<span class="heavy-badge" title="Heavy weapon">H</span>':''}${x.name}${x.special?'<span class="special-mark" title="Special-condition behavior; see note below">*</span>':''}<div class="sub">${x.id}</div></td><td>${skillLabel(x.skill)}</td><td>${f(x.baseMin,2)}</td><td>${f(x.effMin,3)}</td><td>${f(x.baseMax,2)}</td><td>${f(x.effMax,3)}</td><td>${f(x.baseCrit,1)}%</td><td>${f(x.effCrit,1)}%</td><td>${x.baseCritMult==null?'—':f(x.baseCritMult,2)+'×'}</td><td>${weighted?`<b>${f(x.score*100,1)}</b>`:'—'}</td><td>${pct(x.one)}</td><td>${pct(x.two)}</td><td>${f(x.hpk)}</td><td>${x.family}</td><td>${f(x.speed,3)}</td><td>${f(x.impact,3)}</td><td>${f(x.epk,5)}</td><td>${f(x.reach)}</td><td>${Math.round(x.hitsBreak)}</td><td>${f(x.killsBreak,1)}</td></tr>`).join('');
+  $('rows').innerHTML=A.map((x,i)=>`<tr><td class="rank">${i+1}</td><td class="name">${skillIcon(x.skill)?`<img class="skill-icon" src="${skillIcon(x.skill)}" alt="" title="${x.skill}">`:''}${x.heavy?'<span class="heavy-badge" title="Heavy weapon">H</span>':''}${x.name}${x.special?'<span class="special-mark" title="Special-condition behavior; see note below">*</span>':''}<div class="sub">${x.id}</div></td><td><span class="metric-pair">${f(x.baseMin,2)}–${f(x.baseMax,2)}</span></td><td><span class="metric-pair">${f(x.effMin,3)}–${f(x.effMax,3)}</span></td><td><span class="metric-pair">${f(x.baseCrit,0)}% · ${x.baseCritMult==null?'—':f(x.baseCritMult,1)+'×'}</span></td><td>${f(x.effCrit,0)}%</td><td>${weighted?`<b>${f(x.score*100,1)}</b>`:'—'}</td><td>${pct(x.one)}</td><td>${pct(x.two)}</td><td>${f(x.hpk)}</td><td>${x.family}</td><td><span class="metric-stack"><span>${f(x.speed,2)} APS</span><span class="minor">${f(x.impact,3)}s impact</span></span></td><td>${f(x.epk,5)}</td><td>${f(x.reach)}</td><td><span class="metric-stack"><span>${Math.round(x.hitsBreak)} hits</span><span class="minor">${f(x.killsBreak,1)} kills</span></span></td></tr>`).join('');
   updateSortHeaders();
   $('status').textContent=weighted?`${A.length} weapons shown • weighted score normalized within current filtered list • 354 melee definitions calculated`:`${A.length} weapons shown • sorted by ${SORT.key} • weighted ranking disabled • 354 melee definitions calculated`;
 }
