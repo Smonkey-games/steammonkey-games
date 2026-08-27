@@ -1,8 +1,51 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>PZ B42.20 Weapon Comparator V1.11.0</title><link rel="stylesheet" href="weapons.css"/></head><body><header>
-<h1><span class="brand">SteamMonkey</span> PZ Weapon Comparator <span style="color:var(--sm-muted);font-size:.7em">B42.20 · V1.11.0</span></h1>
-<p>Single-target melee comparison. Character inputs change weapon calculations; three weighted preferences only reorder the results.</p></header><main>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#0e1116" name="theme-color"/>
+<meta content="Project Zomboid Build 42.20 melee weapon comparator and ranking tool." name="description"/>
+<title>PZ Weapon Comparator | SteamMonkey.games</title>
+<link href="/favicon.ico" rel="icon" sizes="any"/>
+<link href="/assets/icons/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="/assets/icons/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="/site.webmanifest" rel="manifest"/>
+<link href="/css/styles.css" rel="stylesheet"/>
+<link href="weapons.css" rel="stylesheet"/>
+</head>
+<body>
+<header class="site-header">
+<button aria-controls="siteNav" aria-expanded="false" aria-label="Open navigation" class="menu-button" id="menuButton" type="button">
+<span></span><span></span><span></span>
+</button>
+<a aria-label="SteamMonkey.games home" class="brand" href="/">
+<span class="brand-primary">SteamMonkey</span><span class="brand-dot">.</span><span class="brand-tld">games</span>
+</a>
+</header>
+<div class="nav-scrim" hidden="" id="navScrim"></div>
+<aside aria-hidden="true" class="nav-drawer" id="siteNav">
+<div class="nav-header">
+<div><div class="nav-eyebrow">SteamMonkey.games</div><div class="nav-title">Tools</div></div>
+<button aria-label="Close navigation" class="nav-close" id="navClose" type="button">×</button>
+</div>
+<nav aria-label="Tool navigation">
+<a class="nav-link" href="/">Home</a>
+<div class="nav-section-label">Project Zomboid</div>
+<a class="nav-link active" href="/tools/pz/weapons/">Weapon Comparator</a>
+<div class="nav-section-label">More tools</div>
+<div class="nav-placeholder"><span>Coming Soon</span><span class="status-pill">Soon</span></div>
+</nav>
+<div class="nav-footer">Smonkey</div>
+</aside>
+<main class="weapon-app">
+<section class="weapon-tool-header">
+<div class="tool-kicker">Project Zomboid • Build 42.20</div>
+<h1>Weapon Comparator <span class="tool-version">V1.11.2</span></h1>
+<p>Single-target melee comparison. Character inputs change weapon calculations; weighted preferences only reorder the results.</p>
+</section>
+<section class="weapon-content">
 <section class="controls">
 <div class="card"><label>STR <span class="val" id="strengthV">5</span></label><input id="strength" max="10" min="0" type="range" value="5"/></div>
 <div class="card"><label>FIT <span class="val" id="fitnessV">5</span></label><input id="fitness" max="10" min="0" type="range" value="5"/></div>
@@ -49,10 +92,14 @@
 <th class="sortable" data-sort="epk"><span class="th-stack">End/<br/>Kill</span></th>
 <th class="sortable" data-sort="reach">Reach</th>
 <th class="sortable" data-sort="killsBreak">Durability</th>
-</tr></thead><tbody id="rows"></tbody></table></div><p class="note"><b>Difficulty scope:</b> The named presets contain many other differences. For this comparator, only <b>Zombie Toughness</b> currently changes the neutral weapon calculations: it changes zombie HP distribution and the toughness-based melee crit modifier. Zombie Strength changes how hard zombies hit players/objects, not your weapon damage. Speed/sprinters, population, cognition, hearing, injuries, loot and respawn alter encounter difficulty or weapon availability, but do not directly alter the intrinsic damage/APS/endurance/reach/durability formulas under the healthy-player assumptions used here. Outbreak and Apocalypse therefore intentionally produce the same weapon calculations.</p><p class="note"><b>Probability model:</b> One-shot chance is calculated deterministically from the weapon damage distribution, crit chance and selected zombie-health distribution—there is no per-weapon Monte Carlo noise in the 1-shot column. Multi-hit outcomes and expected hits/kill use common deterministic samples across all weapons to prevent arbitrary favorable rolls.</p><p class="note"><b>* Impact (s):</b> Estimated time from starting a standard attack until the weapon connects with the zombie. Lower is faster/more responsive; it is different from APS, which measures sustained attack rate.</p><p class="note"><b>† Kills to break:</b> Fresh-state estimate using expected hits-to-kill and overall-condition loss. The comparator assumes weapons remain sharp.</p>
-<script src="weapons.js"></script>
+</tr></thead><tbody id="rows"></tbody></table></div><p class="note"><b>Difficulty scope:</b> The named presets contain many other differences. For this comparator, only <b>Zombie Toughness</b> currently changes the neutral weapon calculations: it changes zombie HP distribution and the toughness-based melee crit modifier. Zombie Strength changes how hard zombies hit players/objects, not your weapon damage. Speed/sprinters, population, cognition, hearing, injuries, loot and respawn alter encounter difficulty or weapon availability, but do not directly alter the intrinsic damage/APS/endurance/reach/durability formulas under the healthy-player assumptions used here. Outbreak and Apocalypse therefore intentionally produce the same weapon calculations.</p><p class="note"><b>Probability model:</b> One-shot chance is calculated deterministically from the weapon damage distribution, crit chance and selected zombie-health distribution—there is no per-weapon Monte Carlo noise in the 1-shot column. Multi-hit outcomes and expected hits/kill use common deterministic samples across all weapons to prevent arbitrary favorable rolls.</p><p class="note"><b>* Impact (s):</b> Estimated time from starting a standard attack until the weapon connects with the zombie. Lower is faster/more responsive; it is different from APS, which measures sustained attack rate.</p><p class="note"><b>† Kills to break:</b> Fresh-state estimate using expected hits-to-kill and overall-condition loss. Sharpness degradation is not yet modeled; <b>S</b> identifies affected weapons.</p>
 <p class="note"><b>* Special-condition weapon behavior:</b> An asterisk marks weapons with a KNIFE/Stab close-kill path. Close Kill / Jaw Stab requires special positioning/combat conditions and is excluded from the normal standing-vs-standing calculations. Rear attacks and prone-target attacks also have special modifiers and are excluded from the neutral baseline.</p>
 <p class="note"><b>Repeated-hit damage:</b> B42.20 tracks successive melee hits on a zombie. Hits 1–3 use normal damage; beginning with hit 4, the runtime applies its escalating hit-count modifier. This affects expected hits/kill and related sustained metrics, but not first-hit one-shot probability.</p>
 <p class="note"><b>* Speed timing:</b> APS, hit time and post-hit recovery use the traced B42.20 normal standing melee animation clips/events and runtime CombatSpeed. <b>Forbidden Technique</b> models the interact/grapple recovery technique by capping applicable post-attack MeleeDelay at 2 units; it does not shorten the attack animation or hit time.</p>
 <p class="note"><b>Wpn vs Effective:</b> Wpn Dmg and Wpn Crit show stock weapon-definition values. Eff. Dmg is the configured ordinary non-critical first-hit damage range. Eff. Crit is the configured ordinary crit chance; KNIFE/Stab attacks show 0%. Hover the combat-skill icon beside a weapon name to see its skill.</p>
-</main></body></html>
+</section>
+</main>
+<script src="/js/app.js"></script>
+<script src="weapons.js"></script>
+</body>
+</html>
