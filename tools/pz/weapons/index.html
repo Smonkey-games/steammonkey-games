@@ -13,7 +13,7 @@
 <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="/site.webmanifest" rel="manifest"/>
 <link href="/css/styles.css" rel="stylesheet"/>
-<link href="weapons.css?v=1.11.3" rel="stylesheet"/>
+<link href="weapons.css?v=1.12" rel="stylesheet"/>
 </head>
 <body>
 <header class="site-header">
@@ -42,20 +42,61 @@
 <main class="weapon-app">
 <section class="weapon-tool-header">
 <div class="tool-kicker">Project Zomboid • Build 42.20</div>
-<h1>Weapon Comparator <span class="tool-version">V1.11.3</span></h1>
+<h1>Weapon Comparator <span class="tool-version">V1.12</span></h1>
 <p>Single-target melee comparison. Character inputs change weapon calculations; weighted preferences only reorder the results.</p>
 </section>
 <section class="weapon-content">
-<section class="controls">
-<div class="card"><label>STR <span class="val" id="strengthV">5</span></label><input id="strength" max="10" min="0" type="range" value="5"/></div>
-<div class="card"><label>FIT <span class="val" id="fitnessV">5</span></label><input id="fitness" max="10" min="0" type="range" value="5"/></div>
-<div class="card"><label>Weapon Skill <span class="val" id="skillV">5</span></label><input id="skill" max="10" min="0" type="range" value="5"/></div>
-<div class="card"><label>Maintenance <span class="val" id="maintenanceV">5</span></label><input id="maintenance" max="10" min="0" type="range" value="5"/></div>
-<div class="card"><label>Hit Distance <span class="val" id="distanceV">75%</span></label><input id="distance" max="100" min="25" step="5" type="range" value="75"/></div>
-<div class="card"><label>Axeman</label><div class="switch"><input id="axeman" type="checkbox"/> Axeman</div></div>
-<div class="card"><label>Forbidden Technique</label><div class="switch" title="Models using the interact/grapple input to shorten post-attack recovery. Does not shorten the attack animation or time to hit."><input id="forbidden" type="checkbox"/> Enable</div></div>
-<div class="card"><label>Grip</label><div class="switch"><input checked="" id="proper" type="checkbox"/> Grip (2H)</div></div>
-<div class="card"><label>Difficulty</label>
+<section class="controls v112-controls">
+<div class="card character-levels">
+<label class="group-label">Character Levels</label>
+<div class="level-grid">
+<div class="skill-inline" data-level-control="strength">
+<div class="skill-label"><span>STR <b class="val" id="strengthV">5</b></span></div>
+<input aria-label="STR" class="level-range-input" id="strength" max="10" min="0" type="range" value="5"/>
+<div aria-label="STR level selector" class="pz-levels" role="group"><button aria-label="Set STR to 1" class="pz-level-pip" data-level="1" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set STR to 2" class="pz-level-pip" data-level="2" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set STR to 3" class="pz-level-pip" data-level="3" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set STR to 4" class="pz-level-pip" data-level="4" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set STR to 5" class="pz-level-pip" data-level="5" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set STR to 6" class="pz-level-pip" data-level="6" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set STR to 7" class="pz-level-pip" data-level="7" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set STR to 8" class="pz-level-pip" data-level="8" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set STR to 9" class="pz-level-pip" data-level="9" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set STR to 10" class="pz-level-pip" data-level="10" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button></div>
+</div>
+<div class="skill-inline" data-level-control="fitness">
+<div class="skill-label"><span>FIT <b class="val" id="fitnessV">5</b></span></div>
+<input aria-label="FIT" class="level-range-input" id="fitness" max="10" min="0" type="range" value="5"/>
+<div aria-label="FIT level selector" class="pz-levels" role="group"><button aria-label="Set FIT to 1" class="pz-level-pip" data-level="1" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set FIT to 2" class="pz-level-pip" data-level="2" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set FIT to 3" class="pz-level-pip" data-level="3" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set FIT to 4" class="pz-level-pip" data-level="4" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set FIT to 5" class="pz-level-pip" data-level="5" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set FIT to 6" class="pz-level-pip" data-level="6" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set FIT to 7" class="pz-level-pip" data-level="7" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set FIT to 8" class="pz-level-pip" data-level="8" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set FIT to 9" class="pz-level-pip" data-level="9" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set FIT to 10" class="pz-level-pip" data-level="10" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button></div>
+</div>
+<div class="skill-inline" data-level-control="skill">
+<div class="skill-label"><span>Weapon Skill <b class="val" id="skillV">5</b></span></div>
+<input aria-label="Weapon Skill" class="level-range-input" id="skill" max="10" min="0" type="range" value="5"/>
+<div aria-label="Weapon Skill level selector" class="pz-levels" role="group"><button aria-label="Set Weapon Skill to 1" class="pz-level-pip" data-level="1" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Weapon Skill to 2" class="pz-level-pip" data-level="2" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Weapon Skill to 3" class="pz-level-pip" data-level="3" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Weapon Skill to 4" class="pz-level-pip" data-level="4" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Weapon Skill to 5" class="pz-level-pip" data-level="5" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Weapon Skill to 6" class="pz-level-pip" data-level="6" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Weapon Skill to 7" class="pz-level-pip" data-level="7" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Weapon Skill to 8" class="pz-level-pip" data-level="8" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Weapon Skill to 9" class="pz-level-pip" data-level="9" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Weapon Skill to 10" class="pz-level-pip" data-level="10" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button></div>
+</div>
+<div class="skill-inline" data-level-control="maintenance">
+<div class="skill-label"><span>Maintenance <b class="val" id="maintenanceV">5</b></span></div>
+<input aria-label="Maintenance" class="level-range-input" id="maintenance" max="10" min="0" type="range" value="5"/>
+<div aria-label="Maintenance level selector" class="pz-levels" role="group"><button aria-label="Set Maintenance to 1" class="pz-level-pip" data-level="1" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Maintenance to 2" class="pz-level-pip" data-level="2" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Maintenance to 3" class="pz-level-pip" data-level="3" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Maintenance to 4" class="pz-level-pip" data-level="4" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Maintenance to 5" class="pz-level-pip" data-level="5" type="button"><img alt="" src="assets/skills/skill-unlocked.png"/></button><button aria-label="Set Maintenance to 6" class="pz-level-pip" data-level="6" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Maintenance to 7" class="pz-level-pip" data-level="7" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Maintenance to 8" class="pz-level-pip" data-level="8" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Maintenance to 9" class="pz-level-pip" data-level="9" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button><button aria-label="Set Maintenance to 10" class="pz-level-pip" data-level="10" type="button"><img alt="" src="assets/skills/skill-empty.png"/></button></div>
+</div>
+</div>
+</div>
+<div class="card options-panel">
+<div class="options-top">
+<div class="utility-group combat-group">
+<label class="group-label">Combat Options</label>
+<div class="checks">
+<label><input id="axeman" type="checkbox"/> Axeman</label>
+<label title="Models using the interact/grapple input to shorten post-attack recovery. Does not shorten the attack animation or time to hit."><input id="forbidden" type="checkbox"/> Forbidden Technique</label>
+<label><input checked="" id="proper" type="checkbox"/> 2H Grip</label>
+</div>
+</div>
+<div class="utility-group hide-group">
+<label class="group-label">Hide</label>
+<div class="checks">
+<label title="Hide weapons classified as Heavy by the comparator"><input id="hideHeavy" type="checkbox"/> Heavy</label>
+<label title="Hide weapons affected by the B42.20 Sharpness mechanic"><input id="hideSharp" type="checkbox"/> Sharp</label>
+<label title="Hide weapons with no recognized weapon-skill category"><input id="hideOther" type="checkbox"/> Other</label>
+</div>
+</div>
+<div class="utility-group distance-group">
+<label class="group-label hit-label">Hit Distance <span class="val" id="distanceV">75%</span></label>
+<input id="distance" max="100" min="25" step="5" type="range" value="75"/>
+</div>
+</div>
+<div class="difficulty-inline">
+<label for="difficulty">Difficulty</label>
 <select id="difficulty" title="Only combat-relevant zombie toughness is applied">
 <option selected="" value="normal">Custom — Normal toughness</option>
 <option value="rising">Rising — Fragile toughness</option>
@@ -63,9 +104,10 @@
 <option value="apocalypse">Apocalypse — Random toughness</option>
 <option value="extinction">Extinction — Tough toughness</option>
 </select>
-<div class="diffnote" id="difficultyNote">Normal toughness · HP ~1.8–2.1 · crit ±0</div><div class="diffscope" id="difficultyScope">Only preset settings that directly change this weapon model are applied.</div></div>
-</section>
-<p class="note distance-note"><b>Hit Distance:</b> Percentage of the weapon's currently usable reach when the hit lands. Damage scales continuously with actual distance. At skill 7+, Axe, Long Blunt and Spear gain +20% usable reach while the damage calculation still divides by the weapon's stock MaxRange, so that extra reach can also increase distance-based damage.</p>
+<span class="diffnote" id="difficultyNote">Normal toughness · HP ~1.8–2.1 · crit ±0</span>
+</div>
+</div>
+</section><p class="note distance-note"><b>Hit Distance:</b> Percentage of the weapon's currently usable reach when the hit lands. Damage scales continuously with actual distance. At skill 7+, Axe, Long Blunt and Spear gain +20% usable reach while the damage calculation still divides by the weapon's stock MaxRange, so that extra reach can also increase distance-based damage.</p>
 <div class="legend"><strong>Always sharp</strong><span><b>S</b> = affected by Sharpness</span><span>Multi-hit OFF</span><span>Overkill has no ranking value</span><span>Difficulty applies only direct weapon-performance modifiers</span></div>
 <p class="note knife-note"><b>Knife / stab crits:</b> B42.20 can calculate a crit roll for <code>Stab</code>/KNIFE attacks, but an ordinary non-close-kill knife attack explicitly cancels that critical hit. The table still shows the weapon's <b>stock</b> CriticalChance and CritDmgMultiplier, while neutral combat calculations treat ordinary <code>Stab</code> attacks as <b>0% effective crit chance</b>. Weapons marked <b>*</b> have a special close-kill interaction that is not included in the neutral ranking.</p>
 <div class="weightmode"><label><input checked="" id="weightsEnabled" type="checkbox"/> Enable weighted ranking</label><span id="sortHint">Weighted score controls sorting</span></div>
@@ -76,7 +118,7 @@
 <div class="pref"><label>Preference 4</label><div class="prow"><select id="p4"></select><input id="w4" max="100" min="0" type="number" value="0"/></div></div>
 <div class="pref"><label>Preference 5</label><div class="prow"><select id="p5"></select><input id="w5" max="100" min="0" type="number" value="0"/></div></div>
 </section><div class="status" id="weightSummary" style="margin:1px 0 3px">Weights normalized internally to 100%</div>
-<div class="toolbar"><input id="search" placeholder="Search weapons…" type="search"/><select id="filter"><option value="">All weapon skills</option></select><label class="heavy-filter" title="Hide weapons classified as Heavy by the comparator"><input id="hideHeavy" type="checkbox"/> Hide heavy weapons</label><label class="sharp-filter" title="Hide weapons affected by the B42.20 Sharpness mechanic"><input id="hideSharp" type="checkbox"/> Hide sharpness weapons</label><button id="calc">Recalculate</button><button id="reset">Reset</button></div><div class="status" id="status">Calculating…</div>
+<div class="toolbar"><input id="search" placeholder="Search weapons…" type="search"/><select id="filter"><option value="">All weapon skills</option></select><button id="calc">Recalculate</button><button id="reset">Reset</button></div><div class="status" id="status">Calculating…</div>
 <div class="wrap"><table><thead><tr>
 <th>#</th><th>Weapon</th>
 <th class="sortable" data-sort="baseMax"><span class="th-stack">Wpn<br/>Dmg</span></th>
