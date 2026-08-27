@@ -13,7 +13,7 @@
 <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="/site.webmanifest" rel="manifest"/>
 <link href="/css/styles.css" rel="stylesheet"/>
-<link href="weapons.css?v=1.12" rel="stylesheet"/>
+<link href="weapons.css?v=1.12.2" rel="stylesheet"/>
 </head>
 <body>
 <header class="site-header">
@@ -42,7 +42,7 @@
 <main class="weapon-app">
 <section class="weapon-tool-header">
 <div class="tool-kicker">Project Zomboid • Build 42.20</div>
-<h1>Weapon Comparator <span class="tool-version">V1.12</span></h1>
+<h1>Weapon Comparator <span class="tool-version">V1.12.2</span></h1>
 <p>Single-target melee comparison. Character inputs change weapon calculations; weighted preferences only reorder the results.</p>
 </section>
 <section class="weapon-content">
@@ -78,7 +78,7 @@
 <label class="group-label">Combat Options</label>
 <div class="checks">
 <label><input id="axeman" type="checkbox"/> Axeman</label>
-<label title="Models using the interact/grapple input to shorten post-attack recovery. Does not shorten the attack animation or time to hit."><input id="forbidden" type="checkbox"/> Forbidden Technique</label>
+<label class="forbidden-label" title="Forbidden Technique — Models using the interact/grapple input to shorten post-attack recovery. Does not shorten the attack animation or time to hit."><input id="forbidden" type="checkbox"/> <span aria-label="Forbidden Technique" class="glitch-text" data-text="Forbidden Technique">Forbidden Technique</span></label>
 <label><input checked="" id="proper" type="checkbox"/> 2H Grip</label>
 </div>
 </div>

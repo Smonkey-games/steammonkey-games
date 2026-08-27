@@ -282,3 +282,106 @@ th.sortable.active-sort{color:var(--sm-orange-hi);box-shadow:inset 0 -2px var(--
  .v112-controls .difficulty-inline{grid-template-columns:1fr}
 }
 .weapon-app .weapon-cell .skill-icon{background:transparent;border:0;border-radius:0;padding:1px}
+
+
+/* V1.12.1 — Forbidden Technique glitch treatment.
+   No external font/assets: the text returns to normal on hover/focus. */
+.forbidden-label .glitch-text{
+  position:relative;
+  display:inline-block;
+  color:var(--sm-text);
+  letter-spacing:.025em;
+  text-shadow:
+    1px 0 rgba(255,85,40,.75),
+    -1px 0 rgba(168,90,255,.85);
+  transform:skewX(-2deg);
+}
+.forbidden-label .glitch-text::before,
+.forbidden-label .glitch-text::after{
+  content:attr(data-text);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.72;
+}
+.forbidden-label .glitch-text::before{
+  color:rgba(255,92,36,.9);
+  transform:translate(1px,-.5px);
+  clip-path:inset(8% 0 58% 0);
+}
+.forbidden-label .glitch-text::after{
+  color:rgba(166,92,255,.95);
+  transform:translate(-1px,.5px);
+  clip-path:inset(56% 0 10% 0);
+}
+.forbidden-label:hover .glitch-text,
+.forbidden-label:focus-within .glitch-text{
+  color:var(--sm-text);
+  letter-spacing:normal;
+  text-shadow:none;
+  transform:none;
+}
+.forbidden-label:hover .glitch-text::before,
+.forbidden-label:hover .glitch-text::after,
+.forbidden-label:focus-within .glitch-text::before,
+.forbidden-label:focus-within .glitch-text::after{
+  display:none;
+}
+
+/* V1.12.2 — deliberately unreadable eldritch Forbidden Technique label.
+   Hover/focus reveals the normal name; no external font dependency. */
+.forbidden-label .glitch-text{
+  font-family:"Wingdings","Webdings","Segoe UI Symbol","Noto Sans Symbols 2",monospace;
+  font-size:0;
+  letter-spacing:0;
+  text-shadow:none;
+  transform:none;
+  min-width:118px;
+  height:14px;
+  overflow:visible;
+}
+.forbidden-label .glitch-text::before{
+  content:"⌬ ꙮ ᚫ ⸸ ꩜ 𐍈 ⟁ ꙰ ⸸";
+  position:static;
+  display:inline-block;
+  font-family:"Segoe UI Symbol","Noto Sans Symbols 2",serif;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:-1px;
+  line-height:14px;
+  color:var(--sm-text);
+  opacity:.9;
+  transform:skewX(-12deg) scaleY(1.15);
+  clip-path:none;
+  text-shadow:1px 0 rgba(255,92,36,.8),-1px 0 rgba(166,92,255,.9);
+}
+.forbidden-label .glitch-text::after{
+  content:"⸸ ꙰ ⟁ ᚫ ꩜";
+  position:absolute;
+  left:7px;
+  top:2px;
+  display:inline-block;
+  font-family:"Segoe UI Symbol","Noto Sans Symbols 2",serif;
+  font-size:11px;
+  letter-spacing:2px;
+  line-height:11px;
+  color:rgba(178,115,255,.75);
+  opacity:.8;
+  transform:scaleX(1.3) rotate(-2deg);
+  clip-path:none;
+}
+.forbidden-label:hover .glitch-text,
+.forbidden-label:focus-within .glitch-text{
+  font-family:inherit;
+  font-size:inherit;
+  min-width:0;
+  height:auto;
+  overflow:visible;
+  color:var(--sm-text);
+}
+.forbidden-label:hover .glitch-text::before,
+.forbidden-label:hover .glitch-text::after,
+.forbidden-label:focus-within .glitch-text::before,
+.forbidden-label:focus-within .glitch-text::after{
+  display:none;
+}
