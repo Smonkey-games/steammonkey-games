@@ -1,7 +1,7 @@
 
 .weapon-app{
   min-height:100vh;
-  padding:calc(var(--header-h) + 14px) 18px 28px;
+  padding:calc(var(--header-h, 48px) + 14px) 18px 28px;
 }
 .weapon-tool-header{max-width:1500px;margin:0 auto 8px;padding:11px 0 10px;border-bottom:1px solid var(--sm-line)}
 .weapon-tool-header h1{margin:0;font-size:clamp(24px,3vw,34px);line-height:1.12;letter-spacing:-.02em}

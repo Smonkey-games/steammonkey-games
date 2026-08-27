@@ -13,7 +13,7 @@
 <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="/site.webmanifest" rel="manifest"/>
 <link href="/css/styles.css" rel="stylesheet"/>
-<link href="weapons.css" rel="stylesheet"/>
+<link href="weapons.css?v=1.11.3" rel="stylesheet"/>
 </head>
 <body>
 <header class="site-header">
@@ -42,7 +42,7 @@
 <main class="weapon-app">
 <section class="weapon-tool-header">
 <div class="tool-kicker">Project Zomboid • Build 42.20</div>
-<h1>Weapon Comparator <span class="tool-version">V1.11.2</span></h1>
+<h1>Weapon Comparator <span class="tool-version">V1.11.3</span></h1>
 <p>Single-target melee comparison. Character inputs change weapon calculations; weighted preferences only reorder the results.</p>
 </section>
 <section class="weapon-content">
@@ -92,14 +92,14 @@
 <th class="sortable" data-sort="epk"><span class="th-stack">End/<br/>Kill</span></th>
 <th class="sortable" data-sort="reach">Reach</th>
 <th class="sortable" data-sort="killsBreak">Durability</th>
-</tr></thead><tbody id="rows"></tbody></table></div><p class="note"><b>Difficulty scope:</b> The named presets contain many other differences. For this comparator, only <b>Zombie Toughness</b> currently changes the neutral weapon calculations: it changes zombie HP distribution and the toughness-based melee crit modifier. Zombie Strength changes how hard zombies hit players/objects, not your weapon damage. Speed/sprinters, population, cognition, hearing, injuries, loot and respawn alter encounter difficulty or weapon availability, but do not directly alter the intrinsic damage/APS/endurance/reach/durability formulas under the healthy-player assumptions used here. Outbreak and Apocalypse therefore intentionally produce the same weapon calculations.</p><p class="note"><b>Probability model:</b> One-shot chance is calculated deterministically from the weapon damage distribution, crit chance and selected zombie-health distribution—there is no per-weapon Monte Carlo noise in the 1-shot column. Multi-hit outcomes and expected hits/kill use common deterministic samples across all weapons to prevent arbitrary favorable rolls.</p><p class="note"><b>* Impact (s):</b> Estimated time from starting a standard attack until the weapon connects with the zombie. Lower is faster/more responsive; it is different from APS, which measures sustained attack rate.</p><p class="note"><b>† Kills to break:</b> Fresh-state estimate using expected hits-to-kill and overall-condition loss. Sharpness degradation is not yet modeled; <b>S</b> identifies affected weapons.</p>
+</tr></thead><tbody id="rows"></tbody></table></div><p class="note"><b>Difficulty scope:</b> The named presets contain many other differences. For this comparator, only <b>Zombie Toughness</b> currently changes the neutral weapon calculations: it changes zombie HP distribution and the toughness-based melee crit modifier. Zombie Strength changes how hard zombies hit players/objects, not your weapon damage. Speed/sprinters, population, cognition, hearing, injuries, loot and respawn alter encounter difficulty or weapon availability, but do not directly alter the intrinsic damage/APS/endurance/reach/durability formulas under the healthy-player assumptions used here. Outbreak and Apocalypse therefore intentionally produce the same weapon calculations.</p><p class="note"><b>Probability model:</b> One-shot chance is calculated deterministically from the weapon damage distribution, crit chance and selected zombie-health distribution—there is no per-weapon Monte Carlo noise in the 1-shot column. Multi-hit outcomes and expected hits/kill use common deterministic samples across all weapons to prevent arbitrary favorable rolls.</p><p class="note"><b>* Impact (s):</b> Estimated time from starting a standard attack until the weapon connects with the zombie. Lower is faster/more responsive; it is different from APS, which measures sustained attack rate.</p><p class="note"><b>† Kills to break:</b> Fresh-state estimate using expected hits-to-kill and overall-condition loss. The comparator assumes weapons remain sharp.</p>
 <p class="note"><b>* Special-condition weapon behavior:</b> An asterisk marks weapons with a KNIFE/Stab close-kill path. Close Kill / Jaw Stab requires special positioning/combat conditions and is excluded from the normal standing-vs-standing calculations. Rear attacks and prone-target attacks also have special modifiers and are excluded from the neutral baseline.</p>
 <p class="note"><b>Repeated-hit damage:</b> B42.20 tracks successive melee hits on a zombie. Hits 1–3 use normal damage; beginning with hit 4, the runtime applies its escalating hit-count modifier. This affects expected hits/kill and related sustained metrics, but not first-hit one-shot probability.</p>
-<p class="note"><b>* Speed timing:</b> APS, hit time and post-hit recovery use the traced B42.20 normal standing melee animation clips/events and runtime CombatSpeed. <b>Forbidden Technique</b> models the interact/grapple recovery technique by capping applicable post-attack MeleeDelay at 2 units; it does not shorten the attack animation or hit time.</p>
+<p class="note"><b>* Speed timing:</b> APS, hit time and post-hit recovery use the traced B42.20 normal standing melee animation clips/events and runtime CombatSpeed. <b>Forbidden Technique</b> shortens only the applicable post-attack MeleeDelay; it does not shorten the attack animation or hit time.</p>
 <p class="note"><b>Wpn vs Effective:</b> Wpn Dmg and Wpn Crit show stock weapon-definition values. Eff. Dmg is the configured ordinary non-critical first-hit damage range. Eff. Crit is the configured ordinary crit chance; KNIFE/Stab attacks show 0%. Hover the combat-skill icon beside a weapon name to see its skill.</p>
 </section>
 </main>
 <script src="/js/app.js"></script>
-<script src="weapons.js"></script>
+<script src="weapons.js?v=1.11.3"></script>
 </body>
 </html>
