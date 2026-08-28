@@ -28,20 +28,15 @@ function isStab(w){return String(w.raw.SwingAnim||'').toLowerCase()==='stab'}
 const CLOSE_KILL_IDS=new Set(['Base.BreadKnife','Base.ButterKnife','Base.ButterKnife_Gold','Base.ButterKnife_Silver','Base.CarvingFork2','Base.CrudeKnife','Base.DullBoneKnife','Base.FightingKnife','Base.FlintKnife','Base.Fork','Base.ForkForged','Base.Fork_Bone','Base.Fork_Gold','Base.Fork_Silver','Base.GlassShiv','Base.HandFork','Base.HandShovel','Base.HandguardDagger','Base.Handiknife','Base.HuntingKnife','Base.HuntingKnifeForged','Base.IcePick','Base.KitchenKnife','Base.KitchenKnifeForged','Base.KnifeButterfly','Base.KnifeFillet','Base.KnifeParing','Base.KnifePocket','Base.KnifeShiv','Base.KnifeSushi','Base.LargeKnife','Base.LargeKnife_Scrap','Base.LetterOpener','Base.LongCrudeKnife','Base.MacheteKnife','Base.MasonsTrowel','Base.Multitool','Base.RailroadSpike','Base.RailroadSpikeKnife','Base.Scalpel','Base.Scissors','Base.ScissorsForged','Base.Screwdriver','Base.Screwdriver_Improvised','Base.Screwdriver_Old','Base.SharpBone_Long','Base.SmallKnife','Base.SmashedBottle','Base.Spoon','Base.SpoonForged','Base.Spoon_Bone','Base.Spoon_Gold','Base.Spoon_Silver','Base.Stake','Base.SteakKnife','Base.StoneKnifeLong','Base.SwitchKnife','Base.TinOpener_Old','Base.Toothbrush_Shiv']);
 function specialWeapon(w){return CLOSE_KILL_IDS.has(w.id)}
 function cc(w,p){
-  // calculateCritChance(): AlwaysKnockdown returns 100 before the ordinary 10-90 clamp.
-  let c;
-  if(w.raw.AlwaysKnockdown===true)c=100;
-  else{
-    c=+w.raw.CriticalChance||0;
-    if(improperGrip(w,p))c-=c/3;
-    c+=3*p.skill;
-    c+=diff(p).crit;
-    c=cl(c,10,90)
-  }
-  // CombatManager then cancels ordinary Stab/Knife crits and base:nocriticals attacks
-  // before the critical animation / 1.1 CombatSpeed branch.
+  // Ordinary damage-critical chance. AlwaysKnockdown is NOT treated as a
+  // guaranteed damage-multiplying critical here; preserve the trusted
+  // pre-V1.12 damage-crit behavior until that runtime distinction is proven.
   if(isStab(w)||noCriticals(w))return 0;
-  return c
+  let c=+w.raw.CriticalChance||0;
+  if(improperGrip(w,p))c-=c/3;
+  c+=3*p.skill;
+  c+=diff(p).crit;
+  return cl(c,10,90)
 }
 function streakMod(hitNo){return hitNo>=4?(hitNo-2)*1.5:1}
 function damageParts(w,r,p,crit,hitNo=1){
@@ -248,6 +243,14 @@ function skillIcon(k){return {
   "Spear":"assets/skills/spear.png",
   "Unarmed":"assets/skills/other.png"
 }[k]||"assets/skills/other.png"}
+function updateWeightMode(){
+  let on=$('weightsEnabled').checked;
+  $('prefsPanel').classList.toggle('disabled',!on);
+  for(let id of ['p1','p2','p3','p4','p5','w1','w2','w3','w4','w5'])$(id).disabled=!on;
+  $('scoreHead').style.opacity=on?'1':'.35';
+  $('weightSummary').style.display=on?'block':'none';
+  $('sortHint').textContent=on?'Weighted score controls sorting':'Click any sortable result column to sort';
+}
 function updateSortHeaders(){
   document.querySelectorAll('th.sortable').forEach(th=>{
     let active=!$('weightsEnabled').checked&&th.dataset.sort===SORT.key;
