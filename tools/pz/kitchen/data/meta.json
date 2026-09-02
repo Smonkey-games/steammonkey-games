@@ -1,0 +1,24 @@
+{
+  "build": "42.20",
+  "betaVersion": "0.5.0-beta.1",
+  "counts": {
+    "evolvedRecipes": 62,
+    "evolvedUsableItems": 374,
+    "foodItems": 802,
+    "preparationRecipes": 118
+  },
+  "macroMax": {
+    "calories": 4095,
+    "protein": 272,
+    "fat": 454,
+    "carbs": 656
+  },
+  "mechanics": {
+    "normalIngredient": "recipe use = U/100; Cooking reduces source use by 3% per level; nutrition transfer is source nutrition \u00d7 used fraction \u00d7 (1 + Cooking/15).",
+    "spice": "Spices do not add normal dish hunger; they can add nutrition, use the same Cooking nutrition multiplier, and cannot be duplicated.",
+    "rotten": "Rotten evolved ingredients require Cooking 7+. At Cooking 7-8 the requested use is based on 5% of base hunger; at 9-10 it is 10%.",
+    "frozen": "Supplied B42.20 evolved recipes do not set AllowFrozenItem, so frozen source foods are rejected.",
+    "burnt": "Burnt source foods are rejected from evolved-recipe additions.",
+    "base": "When an evolved result is created, Food bases pass their hunger/macros/thirst into the result. Non-food container bases start those values at zero."
+  }
+}

@@ -1,0 +1,2359 @@
+[
+  {
+    "name": "MakeMilkFromPowderBucket",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.makeMilkFromPowder",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:bucket] mode:keep",
+      "-fluid 10.0 [Water]",
+      "item 10 [Base.AnimalMilkPowder]"
+    ],
+    "produces": [],
+    "raw": "timedAction = Making,\n        Icon = Item_WaterDrop,\n        time = 70,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        OnCreate = RecipeCodeOnCreate.makeMilkFromPowder,\n        inputs\n        {\n            item 1 tags[base:bucket] mode:keep,\n            -fluid 10.0 [Water],\n            item 10 [Base.AnimalMilkPowder],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "MakeMilkFromPowderBottle",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.makeMilkFromPowder",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.FeedingBottle] mode:keep",
+      "-fluid 1.0 [Water]",
+      "item 1 [Base.AnimalMilkPowder]"
+    ],
+    "produces": [],
+    "raw": "timedAction = Making,\n        Icon = Item_WaterDrop,\n        time = 20,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        OnCreate = RecipeCodeOnCreate.makeMilkFromPowder,\n        inputs\n        {\n            item 1 [Base.FeedingBottle] mode:keep,\n            -fluid 1.0 [Water],\n            item 1 [Base.AnimalMilkPowder],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenBagOfFrozenFood",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Frozen_ChickenNuggets;Base.Frozen_FishFingers;Base.Frozen_FrenchFries;Base.Frozen_TatoDots] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime;AllowRottenItem] mappers[foodType]"
+    ],
+    "produces": [
+      "Base.ChickenNuggets",
+      "Base.FishFingers",
+      "Base.FrenchFries",
+      "Base.TatoDots"
+    ],
+    "raw": "timedAction = UnPackSmallBag,\n        time = 15,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Frozen_ChickenNuggets;Base.Frozen_FishFingers;Base.Frozen_FrenchFries;Base.Frozen_TatoDots] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime;AllowRottenItem] mappers[foodType],\n        }\n        outputs\n        {\n            item 3 mapper:foodType,\n        }\n        itemMapper foodType\n        {\n            Base.ChickenNuggets = Base.Frozen_ChickenNuggets,\n            Base.FishFingers = Base.Frozen_FishFingers,\n            Base.FrenchFries = Base.Frozen_FrenchFries,\n            Base.TatoDots = Base.Frozen_TatoDots,\n        }"
+  },
+  {
+    "name": "OpenEggCarton",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.EggCarton] flags[AllowFrozenItem;AllowRottenItem;Prop2;InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.Egg"
+    ],
+    "raw": "timedAction = OpenAmmoBox,\n        time = 5,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.EggCarton] flags[AllowFrozenItem;AllowRottenItem;Prop2;InheritFoodAge],\n        }\n        outputs\n        {\n            item 12 Base.Egg,\n        }"
+  },
+  {
+    "name": "PutEggsInCarton",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 12 [Base.Egg] flags[AllowFrozenItem;IsUncookedFoodItem;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.EggCarton"
+    ],
+    "raw": "timedAction = PackingBox_Small,\n        time = 5,\n        Tooltip = Tooltip_Recipe_NeedsUncooked,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 12 [Base.Egg] flags[AllowFrozenItem;IsUncookedFoodItem;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.EggCarton,\n        }"
+  },
+  {
+    "name": "EmptyPan",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.PanFriedVegetables;Base.OmeletteRecipe;Base.PanFriedVegetablesForged;Base.OmeletteRecipeForged;Base.GriddlePanFriedVegetables;Base.PanFriedVegetables2] flags[AllowRottenItem;InheritCondition;ItemCount] mappers[panType]"
+    ],
+    "produces": [
+      "Base.GridlePan",
+      "Base.Pan",
+      "Base.PanForged",
+      "Base.RoastingPan"
+    ],
+    "raw": "timedAction = EmptyPan,\n        time = 100,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.PanFriedVegetables;Base.OmeletteRecipe;Base.PanFriedVegetablesForged;Base.OmeletteRecipeForged;Base.GriddlePanFriedVegetables;Base.PanFriedVegetables2] flags[AllowRottenItem;InheritCondition;ItemCount] mappers[panType],\n        }\n        outputs\n        {\n            item 1 mapper:panType,\n        }\n        itemMapper panType\n        {\n            Base.Pan = Base.PanFriedVegetables,\n            Base.Pan = Base.OmeletteRecipe,\n            Base.PanForged = Base.PanFriedVegetablesForged,\n            Base.PanForged = Base.OmeletteRecipeForged,\n            Base.GridlePan = Base.GriddlePanFriedVegetables,\n            Base.RoastingPan = Base.PanFriedVegetables2,\n        }"
+  },
+  {
+    "name": "SlicePumpkin",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:saw;base:crudesaw;base:meatcleaver] mode:keep flags[SharpnessCheck]",
+      "item 1 [Base.Pumpkin] flags[AllowRottenItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.PumpkinSliced"
+    ],
+    "raw": "timedAction = SliceFood_Surface,\n        time = 70,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:saw;base:crudesaw;base:meatcleaver] mode:keep flags[SharpnessCheck],\n            item 1 [Base.Pumpkin] flags[AllowRottenItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 10 Base.PumpkinSliced,\n        }"
+  },
+  {
+    "name": "SliceWatermelon",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:saw;base:crudesaw;base:meatcleaver] mode:keep flags[SharpnessCheck]",
+      "item 1 [Base.Watermelon] flags[AllowRottenItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.WatermelonSliced"
+    ],
+    "raw": "timedAction = SliceFood_Surface,\n        time = 70,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:saw;base:crudesaw;base:meatcleaver] mode:keep flags[SharpnessCheck],\n            item 1 [Base.Watermelon] flags[AllowRottenItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 10 Base.WatermelonSliced,\n        }"
+  },
+  {
+    "name": "SmashPumpkin",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:hammer;base:sledgehammer] mode:keep flags[MayDegradeVeryLight;Prop1]",
+      "item 1 [Base.Pumpkin] flags[AllowRottenItem;Prop2;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.PumpkinSmashed"
+    ],
+    "raw": "timedAction = CrushWatermelon,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:hammer;base:sledgehammer] mode:keep flags[MayDegradeVeryLight;Prop1],\n            item 1 [Base.Pumpkin] flags[AllowRottenItem;Prop2;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 5 Base.PumpkinSmashed,\n        }"
+  },
+  {
+    "name": "SmashWatermelon",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:hammer;base:sledgehammer] mode:keep flags[MayDegradeVeryLight;Prop1]",
+      "item 1 [Base.Watermelon] flags[AllowRottenItem;Prop2;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.WatermelonSmashed"
+    ],
+    "raw": "timedAction = CrushWatermelon,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:hammer;base:sledgehammer] mode:keep flags[MayDegradeVeryLight;Prop1],\n            item 1 [Base.Watermelon] flags[AllowRottenItem;Prop2;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 5 Base.WatermelonSmashed,\n        }"
+  },
+  {
+    "name": "MakeBowlOfBeans",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount]",
+      "item 1 [Base.OpenBeans] flags[InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.BeanBowl"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 80,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount],\n            item 1 [Base.OpenBeans] flags[InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.BeanBowl,\n        }"
+  },
+  {
+    "name": "PlacePastaInSaucepan2",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Saucepan;Base.SaucepanCopper] flags[InheritCondition;ItemCount] mappers[saucepanType] mode:destroy",
+      "-fluid 0.6 categories[Water] mode:mixture",
+      "item 10 tags[base:pasta]"
+    ],
+    "produces": [
+      "Base.WaterSaucepanPasta",
+      "Base.WaterSaucepanPastaCopper"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Saucepan;Base.SaucepanCopper] flags[InheritCondition;ItemCount] mappers[saucepanType] mode:destroy,\n            -fluid 0.6 categories[Water] mode:mixture,\n            item 10 tags[base:pasta],\n        }\n        outputs\n        {\n            item 1 mapper:saucepanType,\n        }\n        itemMapper saucepanType\n        {\n            Base.WaterSaucepanPasta = Base.Saucepan,\n            Base.WaterSaucepanPastaCopper = Base.SaucepanCopper,\n        }"
+  },
+  {
+    "name": "PlaceRiceInSaucepan2",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Saucepan;Base.SaucepanCopper] flags[InheritCondition;ItemCount] mappers[saucepanType] mode:destroy",
+      "-fluid 0.6 categories[Water] mode:mixture",
+      "item 10 [Base.Rice]"
+    ],
+    "produces": [
+      "Base.WaterSaucepanRice",
+      "Base.WaterSaucepanRiceCopper"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Saucepan;Base.SaucepanCopper] flags[InheritCondition;ItemCount] mappers[saucepanType] mode:destroy,\n            -fluid 0.6 categories[Water] mode:mixture,\n            item 10 [Base.Rice],\n        }\n        outputs\n        {\n            item 1 mapper:saucepanType,\n        }\n        itemMapper saucepanType\n        {\n            Base.WaterSaucepanRice = Base.Saucepan,\n            Base.WaterSaucepanRiceCopper = Base.SaucepanCopper,\n        }"
+  },
+  {
+    "name": "PlacePastaInCookingPot2",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Pot;Base.PotForged] mode:destroy flags[InheritCondition;ItemCount] mappers[potType]",
+      "-fluid 1.5 categories[Water] mode:mixture",
+      "item 10 tags[base:pasta]"
+    ],
+    "produces": [
+      "Base.WaterPotForgedPasta",
+      "Base.WaterPotPasta"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Pot;Base.PotForged] mode:destroy flags[InheritCondition;ItemCount] mappers[potType],\n            -fluid 1.5 categories[Water] mode:mixture,\n            item 10 tags[base:pasta],\n        }\n        outputs\n        {\n            item 1 mapper:potType,\n        }\n        itemMapper potType\n        {\n            Base.WaterPotPasta = Base.Pot,\n            Base.WaterPotForgedPasta = Base.PotForged,\n        }"
+  },
+  {
+    "name": "PlaceRiceInCookingPot2",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Pot;Base.PotForged] mode:destroy flags[InheritCondition;ItemCount] mappers[potType]",
+      "-fluid 1.5 categories[Water] mode:mixture",
+      "item 10 [Base.Rice]"
+    ],
+    "produces": [
+      "Base.WaterPotForgedRice",
+      "Base.WaterPotRice"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Pot;Base.PotForged] mode:destroy flags[InheritCondition;ItemCount] mappers[potType],\n            -fluid 1.5 categories[Water] mode:mixture,\n            item 10 [Base.Rice],\n        }\n        outputs\n        {\n            item 1 mapper:potType,\n        }\n        itemMapper potType\n        {\n            Base.WaterPotRice = Base.Pot,\n            Base.WaterPotForgedRice = Base.PotForged,\n        }"
+  },
+  {
+    "name": "OpenCandyPackage",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CandyPackage]"
+    ],
+    "produces": [
+      "Base.Lollipop",
+      "Base.MintCandy"
+    ],
+    "raw": "timedAction = UnPackSmallBag,\n        time = 20,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.CandyPackage],\n        }\n        outputs\n        {\n            item 5 Base.Lollipop,\n            item 5 Base.MintCandy,\n        }"
+  },
+  {
+    "name": "Make4Bowls",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.inheritFoodNameBowl",
+    "onTest": "",
+    "inputs": [
+      "item 4 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount]",
+      "item 1 tags[base:canbedividedinbowls] mappers[bowlType;potType] flags[InheritCondition;InheritCooked;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.PastaBowl",
+      "Base.PastaBowlClay",
+      "Base.Pot",
+      "Base.PotForged",
+      "Base.RiceBowl",
+      "Base.RiceBowlClay",
+      "Base.Saucepan",
+      "Base.SaucepanCopper",
+      "Base.SoupBowl",
+      "Base.SoupBowlClay",
+      "Base.StewBowl",
+      "Base.StewBowlClay"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 80,\n        OnCreate = RecipeCodeOnCreate.inheritFoodNameBowl,\n        Tooltip = Tooltip_Recipe_CookedPortion,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 4 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount],\n            item 1 tags[base:canbedividedinbowls] mappers[bowlType;potType] flags[InheritCondition;InheritCooked;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 4 mapper:bowlType flags[DontInheritCondition],\n            item 1 mapper:potType,\n        }\n        itemMapper bowlType\n        {\n            Base.PastaBowl = Base.PastaPan,\n            Base.PastaBowl = Base.PastaPanCopper,\n            Base.PastaBowl = Base.PastaPot,\n            Base.PastaBowl = Base.PastaPotForged,\n            Base.PastaBowl = Base.WaterPotPasta,\n            Base.PastaBowl = Base.WaterPotForgedPasta,\n            Base.PastaBowl = Base.WaterSaucepanPasta,\n            Base.PastaBowl = Base.WaterSaucepanPastaCopper,\n            Base.PastaBowlClay = Base.PastaPan,\n            Base.PastaBowlClay = Base.PastaPanCopper,\n            Base.PastaBowlClay = Base.PastaPot,\n            Base.PastaBowlClay = Base.PastaPotForged,\n            Base.PastaBowlClay = Base.WaterPotPasta,\n            Base.PastaBowlClay = Base.WaterPotForgedPasta,\n            Base.PastaBowlClay = Base.WaterSaucepanPasta,\n            Base.PastaBowlClay = Base.WaterSaucepanPastaCopper,\n            Base.RiceBowl = Base.RicePan,\n            Base.RiceBowl = Base.RicePot,\n            Base.RiceBowl = Base.RicePotForged,\n            Base.RiceBowl = Base.WaterPotRice,\n            Base.RiceBowl = Base.WaterPotForgedRice,\n            Base.RiceBowl = Base.WaterSaucepanRice,\n            Base.RiceBowl = Base.WaterSaucepanRiceCopper,\n            Base.RiceBowlClay = Base.RicePan,\n            Base.RiceBowlClay = Base.RicePot,\n            Base.RiceBowlClay = Base.RicePotForged,\n            Base.RiceBowlClay = Base.WaterPotRice,\n            Base.RiceBowlClay = Base.WaterPotForgedRice,\n            Base.RiceBowlClay = Base.WaterSaucepanRice,\n            Base.RiceBowlClay = Base.WaterSaucepanRiceCopper,\n            Base.SoupBowl = Base.PotOfSoup,\n            Base.SoupBowl = Base.PotOfSoupRecipe,\n            Base.SoupBowlClay = Base.PotOfSoup,\n            Base.SoupBowlClay = Base.PotOfSoupRecipe,\n            Base.StewBowl = Base.PotOfStew,\n            Base.StewBowlClay = Base.PotOfStew,\n            Base.SoupBowl = Base.PotForgedSoupRecipe,\n            Base.StewBowlClay = Base.PotForgedStew,\n        }\n        itemMapper potType\n        {\n            Base.Pot = Base.PastaPot,\n            Base.Pot = Base.PotOfSoup,\n            Base.Pot = Base.PotOfSoupRecipe,\n            Base.Pot = Base.PotOfStew,\n            Base.Pot = Base.RicePot,\n            Base.Pot = Base.WaterPotPasta,\n            Base.Pot = Base.WaterPotRice,\n            Base.Saucepan = Base.PastaPan,\n            Base.Saucepan = Base.RicePan,\n            Base.Saucepan = Base.WaterSaucepanPasta,\n            Base.Saucepan = Base.WaterSaucepanRice,\n            Base.SaucepanCopper = Base.WaterSaucepanPastaCopper,\n            Base.SaucepanCopper = Base.WaterSaucepanRiceCopper,\n            Base.PotForged = Base.PastaPotForged,\n            Base.PotForged = Base.RicePotForged,\n            Base.PotForged = Base.WaterPotForgedPasta,\n            Base.PotForged = Base.WaterPotForgedRice,\n            Base.PotForged = Base.PotForgedSoupRecipe,\n            Base.PotForged = Base.PotForgedStew,\n        }"
+  },
+  {
+    "name": "Make2Bowls",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.inheritFoodNameBowl",
+    "onTest": "",
+    "inputs": [
+      "item 2 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount]",
+      "item 1 tags[base:canbedividedinbowls] mappers[bowlType;potType] flags[InheritCondition;InheritCooked;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.PastaBowl",
+      "Base.PastaBowlClay",
+      "Base.Pot",
+      "Base.PotForged",
+      "Base.RiceBowl",
+      "Base.RiceBowlClay",
+      "Base.Saucepan",
+      "Base.SaucepanCopper",
+      "Base.SoupBowl",
+      "Base.SoupBowlClay",
+      "Base.StewBowl",
+      "Base.StewBowlClay"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 80,\n        OnCreate = RecipeCodeOnCreate.inheritFoodNameBowl,\n        Tooltip = Tooltip_Recipe_CookedPortion,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 2 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount],\n            item 1 tags[base:canbedividedinbowls] mappers[bowlType;potType] flags[InheritCondition;InheritCooked;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 2 mapper:bowlType flags[DontInheritCondition],\n            item 1 mapper:potType,\n        }\n        itemMapper bowlType\n        {\n            Base.PastaBowl = Base.PastaPan,\n            Base.PastaBowl = Base.PastaPanCopper,\n            Base.PastaBowl = Base.PastaPot,\n            Base.PastaBowl = Base.PastaPotForged,\n            Base.PastaBowl = Base.WaterPotPasta,\n            Base.PastaBowl = Base.WaterPotForgedPasta,\n            Base.PastaBowl = Base.WaterSaucepanPasta,\n            Base.PastaBowl = Base.WaterSaucepanPastaCopper,\n            Base.PastaBowlClay = Base.PastaPan,\n            Base.PastaBowlClay = Base.PastaPanCopper,\n            Base.PastaBowlClay = Base.PastaPot,\n            Base.PastaBowlClay = Base.PastaPotForged,\n            Base.PastaBowlClay = Base.WaterPotPasta,\n            Base.PastaBowlClay = Base.WaterPotForgedPasta,\n            Base.PastaBowlClay = Base.WaterSaucepanPasta,\n            Base.PastaBowlClay = Base.WaterSaucepanPastaCopper,\n            Base.RiceBowl = Base.RicePan,\n            Base.RiceBowl = Base.RicePot,\n            Base.RiceBowl = Base.RicePotForged,\n            Base.RiceBowl = Base.WaterPotRice,\n            Base.RiceBowl = Base.WaterPotForgedRice,\n            Base.RiceBowl = Base.WaterSaucepanRice,\n            Base.RiceBowl = Base.WaterSaucepanRiceCopper,\n            Base.RiceBowlClay = Base.RicePan,\n            Base.RiceBowlClay = Base.RicePot,\n            Base.RiceBowlClay = Base.RicePotForged,\n            Base.RiceBowlClay = Base.WaterPotRice,\n            Base.RiceBowlClay = Base.WaterPotForgedRice,\n            Base.RiceBowlClay = Base.WaterSaucepanRice,\n            Base.RiceBowlClay = Base.WaterSaucepanRiceCopper,\n            Base.SoupBowl = Base.PotOfSoup,\n            Base.SoupBowl = Base.PotOfSoupRecipe,\n            Base.SoupBowlClay = Base.PotOfSoup,\n            Base.SoupBowlClay = Base.PotOfSoupRecipe,\n            Base.StewBowl = Base.PotOfStew,\n            Base.StewBowl = Base.PotForgedStew,\n            Base.StewBowlClay = Base.PotOfStew,\n            Base.SoupBowl = Base.PotForgedSoupRecipe,\n            Base.StewBowlClay = Base.PotForgedStew,\n        }\n        itemMapper potType\n        {\n            Base.Pot = Base.PastaPot,\n            Base.Pot = Base.PotOfSoup,\n            Base.Pot = Base.PotOfSoupRecipe,\n            Base.Pot = Base.PotOfStew,\n            Base.Pot = Base.RicePot,\n            Base.Pot = Base.WaterPotPasta,\n            Base.Pot = Base.WaterPotRice,\n            Base.Saucepan = Base.PastaPan,\n            Base.Saucepan = Base.RicePan,\n            Base.Saucepan = Base.WaterSaucepanPasta,\n            Base.Saucepan = Base.WaterSaucepanRice,\n            Base.SaucepanCopper = Base.WaterSaucepanPastaCopper,\n            Base.SaucepanCopper = Base.WaterSaucepanRiceCopper,\n            Base.PotForged = Base.PastaPotForged,\n            Base.PotForged = Base.RicePotForged,\n            Base.PotForged = Base.WaterPotForgedPasta,\n            Base.PotForged = Base.WaterPotForgedRice,\n            Base.PotForged = Base.PotForgedSoupRecipe,\n            Base.PotForged = Base.PotForgedStew,\n        }"
+  },
+  {
+    "name": "MakeCabbageRolls",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeSushi",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Cabbage] flags[InheritFoodAge]",
+      "item 1 [Base.MincedMeat] flags[InheritFoodAge;IsCookedFoodItem]",
+      "item 1 tags[base:ricerecipe] flags[InheritFoodAge;IsCookedFoodItem]",
+      "item 1 [Base.Onion] flags[InheritFoodAge]",
+      "item 1 [Base.Marinara] flags[InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.CabbageRoll"
+    ],
+    "raw": "timedAction = Making,\n        time = 60,\n        NeedToBeLearn = true,\n        OnCreate = RecipeCodeOnCreate.makeSushi,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 [Base.Cabbage] flags[InheritFoodAge],\n            item 1 [Base.MincedMeat] flags[InheritFoodAge;IsCookedFoodItem],\n            item 1 tags[base:ricerecipe] flags[InheritFoodAge;IsCookedFoodItem],\n            item 1 [Base.Onion] flags[InheritFoodAge],\n            item 1 [Base.Marinara] flags[InheritFoodAge],\n        }\n        outputs\n        {\n            item 4 Base.CabbageRoll,\n        }"
+  },
+  {
+    "name": "MakePizza",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 tags[base:fork;base:mixingutensil;base:spoon] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 tags[base:bowl] mode:keep",
+      "item 6 tags[base:flour]",
+      "item 1 [Base.Salt]",
+      "item 15 [Base.Cheese] flags[InheritFoodAge]",
+      "item 15 tags[base:pizzasauce] flags[InheritFoodAge]",
+      "item 1 [Base.Yeast]",
+      "item 1 [*]",
+      "-fluid 0.5 categories[Water] mode:mixture"
+    ],
+    "produces": [
+      "Base.PizzaRecipe"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 100,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        NeedToBeLearn = true,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegradeVeryLight],\n            item 1 tags[base:fork;base:mixingutensil;base:spoon] mode:keep flags[MayDegradeVeryLight],\n            item 1 tags[base:bowl] mode:keep,\n            item 6 tags[base:flour],\n            item 1 [Base.Salt],\n            item 15 [Base.Cheese] flags[InheritFoodAge],\n            item 15 tags[base:pizzasauce] flags[InheritFoodAge],\n            item 1 [Base.Yeast],\n            item 1 [*],\n            -fluid 0.5 categories[Water] mode:mixture,\n        }\n        outputs\n        {\n            item 1 Base.PizzaRecipe,\n        }"
+  },
+  {
+    "name": "MakeBowlOfOatmeal",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount]",
+      "-fluid 0.3 categories[Water] mode:mixture",
+      "item 10 [Base.OatsRaw]"
+    ],
+    "produces": [
+      "Base.Oatmeal"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 20,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount],\n            -fluid 0.3 categories[Water] mode:mixture,\n            item 10 [Base.OatsRaw],\n        }\n        outputs\n        {\n            item 1 Base.Oatmeal,\n        }"
+  },
+  {
+    "name": "MakeBowlOfCereal",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount]",
+      "-fluid 0.3 [CowMilk;SheepMilk]",
+      "item 5 [Base.Cereal]"
+    ],
+    "produces": [
+      "Base.CerealBowl"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 20,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 [Base.Bowl;Base.ClayBowl] mode:destroy flags[ItemCount],\n            -fluid 0.3 [CowMilk;SheepMilk],\n            item 5 [Base.Cereal],\n        }\n        outputs\n        {\n            item 1 Base.CerealBowl,\n        }"
+  },
+  {
+    "name": "MakeHotDog",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BunsHotdog_single] flags[InheritFoodAge;ItemCount]",
+      "item 1 [Base.Hotdog_single] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.Hotdog"
+    ],
+    "raw": "timedAction = Making,\n        time = 15,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.BunsHotdog_single] flags[InheritFoodAge;ItemCount],\n            item 1 [Base.Hotdog_single] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.Hotdog,\n        }"
+  },
+  {
+    "name": "MakeTortillaChips",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:dullknife;base:meatcleaver] mode:keep flags[SharpnessCheck]",
+      "item 1 [Base.Tortilla] flags[InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.TortillaChipsBaked"
+    ],
+    "raw": "timedAction = Making,\n        time = 30,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:dullknife;base:meatcleaver] mode:keep flags[SharpnessCheck],\n            item 1 [Base.Tortilla] flags[InheritFoodAge],\n        }\n        outputs\n        {\n            item 1 Base.TortillaChipsBaked,\n        }"
+  },
+  {
+    "name": "OpenPackOfBuns",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BunsHamburger;Base.BunsHotdog] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime] mappers[bunType]"
+    ],
+    "produces": [
+      "Base.BunsHamburger_single",
+      "Base.BunsHotdog_single"
+    ],
+    "raw": "timedAction = UnPackSmallBag,\n        time = 15,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.BunsHamburger;Base.BunsHotdog] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime] mappers[bunType],\n        }\n        outputs\n        {\n            item 4 mapper:bunType,\n        }\n        itemMapper bunType\n        {\n            Base.BunsHamburger_single = Base.BunsHamburger,\n            Base.BunsHotdog_single = Base.BunsHotdog,\n        }"
+  },
+  {
+    "name": "OpenHotdogPack",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.HotdogPack] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime]"
+    ],
+    "produces": [
+      "Base.Hotdog_single"
+    ],
+    "raw": "timedAction = UnPackSmallBag,\n        time = 15,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.HotdogPack] flags[AllowFrozenItem;InheritFoodAge;InheritFreezingTime],\n        }\n        outputs\n        {\n            item 4 Base.Hotdog_single,\n        }"
+  },
+  {
+    "name": "SliceFillet",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;CanBeDoneFromFloor;Cooking",
+    "onCreate": "RecipeCodeOnCreate.cutFish",
+    "onTest": "RecipeCodeOnTest.cutFish",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 tags[base:uncutfish] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.FishFillet"
+    ],
+    "raw": "timedAction = SliceFish,\n        time = 50,\n        OnCreate = RecipeCodeOnCreate.cutFish,\n        OnTest = RecipeCodeOnTest.cutFish,\n        Tags = InHandCraft;CanBeDoneFromFloor;Cooking,\n        category = Cooking,\n        xpAward = Butchering:10,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 tags[base:uncutfish] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 2 Base.FishFillet,\n        }"
+  },
+  {
+    "name": "HalveFillet",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;CanBeDoneFromFloor;Cooking",
+    "onCreate": "",
+    "onTest": "RecipeCodeOnTest.cutFillet",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.FishFillet] flags[InheritCooked;InheritFood;ItemCount;InheritWeight]"
+    ],
+    "produces": [
+      "Base.FishFillet"
+    ],
+    "raw": "timedAction = SliceFish,\n        time = 50,\n        OnTest = RecipeCodeOnTest.cutFillet,\n        Tags = InHandCraft;CanBeDoneFromFloor;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.FishFillet] flags[InheritCooked;InheritFood;ItemCount;InheritWeight],\n        }\n        outputs\n        {\n            item 2 Base.FishFillet,\n        }"
+  },
+  {
+    "name": "SliceHam",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.Ham] flags[InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.HamSlice"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.Ham] flags[InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 6 Base.HamSlice,\n        }"
+  },
+  {
+    "name": "ButcherSmallAnimal",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.cutSmallAnimal",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.DeadBird;Base.DeadMouse;Base.DeadSquirrel;Base.DeadRat;Base.Frog;Base.DeadRabbit] mappers[animalType] flags[InheritFoodAge;ItemCount;InheritCooked]"
+    ],
+    "produces": [
+      "Base.DeadMouseSkinned",
+      "Base.DeadRatSkinned",
+      "Base.FrogMeat",
+      "Base.Rabbitmeat",
+      "Base.Smallbirdmeat"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 50,\n        OnCreate = RecipeCodeOnCreate.cutSmallAnimal,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Butchering:10,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.DeadBird;Base.DeadMouse;Base.DeadSquirrel;Base.DeadRat;Base.Frog;Base.DeadRabbit] mappers[animalType] flags[InheritFoodAge;ItemCount;InheritCooked],\n        }\n        outputs\n        {\n            item 1 mapper:animalType,\n        }\n        itemMapper animalType\n        {\n            Base.FrogMeat = Base.Frog,\n            Base.Smallbirdmeat = Base.DeadBird,\n            Base.DeadMouseSkinned = Base.DeadMouse,\n            Base.DeadRatSkinned = Base.DeadRat,\n            Base.Rabbitmeat = Base.DeadRabbit,\n            default = Base.Smallanimalmeat,\n        }"
+  },
+  {
+    "name": "MakeGravy",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty]",
+      "item 1 [Base.GravyMix]",
+      "item 1 [*]",
+      "-fluid 1.0 categories[Water] mode:mixture"
+    ],
+    "produces": [
+      "Base.Gravy"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 20,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty],\n            item 1 [Base.GravyMix],\n            item 1 [*],\n            -fluid 1.0 categories[Water] mode:mixture,\n        }\n        outputs\n        {\n            item 1 Base.Gravy,\n        }"
+  },
+  {
+    "name": "MakeFriedShrimp",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BakingSoda]",
+      "item 3 tags[base:flour]",
+      "item 1 [Base.Shrimp] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.ShrimpFriedCraft"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 10,\n        NeedToBeLearn = true,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 [Base.BakingSoda],\n            item 3 tags[base:flour],\n            item 1 [Base.Shrimp] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.ShrimpFriedCraft,\n        }"
+  },
+  {
+    "name": "MakeFriedOnionRings",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty]",
+      "item 1 [Base.Onion] flags[InheritFoodAge;ItemCount]",
+      "item 2 [Base.BakingSoda]",
+      "item 1 tags[base:flour]"
+    ],
+    "produces": [
+      "Base.FriedOnionRingsCraft"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 80,\n        NeedToBeLearn = true,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty],\n            item 1 [Base.Onion] flags[InheritFoodAge;ItemCount],\n            item 2 [Base.BakingSoda],\n            item 1 tags[base:flour],\n        }\n        outputs\n        {\n            item 2 Base.FriedOnionRingsCraft,\n        }"
+  },
+  {
+    "name": "MakeGuacamole",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty]",
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[SharpnessCheck]",
+      "item 1 tags[base:fork;base:mixingutensil;base:spoon] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Avocado] flags[InheritFoodAge;ItemCount]",
+      "item 1 [Base.Onion] flags[InheritFoodAge;ItemCount]",
+      "item 1 [Base.Tomato] flags[InheritFoodAge;ItemCount]",
+      "item 1 [Base.PepperJalapeno] flags[InheritFoodAge]",
+      "item 1 [Base.Salt;Base.SeasoningSalt]"
+    ],
+    "produces": [
+      "Base.Guacamole"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 80,\n        NeedToBeLearn = true,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[IsEmpty],\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[SharpnessCheck],\n            item 1 tags[base:fork;base:mixingutensil;base:spoon] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Avocado] flags[InheritFoodAge;ItemCount],\n            item 1 [Base.Onion] flags[InheritFoodAge;ItemCount],\n            item 1 [Base.Tomato] flags[InheritFoodAge;ItemCount],\n            item 1 [Base.PepperJalapeno] flags[InheritFoodAge],\n            item 1 [Base.Salt;Base.SeasoningSalt],\n        }\n        outputs\n        {\n            item 5 Base.Guacamole,\n        }"
+  },
+  {
+    "name": "MakePancake",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[ItemCount]",
+      "-fluid 0.3 [Water]",
+      "item 1 [Base.PancakeMix]"
+    ],
+    "produces": [
+      "Base.PancakesCraft"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 60,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep flags[ItemCount],\n            -fluid 0.3 [Water],\n            item 1 [Base.PancakeMix],\n        }\n        outputs\n        {\n            item 1 Base.PancakesCraft,\n        }"
+  },
+  {
+    "name": "PrepareOmelette",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeOmelette",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Pan;Base.PanForged] mappers[panType] flags[InheritCondition]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.OmeletteRecipe",
+      "Base.OmeletteRecipeForged"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 20,\n        OnCreate = RecipeCodeOnCreate.makeOmelette,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Pan;Base.PanForged] mappers[panType] flags[InheritCondition],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 1 mapper:panType,\n        }\n        itemMapper panType\n        {\n            Base.OmeletteRecipe = Base.Pan,\n            Base.OmeletteRecipeForged = Base.PanForged,\n        }"
+  },
+  {
+    "name": "MakeSushi",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeSushi",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 4 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge]",
+      "item 2 tags[base:ricerecipe] flags[IsCookedFoodItem]",
+      "item 1 [Base.RiceVinegar]"
+    ],
+    "produces": [
+      "Base.SushiFish"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 30,\n        NeedToBeLearn = true,\n        OnCreate = RecipeCodeOnCreate.makeSushi,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 4 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge],\n            item 2 tags[base:ricerecipe] flags[IsCookedFoodItem],\n            item 1 [Base.RiceVinegar],\n        }\n        outputs\n        {\n            item 1 Base.SushiFish,\n        }"
+  },
+  {
+    "name": "MakeMaki",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeSushi",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 2 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge]",
+      "item 1 tags[base:ricerecipe] flags[IsCookedFoodItem]",
+      "item 1 [Base.Seaweed] flags[ItemCount]",
+      "item 1 [Base.Avocado]",
+      "item 1 [Base.RiceVinegar]"
+    ],
+    "produces": [
+      "Base.Maki"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 30,\n        NeedToBeLearn = true,\n        OnCreate = RecipeCodeOnCreate.makeSushi,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 2 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge],\n            item 1 tags[base:ricerecipe] flags[IsCookedFoodItem],\n            item 1 [Base.Seaweed] flags[ItemCount],\n            item 1 [Base.Avocado],\n            item 1 [Base.RiceVinegar],\n        }\n        outputs\n        {\n            item 1 Base.Maki,\n        }"
+  },
+  {
+    "name": "MakeOnigiri",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeSushi",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 2 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge]",
+      "item 4 tags[base:ricerecipe] flags[IsCookedFoodItem]",
+      "item 1 [Base.Seaweed] flags[ItemCount]",
+      "item 2 [Base.Avocado]",
+      "item 1 [Base.RiceVinegar]"
+    ],
+    "produces": [
+      "Base.Onigiri"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 30,\n        NeedToBeLearn = true,\n        OnCreate = RecipeCodeOnCreate.makeSushi,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:6,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 2 tags[base:fishmeat] flags[IsUncookedFoodItem;InheritFoodAge],\n            item 4 tags[base:ricerecipe] flags[IsCookedFoodItem],\n            item 1 [Base.Seaweed] flags[ItemCount],\n            item 2 [Base.Avocado],\n            item 1 [Base.RiceVinegar],\n        }\n        outputs\n        {\n            item 1 Base.Onigiri,\n        }"
+  },
+  {
+    "name": "MakeSquidCalamari",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.Squid] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.SquidCalamari"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 30,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.Squid] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 2 Base.SquidCalamari,\n        }"
+  },
+  {
+    "name": "EmptyTray",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CookiesChocolateDough;Base.CookieChocolateChipDough;Base.CookiesOatmealDough;Base.CookiesSugarDough;Base.CookiesShortbreadDough;Base.BakingTray_Muffin;Base.BakingTray_Muffin_Recipe;Base.Muffintray_Biscuit] flags[AllowRottenItem;ItemCount] mappers[trayType]"
+    ],
+    "produces": [
+      "Base.BakingTray",
+      "Base.MuffinTray"
+    ],
+    "raw": "timedAction = EmptyPan,\n        time = 40,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.CookiesChocolateDough;Base.CookieChocolateChipDough;Base.CookiesOatmealDough;Base.CookiesSugarDough;Base.CookiesShortbreadDough;Base.BakingTray_Muffin;Base.BakingTray_Muffin_Recipe;Base.Muffintray_Biscuit] flags[AllowRottenItem;ItemCount] mappers[trayType],\n        }\n        outputs\n        {\n            item 1 mapper:trayType,\n        }\n        itemMapper trayType\n        {\n            Base.BakingTray = Base.CookiesChocolateDough,\n            Base.BakingTray = Base.CookieChocolateChipDough,\n            Base.BakingTray = Base.CookiesOatmealDough,\n            Base.BakingTray = Base.CookiesSugarDough,\n            Base.BakingTray = Base.CookiesShortbreadDough,\n            Base.MuffinTray = Base.BakingTray_Muffin,\n            Base.MuffinTray = Base.BakingTray_Muffin_Recipe,\n            Base.MuffinTray = Base.Muffintray_Biscuit,\n        }"
+  },
+  {
+    "name": "MakeHalloweenPumpkin",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:dullknife] mode:keep flags[SharpnessCheck]",
+      "item 1 [Base.Pumpkin] flags[IsUncookedFoodItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.HalloweenPumpkin"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 60,\n        Tooltip = Tooltip_Recipe_NeedsUncooked,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:dullknife] mode:keep flags[SharpnessCheck],\n            item 1 [Base.Pumpkin] flags[IsUncookedFoodItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.HalloweenPumpkin,\n        }"
+  },
+  {
+    "name": "GetBaconBits",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[SharpnessCheck;IsNotDull]",
+      "item 1 [Base.BaconRashers] flags[AllowRottenItem;InheritCooked;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.BaconBits"
+    ],
+    "raw": "timedAction = SliceMeat,\n        time = 10,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[SharpnessCheck;IsNotDull],\n            item 1 [Base.BaconRashers] flags[AllowRottenItem;InheritCooked;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 4 Base.BaconBits,\n        }"
+  },
+  {
+    "name": "GetBaconRashers",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[SharpnessCheck;IsNotDull]",
+      "item 1 [Base.Bacon] flags[AllowRottenItem;InheritCooked;InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.BaconRashers"
+    ],
+    "raw": "timedAction = SliceMeat,\n        time = 10,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[SharpnessCheck;IsNotDull],\n            item 1 [Base.Bacon] flags[AllowRottenItem;InheritCooked;InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 4 Base.BaconRashers,\n        }"
+  },
+  {
+    "name": "SliceBaloney",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver;base:dullknife] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.Baloney] flags[InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.BaloneySlice"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver;base:dullknife] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.Baloney] flags[InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 6 Base.BaloneySlice,\n        }"
+  },
+  {
+    "name": "SliceSalami",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.Salami] flags[InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.SalamiSlice"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 50,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.Salami] flags[InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 4 Base.SalamiSlice,\n        }"
+  },
+  {
+    "name": "MakeMeatPatty",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 40 [Base.MincedMeat] flags[InheritFoodAge;InheritCooked]"
+    ],
+    "produces": [
+      "Base.MeatPatty"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 30,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 40 [Base.MincedMeat] flags[InheritFoodAge;InheritCooked],\n        }\n        outputs\n        {\n            item 1 Base.MeatPatty,\n        }"
+  },
+  {
+    "name": "ScoopIceCream",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:spoon] mode:keep",
+      "item 1 [Base.Cone] flags[AllowFrozenItem;ItemCount]",
+      "item 10 [Base.Icecream] flags[AllowFrozenItem;InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.ConeIcecream"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 30,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:spoon] mode:keep,\n            item 1 [Base.Cone] flags[AllowFrozenItem;ItemCount],\n            item 10 [Base.Icecream] flags[AllowFrozenItem;InheritFoodAge],\n        }\n        outputs\n        {\n            item 1 Base.ConeIcecream,\n        }"
+  },
+  {
+    "name": "SlicePizza",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver;base:dullknife;base:pizzacutter] mode:keep flags[SharpnessCheck]",
+      "item 1 [Base.PizzaWhole;Base.PizzaRecipe] flags[IsCookedFoodItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.Pizza"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 50,\n        Tooltip = Tooltip_Recipe_MustCookedSlice,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver;base:dullknife;base:pizzacutter] mode:keep flags[SharpnessCheck],\n            item 1 [Base.PizzaWhole;Base.PizzaRecipe] flags[IsCookedFoodItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 6 Base.Pizza,\n        }"
+  },
+  {
+    "name": "CutChicken",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.cutChicken",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.ChickenWhole] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.Chicken",
+      "Base.ChickenFillet",
+      "Base.ChickenWings"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 150,\n        OnCreate = RecipeCodeOnCreate.cutChicken,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:20,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.ChickenWhole] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 2 Base.Chicken,\n            item 2 Base.ChickenWings,\n            item 2 Base.ChickenFillet,\n        }"
+  },
+  {
+    "name": "CutTurkey",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.cutChicken",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck]",
+      "item 1 [Base.TurkeyWhole] flags[InheritFoodAge;ItemCount]"
+    ],
+    "produces": [
+      "Base.TurkeyFillet",
+      "Base.TurkeyLegs",
+      "Base.TurkeyWings"
+    ],
+    "raw": "timedAction = SliceMeat_Surface,\n        time = 150,\n        OnCreate = RecipeCodeOnCreate.cutChicken,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:20,\n        inputs\n        {\n            item 1 tags[base:sharpknife;base:meatcleaver] mode:keep flags[IsNotDull;SharpnessCheck],\n            item 1 [Base.TurkeyWhole] flags[InheritFoodAge;ItemCount],\n        }\n        outputs\n        {\n            item 2 Base.TurkeyLegs,\n            item 2 Base.TurkeyWings,\n            item 2 Base.TurkeyFillet,\n        }"
+  },
+  {
+    "name": "open_mac_and_cheese",
+    "source": "recipes/recipes_cooking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openMacAndCheese",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Macandcheese] flags[AllowFavorite;InheritFavorite;Prop2]"
+    ],
+    "produces": [
+      "Base.Macaroni",
+      "Base.cheese_powdered"
+    ],
+    "raw": "timedAction = Making,\n        time = 80,\n        OnCreate = RecipeCodeOnCreate.openMacAndCheese,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.Macandcheese] flags[AllowFavorite;InheritFavorite;Prop2],\n        }\n        outputs\n        {\n            item 1 Base.Macaroni,\n            item 1 Base.cheese_powdered,\n        }"
+  },
+  {
+    "name": "SliceHead",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.sliceAnimalHead",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 tags[base:animalhead] mappers[HeadSkullMapper] flags[AllowRottenItem]"
+    ],
+    "produces": [
+      "Base.Bull_Skull",
+      "Base.Calf_Skull",
+      "Base.Chicken_Chick_Skull",
+      "Base.Chicken_Hen_Skull",
+      "Base.Chicken_Rooster_Skull",
+      "Base.Cow_Skull",
+      "Base.DeerDoe_Skull",
+      "Base.DeerFawn_Skull",
+      "Base.DeerStag_Skull",
+      "Base.Lamb_Skull",
+      "Base.Pig_Skull",
+      "Base.Piglet_Skull",
+      "Base.Rabbit_KittenSkull",
+      "Base.Rabbit_Skull",
+      "Base.Raccoon_Skull",
+      "Base.Ram_Skull",
+      "Base.Sheep_Skull",
+      "Base.Turkey_PoultSkull",
+      "Base.Turkey_Skull"
+    ],
+    "raw": "timedAction = SliceMeat,\n        time = 40,\n        OnCreate = RecipeCodeOnCreate.sliceAnimalHead,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight],\n            item 1 tags[base:animalhead] mappers[HeadSkullMapper] flags[AllowRottenItem],\n        }\n        outputs\n        {\n            item 1 mapper:HeadSkullMapper,\n        }\n        itemMapper HeadSkullMapper\n        {\n            Base.Cow_Skull = Base.Cow_Head_Angus,\n            Base.Bull_Skull = Base.Bull_Head_Angus,\n            Base.Calf_Skull = Base.Calf_Head_Angus,\n            Base.Cow_Skull = Base.Cow_Head_Simmental,\n            Base.Bull_Skull = Base.Bull_Head_Simmental,\n            Base.Calf_Skull = Base.Calf_Head_Simmental,\n            Base.Cow_Skull = Base.Cow_Head_Holstein,\n            Base.Bull_Skull = Base.Bull_Head_Holstein,\n            Base.Calf_Skull = Base.Calf_Head_Holstein,\n            Base.Sheep_Skull = Base.Sheep_Ewe_Head_White,\n            Base.Ram_Skull = Base.Sheep_Ram_Head_White,\n            Base.Lamb_Skull = Base.Sheep_Lamb_Head_White,\n            Base.Sheep_Skull = Base.Sheep_Ewe_Head_Black,\n            Base.Ram_Skull = Base.Sheep_Ram_Head_Black,\n            Base.Lamb_Skull = Base.Sheep_Lamb_Head_Black,\n            Base.Pig_Skull = Base.Pig_Sow_Head_Pink,\n            Base.Pig_Skull = Base.Pig_Boar_Head_Pink,\n            Base.Piglet_Skull = Base.Pig_Piglet_Head_Pink,\n            Base.Pig_Skull = Base.Pig_Sow_Head_Black,\n            Base.Pig_Skull = Base.Pig_Boar_Head_Black,\n            Base.Piglet_Skull = Base.Pig_Piglet_Head_Black,\n            Base.Chicken_Chick_Skull = Base.Chicken_Chick_Head,\n            Base.Chicken_Hen_Skull = Base.Chicken_Hen_Brown_Head,\n            Base.Chicken_Hen_Skull = Base.Chicken_Hen_White_Head,\n            Base.Chicken_Rooster_Skull = Base.Chicken_Rooster_Head_Brown,\n            Base.Chicken_Rooster_Skull = Base.Chicken_Rooster_Head_White,\n            Base.Turkey_Skull = Base.Turkey_Hen_Head,\n            Base.Turkey_Skull = Base.Turkey_Gobbler_Head,\n            Base.Turkey_PoultSkull = Base.Turkey_Poult_Head,\n            Base.Raccoon_Skull = Base.Raccoon_Sow_Head,\n            Base.Raccoon_Skull = Base.Raccoon_Boar_Head,\n            Base.Raccoon_Skull = Base.Raccoon_Kit_Head,\n            Base.Rabbit_Skull = Base.Rabbit_Head_Appalachian,\n            Base.Rabbit_KittenSkull = Base.Rabbit_Kitten_Head_Appalachian,\n            Base.Rabbit_Skull = Base.Rabbit_Head_CottonTail,\n            Base.Rabbit_KittenSkull = Base.Rabbit_Kitten_Head_CottonTail,\n            Base.Rabbit_Skull = Base.Rabbit_Head_Swamp,\n            Base.Rabbit_KittenSkull = Base.Rabbit_Kitten_Head_Swamp,\n            Base.DeerDoe_Skull = Base.Deer_Doe_Head,\n            Base.DeerStag_Skull = Base.Deer_Buck_Head,\n            Base.DeerFawn_Skull = Base.Deer_Fawn_Head,\n            default = Base.Cow_Skull,\n        }"
+  },
+  {
+    "name": "CreateBrainTan",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:bowl] mode:destroy flags[IsFull;ItemCount]",
+      "-fluid 0.3 categories[Water] mode:mixture",
+      "item 1 tags[base:animalbrain]"
+    ],
+    "produces": [
+      "Base.BrainTan"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 40,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        inputs\n        {\n            item 1 tags[base:bowl] mode:destroy flags[IsFull;ItemCount],\n            -fluid 0.3 categories[Water] mode:mixture,\n            item 1 tags[base:animalbrain],\n        }\n        outputs\n        {\n            item 1 Base.BrainTan,\n        }"
+  },
+  {
+    "name": "SliceBread",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.BreadDough;Base.Bread] flags[InheritCooked;InheritFood;IsCookedFoodItem;ItemCount]"
+    ],
+    "produces": [
+      "Base.BreadSlices"
+    ],
+    "raw": "timedAction = SliceBread_Surface,\n        time = 40,\n        Tooltip = Tooltip_Recipe_MustCookedSlice,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.BreadDough;Base.Bread] flags[InheritCooked;InheritFood;IsCookedFoodItem;ItemCount],\n        }\n        outputs\n        {\n            item 3 Base.BreadSlices,\n        }"
+  },
+  {
+    "name": "MakeCakeBatter",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] flags[ItemCount]",
+      "item 2 tags[base:flour]",
+      "item 1 tags[base:bakingfat]",
+      "item 2 tags[base:sugar]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 1 [Base.Yeast]",
+      "item 1 [*]",
+      "-fluid 1.0 [CowMilk]"
+    ],
+    "produces": [
+      "Base.CakeBatter"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        Tooltip = Tooltip_Recipe_RequireWholeEggs,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] flags[ItemCount],\n            item 2 tags[base:flour],\n            item 1 tags[base:bakingfat],\n            item 2 tags[base:sugar],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 1 [Base.Yeast],\n            item 1 [*],\n            -fluid 1.0 [CowMilk],\n        }\n        outputs\n        {\n            item 1 Base.CakeBatter,\n        }"
+  },
+  {
+    "name": "PlaceCakeInBakingPan",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BakingPan] mode:destroy flags[IsEmpty]",
+      "item 1 [Base.CakeBatter] flags[InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.Bowl",
+      "Base.CakePrep"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 30,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 [Base.BakingPan] mode:destroy flags[IsEmpty],\n            item 1 [Base.CakeBatter] flags[InheritFoodAge],\n        }\n        outputs\n        {\n            item 1 Base.CakePrep,\n            item 1 Base.Bowl,\n        }"
+  },
+  {
+    "name": "MakePieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 10 tags[base:flour]",
+      "item 1 [Base.Butter;Base.Lard;Base.Margarine]",
+      "item 2 [Base.Salt;Base.SeasoningSalt]",
+      "item 1 [*]",
+      "-fluid 2.0 [Water]"
+    ],
+    "produces": [
+      "Base.PieDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 10 tags[base:flour],\n            item 1 [Base.Butter;Base.Lard;Base.Margarine],\n            item 2 [Base.Salt;Base.SeasoningSalt],\n            item 1 [*],\n            -fluid 2.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.PieDough,\n        }"
+  },
+  {
+    "name": "MakeBreadDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.RollingPin] mode:keep flags[MayDegrade]",
+      "item 10 tags[base:flour]",
+      "item 2 [Base.Salt;Base.SeasoningSalt]",
+      "item 1 [Base.Yeast]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.BreadDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.RollingPin] mode:keep flags[MayDegrade],\n            item 10 tags[base:flour],\n            item 2 [Base.Salt;Base.SeasoningSalt],\n            item 1 [Base.Yeast],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.BreadDough,\n        }"
+  },
+  {
+    "name": "MakeBaguetteDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 10 tags[base:flour]",
+      "item 2 [Base.Salt;Base.SeasoningSalt]",
+      "item 1 [Base.Yeast]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.BaguetteDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 10 tags[base:flour],\n            item 2 [Base.Salt;Base.SeasoningSalt],\n            item 1 [Base.Yeast],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.BaguetteDough,\n        }"
+  },
+  {
+    "name": "MakeBiscuits",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.MuffinTray]",
+      "item 1 tags[base:flour]",
+      "item 2 [Base.Salt;Base.SeasoningSalt]",
+      "item 1 [Base.BakingSoda]",
+      "item 1 tags[base:bakingfat]",
+      "item 1 [*]",
+      "-fluid 2.0 [Water]"
+    ],
+    "produces": [
+      "Base.Muffintray_Biscuit"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.MuffinTray],\n            item 1 tags[base:flour],\n            item 2 [Base.Salt;Base.SeasoningSalt],\n            item 1 [Base.BakingSoda],\n            item 1 tags[base:bakingfat],\n            item 1 [*],\n            -fluid 2.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.Muffintray_Biscuit,\n        }"
+  },
+  {
+    "name": "Get6Biscuits",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Muffintray_Biscuit] flags[IsCookedFoodItem;InheritFoodAge;InheritCooked;ItemCount]"
+    ],
+    "produces": [
+      "Base.Biscuit",
+      "Base.MuffinTray"
+    ],
+    "raw": "timedAction = Making,\n        time = 60,\n        Tooltip = Tooltip_Recipe_MustCookedGet,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        inputs\n        {\n            item 1 [Base.Muffintray_Biscuit] flags[IsCookedFoodItem;InheritFoodAge;InheritCooked;ItemCount],\n        }\n        outputs\n        {\n            item 6 Base.Biscuit,\n            item 1 Base.MuffinTray,\n        }"
+  },
+  {
+    "name": "PlacePieInBakingPan",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BakingPan] mode:destroy flags[IsEmpty]",
+      "item 1 [Base.RollingPin] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.PieDough] flags[InheritFoodAge]"
+    ],
+    "produces": [
+      "Base.PiePrep"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 30,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 [Base.BakingPan] mode:destroy flags[IsEmpty],\n            item 1 [Base.RollingPin] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.PieDough] flags[InheritFoodAge],\n        }\n        outputs\n        {\n            item 1 Base.PiePrep,\n        }"
+  },
+  {
+    "name": "SliceCakeOrPie",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.inheritFoodDisplayName",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.CakeRaw;Base.CakePrep;Base.PieWholeRaw;Base.PieWholeRawSweet] mappers[foodType] flags[InheritCooked;IsCookedFoodItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.BakingPan",
+      "Base.CakeSlice"
+    ],
+    "raw": "timedAction = SliceFood_Surface,\n        time = 20,\n        OnCreate = RecipeCodeOnCreate.inheritFoodDisplayName,\n        Tooltip = Tooltip_Recipe_MustCookedSlice,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        inputs\n        {\n            item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.CakeRaw;Base.CakePrep;Base.PieWholeRaw;Base.PieWholeRawSweet] mappers[foodType] flags[InheritCooked;IsCookedFoodItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 5 mapper:foodType,\n            item 1 Base.BakingPan,\n        }\n        itemMapper foodType\n        {\n            Base.CakeSlice = Base.CakeRaw,\n            Base.CakeSlice = Base.CakePrep,\n            default = Base.Pie,\n        }"
+  },
+  {
+    "name": "MakeChocolateCookieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.BakingTray] mode:destroy flags[IsEmpty]",
+      "item 2 tags[base:bakingfat]",
+      "item 5 tags[base:sugar]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 1 [Base.BakingSoda]",
+      "item 10 [Base.CocoaPowder]",
+      "item 3 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.CookiesChocolateDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.BakingTray] mode:destroy flags[IsEmpty],\n            item 2 tags[base:bakingfat],\n            item 5 tags[base:sugar],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 1 [Base.BakingSoda],\n            item 10 [Base.CocoaPowder],\n            item 3 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.CookiesChocolateDough,\n        }"
+  },
+  {
+    "name": "Get6Cookies",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CookiesChocolateDough;Base.CookieChocolateChipDough;Base.CookiesOatmealDough;Base.CookiesSugarDough;Base.CookiesShortbreadDough] mappers[cookieTypes] flags[IsCookedFoodItem;InheritFoodAge;InheritCooked;ItemCount]"
+    ],
+    "produces": [
+      "Base.BakingTray",
+      "Base.CookieChocolateChip",
+      "Base.CookiesChocolate",
+      "Base.CookiesOatmeal",
+      "Base.CookiesShortbread",
+      "Base.CookiesSugar"
+    ],
+    "raw": "timedAction = Making,\n        time = 60,\n        Tooltip = Tooltip_Recipe_MustCookedGet,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        inputs\n        {\n            item 1 [Base.CookiesChocolateDough;Base.CookieChocolateChipDough;Base.CookiesOatmealDough;Base.CookiesSugarDough;Base.CookiesShortbreadDough] mappers[cookieTypes] flags[IsCookedFoodItem;InheritFoodAge;InheritCooked;ItemCount],\n        }\n        outputs\n        {\n            item 6 mapper:cookieTypes,\n            item 1 Base.BakingTray,\n        }\n        itemMapper cookieTypes\n        {\n            Base.CookiesChocolate = Base.CookiesChocolateDough,\n            Base.CookieChocolateChip = Base.CookieChocolateChipDough,\n            Base.CookiesOatmeal = Base.CookiesOatmealDough,\n            Base.CookiesSugar = Base.CookiesSugarDough,\n            Base.CookiesShortbread = Base.CookiesShortbreadDough,\n        }"
+  },
+  {
+    "name": "MakeChocolateChipCookieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.BakingTray] mode:destroy flags[IsEmpty]",
+      "item 2 tags[base:bakingfat]",
+      "item 5 tags[base:sugar]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 1 [Base.BakingSoda]",
+      "item 6 [Base.ChocolateChips]",
+      "item 3 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.CookieChocolateChipDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.BakingTray] mode:destroy flags[IsEmpty],\n            item 2 tags[base:bakingfat],\n            item 5 tags[base:sugar],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 1 [Base.BakingSoda],\n            item 6 [Base.ChocolateChips],\n            item 3 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.CookieChocolateChipDough,\n        }"
+  },
+  {
+    "name": "MakeOatmealCookieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.BakingTray] mode:destroy flags[IsEmpty]",
+      "item 2 tags[base:bakingfat]",
+      "item 5 tags[base:sugar]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 1 [Base.BakingSoda]",
+      "item 10 [Base.OatsRaw]",
+      "item 3 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.CookiesOatmealDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.BakingTray] mode:destroy flags[IsEmpty],\n            item 2 tags[base:bakingfat],\n            item 5 tags[base:sugar],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 1 [Base.BakingSoda],\n            item 10 [Base.OatsRaw],\n            item 3 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.CookiesOatmealDough,\n        }"
+  },
+  {
+    "name": "MakeSugarCookieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.BakingTray] mode:destroy flags[IsEmpty]",
+      "item 2 tags[base:bakingfat]",
+      "item 10 tags[base:sugar]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 1 [Base.BakingSoda]",
+      "item 3 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.CookiesSugarDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.BakingTray] mode:destroy flags[IsEmpty],\n            item 2 tags[base:bakingfat],\n            item 10 tags[base:sugar],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 1 [Base.BakingSoda],\n            item 3 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.CookiesSugarDough,\n        }"
+  },
+  {
+    "name": "MakeShortbreadCookieDough",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:rollingpin] mode:keep flags[MayDegrade]",
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.BakingTray] mode:destroy flags[IsEmpty]",
+      "item 4 [Base.Butter]",
+      "item 10 tags[base:sugar]",
+      "item 3 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [Water]"
+    ],
+    "produces": [
+      "Base.CookiesShortbreadDough"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 50,\n        NeedToBeLearn = true,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:rollingpin] mode:keep flags[MayDegrade],\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.BakingTray] mode:destroy flags[IsEmpty],\n            item 4 [Base.Butter],\n            item 10 tags[base:sugar],\n            item 3 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [Water],\n        }\n        outputs\n        {\n            item 1 Base.CookiesShortbreadDough,\n        }"
+  },
+  {
+    "name": "PrepareMuffins",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight]",
+      "item 1 [Base.Bowl;Base.ClayBowl] mode:keep",
+      "item 1 [Base.MuffinTray]",
+      "item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount]",
+      "item 2 tags[base:bakingfat]",
+      "item 5 tags[base:sugar]",
+      "item 6 tags[base:flour]",
+      "item 1 [*]",
+      "-fluid 1.0 [CowMilk]"
+    ],
+    "produces": [
+      "Base.BakingTray_Muffin"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 60,\n        NeedToBeLearn = true,\n        Tooltip = Tooltip_Recipe_RequireWholeEggs,\n        category = Cooking,\n        Tags = AnySurfaceCraft;Cooking,\n        xpAward = Cooking:3,\n        AutoLearnAny = Cooking:7,\n        inputs\n        {\n            item 1 tags[base:mixingutensil] mode:keep flags[MayDegradeVeryLight],\n            item 1 [Base.Bowl;Base.ClayBowl] mode:keep,\n            item 1 [Base.MuffinTray],\n            item 2 tags[base:egg] flags[IsUncookedFoodItem;InheritFoodAge;ItemCount],\n            item 2 tags[base:bakingfat],\n            item 5 tags[base:sugar],\n            item 6 tags[base:flour],\n            item 1 [*],\n            -fluid 1.0 [CowMilk],\n        }\n        outputs\n        {\n            item 1 Base.BakingTray_Muffin,\n        }"
+  },
+  {
+    "name": "Get6Muffins",
+    "source": "recipes/recipes_baking.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.name_muffins",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BakingTray_Muffin_Recipe;Base.BakingTray_Muffin] flags[IsCookedFoodItem;InheritFood;ItemCount]"
+    ],
+    "produces": [
+      "Base.MuffinGeneric",
+      "Base.MuffinTray"
+    ],
+    "raw": "timedAction = Making,\n        time = 60,\n        OnCreate = RecipeCodeOnCreate.name_muffins,\n        Tooltip = Tooltip_Recipe_MustCookedGet,\n        category = Cooking,\n        Tags = InHandCraft;Cooking,\n        inputs\n        {\n            item 1 [Base.BakingTray_Muffin_Recipe;Base.BakingTray_Muffin] flags[IsCookedFoodItem;InheritFood;ItemCount],\n        }\n        outputs\n        {\n            item 6 Base.MuffinGeneric,\n            item 1 Base.MuffinTray,\n        }"
+  },
+  {
+    "name": "OpenJarOfFood",
+    "source": "recipes/recipes_jarring.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.applyLidCondition",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:preservedfood] flags[AllowRottenItem;InheritFood;ItemCount] mappers[foodType]"
+    ],
+    "produces": [
+      "Base.CannedBellPepper_Open",
+      "Base.CannedBroccoli_Open",
+      "Base.CannedCabbage_Open",
+      "Base.CannedCarrots_Open",
+      "Base.CannedEggplant_Open",
+      "Base.CannedLeek_Open",
+      "Base.CannedPotato_Open",
+      "Base.CannedRedRadish_Open",
+      "Base.CannedRoe_Open",
+      "Base.CannedTomato_Open"
+    ],
+    "raw": "timedAction = Making,\n        time = 30,\n        OnCreate = RecipeCodeOnCreate.applyLidCondition,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:preservedfood] flags[AllowRottenItem;InheritFood;ItemCount] mappers[foodType],\n        }\n        outputs\n        {\n            item 1 mapper:foodType,\n        }\n        itemMapper foodType\n        {\n            Base.CannedBellPepper_Open = Base.CannedBellPepper,\n            Base.CannedBroccoli_Open = Base.CannedBroccoli,\n            Base.CannedCabbage_Open = Base.CannedCabbage,\n            Base.CannedCarrots_Open = Base.CannedCarrots,\n            Base.CannedEggplant_Open = Base.CannedEggplant,\n            Base.CannedLeek_Open = Base.CannedLeek,\n            Base.CannedPotato_Open = Base.CannedPotato,\n            Base.CannedRedRadish_Open = Base.CannedRedRadish,\n            Base.CannedTomato_Open = Base.CannedTomato,\n            Base.CannedRoe_Open = Base.CannedRoe,\n        }"
+  },
+  {
+    "name": "MakeJar",
+    "source": "recipes/recipes_jarring.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.makeJar",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeLight]",
+      "item 1 tags[base:jar] mode:destroy flags[ItemCount]",
+      "item 1 [Base.JarLid]",
+      "item 6 [Base.BellPepper;5:Base.Broccoli;2:Base.Cabbage;5:Base.Carrots;3:Base.Eggplant;4:Base.Leek;3:Base.Potato;15:Base.RedRadish;4:Base.Tomato;1:Base.FishRoe] mappers[veggieType] flags[InheritFood;ItemCount] mode:destroy",
+      "item 2.0 tags[base:vinegar]",
+      "item 1.0 [Base.Salt;Base.SeasoningSalt]",
+      "item 1 [*]",
+      "-fluid 0.5 [Water]"
+    ],
+    "produces": [
+      "Base.CannedBellPepper",
+      "Base.CannedBroccoli",
+      "Base.CannedCabbage",
+      "Base.CannedCarrots",
+      "Base.CannedEggplant",
+      "Base.CannedLeek",
+      "Base.CannedPotato",
+      "Base.CannedRedRadish",
+      "Base.CannedRoe",
+      "Base.CannedTomato"
+    ],
+    "raw": "timedAction = MixingBowl,\n        time = 100,\n        NeedToBeLearn = true,\n        OnCreate = RecipeCodeOnCreate.makeJar,\n        Tags = InHandCraft;Cooking,\n        category = Cooking,\n        xpAward = Cooking:10,\n        AutoLearnAny = Cooking:8,\n        inputs\n        {\n            item 1 tags[base:dullknife;base:sharpknife;base:meatcleaver] mode:keep flags[MayDegradeLight],\n            item 1 tags[base:jar] mode:destroy flags[ItemCount],\n            item 1 [Base.JarLid],\n            item 6 [Base.BellPepper;5:Base.Broccoli;2:Base.Cabbage;5:Base.Carrots;3:Base.Eggplant;4:Base.Leek;3:Base.Potato;15:Base.RedRadish;4:Base.Tomato;1:Base.FishRoe] mappers[veggieType] flags[InheritFood;ItemCount] mode:destroy,\n            item 2.0 tags[base:vinegar],\n            item 1.0 [Base.Salt;Base.SeasoningSalt],\n            item 1 [*],\n            -fluid 0.5 [Water],\n        }\n        outputs\n        {\n            item 1 mapper:veggieType,\n        }\n        itemMapper veggieType\n        {\n            Base.CannedBellPepper = Base.BellPepper,\n            Base.CannedBroccoli = Base.Broccoli,\n            Base.CannedCabbage = Base.Cabbage,\n            Base.CannedCarrots = Base.Carrots,\n            Base.CannedEggplant = Base.Eggplant,\n            Base.CannedLeek = Base.Leek,\n            Base.CannedPotato = Base.Potato,\n            Base.CannedRedRadish = Base.RedRadish,\n            Base.CannedTomato = Base.Tomato,\n            Base.CannedRoe = Base.FishRoe,\n        }"
+  },
+  {
+    "name": "OpenWaterRationCan",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openWaterCan",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:canopener] mode:keep flags[MayDegradeLight]",
+      "item 1 [Base.WaterRationCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCan,\n        OnCreate = RecipeCodeOnCreate.openWaterCan,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:canopener] mode:keep flags[MayDegradeLight],\n            item 1 [Base.WaterRationCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenUnlabeledCan",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openMysteryCan",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:canopener] mode:keep flags[MayDegradeLight]",
+      "item 1 [Base.MysteryCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCan,\n        OnCreate = RecipeCodeOnCreate.openMysteryCan,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:canopener] mode:keep flags[MayDegradeLight],\n            item 1 [Base.MysteryCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenDentedUnlabeledCan",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openDentedCan",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:canopener] mode:keep flags[MayDegradeLight]",
+      "item 1 [Base.DentedCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCan,\n        OnCreate = RecipeCodeOnCreate.openDentedCan,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:canopener] mode:keep flags[MayDegradeLight],\n            item 1 [Base.DentedCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenWaterRationCanWithKnifeOrSharpStoneFlake",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.openWaterCanKnife",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull]",
+      "item 1 [Base.WaterRationCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCanWithKnife,\n        OnCreate = RecipeCodeOnCreate.openWaterCanKnife,\n        Tooltip = Tooltip_Recipe_OpenCanWithKnife,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull],\n            item 1 [Base.WaterRationCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenUnlabeledCanWithKnifeOrSharpStoneFlake",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.openMysteryCan",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull]",
+      "item 1 [Base.MysteryCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCanWithKnife,\n        OnCreate = RecipeCodeOnCreate.openMysteryCan,\n        Tooltip = Tooltip_Recipe_OpenCanWithKnife,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull],\n            item 1 [Base.MysteryCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenDentedUnlabeledCanWithKnifeOrSharpStoneFlake",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.openDentedCanKnife",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull]",
+      "item 1 [Base.DentedCan] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [],
+    "raw": "time = 80,\n        timedAction = OpenTinCanWithKnife,\n        OnCreate = RecipeCodeOnCreate.openDentedCanKnife,\n        Tooltip = Tooltip_Recipe_OpenCanWithKnife,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull],\n            item 1 [Base.DentedCan] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenCannedFoodWithKnifeOrSharpStoneFlake",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "AnySurfaceCraft;Cooking",
+    "onCreate": "RecipeCodeOnCreate.openCan",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull]",
+      "item 1 [Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCorn;Base.CannedMilk;Base.CannedFruitBeverage;Base.CannedFruitCocktail;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.TinnedSoup;Base.CannedTomato2;Base.Dogfood] mappers[foodType] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [
+      "Base.CannedBologneseOpen",
+      "Base.CannedCarrotsOpen",
+      "Base.CannedChiliOpen",
+      "Base.CannedCornOpen",
+      "Base.CannedFruitBeverageOpen",
+      "Base.CannedFruitCocktailOpen",
+      "Base.CannedMilkOpen",
+      "Base.CannedMushroomSoupOpen",
+      "Base.CannedPeachesOpen",
+      "Base.CannedPeasOpen",
+      "Base.CannedPineappleOpen",
+      "Base.CannedPotatoOpen",
+      "Base.CannedTomatoOpen",
+      "Base.DogfoodOpen",
+      "Base.OpenBeans",
+      "Base.TinnedSoupOpen"
+    ],
+    "raw": "time = 80,\n        timedAction = OpenTinCanWithKnife,\n        OnCreate = RecipeCodeOnCreate.openCan,\n        Tooltip = Tooltip_Recipe_OpenCanWithKnife,\n        Tags = AnySurfaceCraft;Cooking,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sharpknife] mode:keep flags[MayDegrade;IsNotDull],\n            item 1 [Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCorn;Base.CannedMilk;Base.CannedFruitBeverage;Base.CannedFruitCocktail;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.TinnedSoup;Base.CannedTomato2;Base.Dogfood] mappers[foodType] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n            item 1 mapper:foodType,\n        }\n        itemMapper foodType\n        {\n            Base.OpenBeans = Base.TinnedBeans,\n            Base.CannedBologneseOpen = Base.CannedBolognese,\n            Base.CannedCarrotsOpen = Base.CannedCarrots2,\n            Base.CannedChiliOpen = Base.CannedChili,\n            Base.CannedCornOpen = Base.CannedCorn,\n            Base.CannedMilkOpen = Base.CannedMilk,\n            Base.CannedFruitBeverageOpen = Base.CannedFruitBeverage,\n            Base.CannedFruitCocktailOpen = Base.CannedFruitCocktail,\n            Base.CannedMushroomSoupOpen = Base.CannedMushroomSoup,\n            Base.CannedPeachesOpen = Base.CannedPeaches,\n            Base.CannedPeasOpen = Base.CannedPeas,\n            Base.CannedPineappleOpen = Base.CannedPineapple,\n            Base.CannedPotatoOpen = Base.CannedPotato2,\n            Base.TinnedSoupOpen = Base.TinnedSoup,\n            Base.CannedTomatoOpen = Base.CannedTomato2,\n            Base.DogfoodOpen = Base.Dogfood,\n        }"
+  },
+  {
+    "name": "OpenCannedFood",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openAndEat",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:canopener] mode:keep flags[MayDegradeLight]",
+      "item 1 [Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCorn;Base.CannedFruitCocktail;Base.CannedFruitBeverage;Base.CannedMilk;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.TinnedSoup;Base.CannedTomato2;Base.TunaTin;Base.Dogfood] mappers[canSorts] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [
+      "Base.CannedBologneseOpen",
+      "Base.CannedCarrotsOpen",
+      "Base.CannedChiliOpen",
+      "Base.CannedCornOpen",
+      "Base.CannedFruitBeverageOpen",
+      "Base.CannedFruitCocktailOpen",
+      "Base.CannedMilkOpen",
+      "Base.CannedMushroomSoupOpen",
+      "Base.CannedPeachesOpen",
+      "Base.CannedPeasOpen",
+      "Base.CannedPineappleOpen",
+      "Base.CannedPotatoOpen",
+      "Base.CannedTomatoOpen",
+      "Base.DogfoodOpen",
+      "Base.OpenBeans",
+      "Base.TinnedSoupOpen",
+      "Base.TunaTinOpen"
+    ],
+    "raw": "timedAction = OpenTinCan,\n        time = 100,\n        OnCreate = RecipeCodeOnCreate.openAndEat,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:canopener] mode:keep flags[MayDegradeLight],\n            item 1 [Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCorn;Base.CannedFruitCocktail;Base.CannedFruitBeverage;Base.CannedMilk;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.TinnedSoup;Base.CannedTomato2;Base.TunaTin;Base.Dogfood] mappers[canSorts] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n            item 1 mapper:canSorts,\n        }\n        itemMapper canSorts\n        {\n            Base.OpenBeans = Base.TinnedBeans,\n            Base.CannedBologneseOpen = Base.CannedBolognese,\n            Base.CannedCarrotsOpen = Base.CannedCarrots2,\n            Base.CannedChiliOpen = Base.CannedChili,\n            Base.CannedCornOpen = Base.CannedCorn,\n            Base.CannedFruitCocktailOpen = Base.CannedFruitCocktail,\n            Base.CannedFruitBeverageOpen = Base.CannedFruitBeverage,\n            Base.CannedMilkOpen = Base.CannedMilk,\n            Base.CannedMushroomSoupOpen = Base.CannedMushroomSoup,\n            Base.CannedPeachesOpen = Base.CannedPeaches,\n            Base.CannedPeasOpen = Base.CannedPeas,\n            Base.CannedPineappleOpen = Base.CannedPineapple,\n            Base.CannedPotatoOpen = Base.CannedPotato2,\n            Base.TinnedSoupOpen = Base.TinnedSoup,\n            Base.CannedTomatoOpen = Base.CannedTomato2,\n            Base.TunaTinOpen = Base.TunaTin,\n            Base.DogfoodOpen = Base.Dogfood,\n        }"
+  },
+  {
+    "name": "OpenCannedFood2",
+    "source": "recipes/recipes_cannedFood.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.openAndEat",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CannedCornedBeef;Base.CannedSardines] mappers[canSorts] flags[Prop2;DontPutBack]"
+    ],
+    "produces": [
+      "Base.CannedCornedBeefOpen",
+      "Base.CannedSardinesOpen"
+    ],
+    "raw": "timedAction = OpenTinCan,\n        time = 10,\n        OnCreate = RecipeCodeOnCreate.openAndEat,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 [Base.CannedCornedBeef;Base.CannedSardines] mappers[canSorts] flags[Prop2;DontPutBack],\n        }\n        outputs\n        {\n            item 1 mapper:canSorts,\n        }\n        itemMapper canSorts\n        {\n            Base.CannedCornedBeefOpen = Base.CannedCornedBeef,\n            Base.CannedSardinesOpen = Base.CannedSardines,\n        }"
+  },
+  {
+    "name": "OpenBottleOfBeer",
+    "source": "recipes/recipes_fluids.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:bottleopener] mode:keep",
+      "item 1 [Base.BeerBottle;Base.BeerImported] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount]"
+    ],
+    "produces": [],
+    "raw": "timedAction = OpenBeerBottle,\n        time = 15,\n        AllowBatchCraft = false,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:bottleopener] mode:keep,\n            item 1 [Base.BeerBottle;Base.BeerImported] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenCanOfBeverage",
+    "source": "recipes/recipes_fluids.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:sealedbeveragecan] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount]"
+    ],
+    "produces": [],
+    "raw": "timedAction = OpenPopCan,\n        time = 15,\n        AllowBatchCraft = false,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:sealedbeveragecan] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "OpenBottleOfWine",
+    "source": "recipes/recipes_fluids.txt",
+    "category": "Cooking",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 tags[base:corkscrew] mode:keep",
+      "item 1 [Base.Wine;Base.Wine2;Base.WineAged] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount]"
+    ],
+    "produces": [
+      "Base.Cork"
+    ],
+    "raw": "timedAction = UncorkBottle,\n        time = 30,\n        AllowBatchCraft = false,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Cooking,\n        inputs\n        {\n            item 1 tags[base:corkscrew] mode:keep,\n            item 1 [Base.Wine;Base.Wine2;Base.WineAged] mode:keep flags[DontPutBack;IsSealed;Prop2;Unseal;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.Cork,\n        }"
+  },
+  {
+    "name": "OpenPackOfBeer",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BeerPack;Base.BeerCanPack] mappers[itemType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.BeerBottle",
+      "Base.BeerCan"
+    ],
+    "raw": "timedAction = Making,\n        time = 80,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.BeerPack;Base.BeerCanPack] mappers[itemType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 6 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.BeerBottle = Base.BeerPack,\n            Base.BeerCan = Base.BeerCanPack,\n        }"
+  },
+  {
+    "name": "PackBeerBottles",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 6 [Base.BeerBottle] mode:destroy flags[AllowFavorite;InheritFavorite;IsSealed;ItemCount]"
+    ],
+    "produces": [
+      "Base.BeerPack"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 80,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 6 [Base.BeerBottle] mode:destroy flags[AllowFavorite;InheritFavorite;IsSealed;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.BeerPack,\n        }"
+  },
+  {
+    "name": "OpenBoxOfCannedFood",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.Macandcheese_Box;Base.TinnedBeans_Box;Base.CannedBolognese_Box;Base.CannedCarrots_Box;Base.CannedChili_Box;Base.CannedCornedBeef_Box;Base.CannedCorn_Box;Base.CannedFruitCocktail_Box;Base.CannedFruitBeverage_Box;Base.CannedMilk_Box;Base.CannedMushroomSoup_Box;Base.CannedPeaches_Box;Base.CannedPeas_Box;Base.CannedPineapple_Box;Base.CannedPotato_Box;Base.CannedSardines_Box;Base.TinnedSoup_Box;Base.CannedTomato_Box;Base.TunaTin_Box;Base.Dogfood_Box;Base.MysteryCan_Box;Base.DentedCan_Box;Base.WaterRationCan_Box] mappers[canSorts] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CannedBolognese",
+      "Base.CannedCarrots2",
+      "Base.CannedChili",
+      "Base.CannedCorn",
+      "Base.CannedCornedBeef",
+      "Base.CannedFruitBeverage",
+      "Base.CannedFruitCocktail",
+      "Base.CannedMilk",
+      "Base.CannedMushroomSoup",
+      "Base.CannedPeaches",
+      "Base.CannedPeas",
+      "Base.CannedPineapple",
+      "Base.CannedPotato2",
+      "Base.CannedSardines",
+      "Base.CannedTomato2",
+      "Base.DentedCan",
+      "Base.Dogfood",
+      "Base.Macandcheese",
+      "Base.MysteryCan",
+      "Base.TinnedBeans",
+      "Base.TinnedSoup",
+      "Base.TunaTin",
+      "Base.WaterRationCan"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 100,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.Macandcheese_Box;Base.TinnedBeans_Box;Base.CannedBolognese_Box;Base.CannedCarrots_Box;Base.CannedChili_Box;Base.CannedCornedBeef_Box;Base.CannedCorn_Box;Base.CannedFruitCocktail_Box;Base.CannedFruitBeverage_Box;Base.CannedMilk_Box;Base.CannedMushroomSoup_Box;Base.CannedPeaches_Box;Base.CannedPeas_Box;Base.CannedPineapple_Box;Base.CannedPotato_Box;Base.CannedSardines_Box;Base.TinnedSoup_Box;Base.CannedTomato_Box;Base.TunaTin_Box;Base.Dogfood_Box;Base.MysteryCan_Box;Base.DentedCan_Box;Base.WaterRationCan_Box] mappers[canSorts] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 6 mapper:canSorts,\n        }\n        itemMapper canSorts\n        {\n            Base.TinnedBeans = Base.TinnedBeans_Box,\n            Base.CannedBolognese = Base.CannedBolognese_Box,\n            Base.CannedCarrots2 = Base.CannedCarrots_Box,\n            Base.CannedChili = Base.CannedChili_Box,\n            Base.CannedCornedBeef = Base.CannedCornedBeef_Box,\n            Base.CannedCorn = Base.CannedCorn_Box,\n            Base.CannedFruitCocktail = Base.CannedFruitCocktail_Box,\n            Base.CannedFruitBeverage = Base.CannedFruitBeverage_Box,\n            Base.CannedMilk = Base.CannedMilk_Box,\n            Base.CannedMushroomSoup = Base.CannedMushroomSoup_Box,\n            Base.CannedPeaches = Base.CannedPeaches_Box,\n            Base.CannedPeas = Base.CannedPeas_Box,\n            Base.CannedPineapple = Base.CannedPineapple_Box,\n            Base.CannedPotato2 = Base.CannedPotato_Box,\n            Base.CannedSardines = Base.CannedSardines_Box,\n            Base.TinnedSoup = Base.TinnedSoup_Box,\n            Base.CannedTomato2 = Base.CannedTomato_Box,\n            Base.TunaTin = Base.TunaTin_Box,\n            Base.Dogfood = Base.Dogfood_Box,\n            Base.MysteryCan = Base.MysteryCan_Box,\n            Base.DentedCan = Base.DentedCan_Box,\n            Base.WaterRationCan = Base.WaterRationCan_Box,\n            Base.Macandcheese = Base.Macandcheese_Box,\n        }"
+  },
+  {
+    "name": "PackCannedFood",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 6 [Base.Macandcheese;Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCornedBeef;Base.CannedCorn;Base.CannedFruitCocktail;Base.CannedFruitBeverage;Base.CannedMilk;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.CannedSardines;Base.TinnedSoup;Base.CannedTomato2;Base.TunaTin;Base.Dogfood;Base.MysteryCan;Base.DentedCan;Base.WaterRationCan] mappers[canSorts] flags[AllowFavorite;InheritFavorite;IsExclusive]"
+    ],
+    "produces": [
+      "Base.CannedBolognese_Box",
+      "Base.CannedCarrots_Box",
+      "Base.CannedChili_Box",
+      "Base.CannedCorn_Box",
+      "Base.CannedCornedBeef_Box",
+      "Base.CannedFruitBeverage_Box",
+      "Base.CannedFruitCocktail_Box",
+      "Base.CannedMilk_Box",
+      "Base.CannedMushroomSoup_Box",
+      "Base.CannedPeaches_Box",
+      "Base.CannedPeas_Box",
+      "Base.CannedPineapple_Box",
+      "Base.CannedPotato_Box",
+      "Base.CannedSardines_Box",
+      "Base.CannedTomato_Box",
+      "Base.DentedCan_Box",
+      "Base.Dogfood_Box",
+      "Base.Macandcheese_Box",
+      "Base.MysteryCan_Box",
+      "Base.TinnedBeans_Box",
+      "Base.TinnedSoup_Box",
+      "Base.TunaTin_Box",
+      "Base.WaterRationCan_Box"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 100,\n        Tags = InHandCraft,\n        category = Packing,\n        inputs\n        {\n            item 6 [Base.Macandcheese;Base.TinnedBeans;Base.CannedBolognese;Base.CannedCarrots2;Base.CannedChili;Base.CannedCornedBeef;Base.CannedCorn;Base.CannedFruitCocktail;Base.CannedFruitBeverage;Base.CannedMilk;Base.CannedMushroomSoup;Base.CannedPeaches;Base.CannedPeas;Base.CannedPineapple;Base.CannedPotato2;Base.CannedSardines;Base.TinnedSoup;Base.CannedTomato2;Base.TunaTin;Base.Dogfood;Base.MysteryCan;Base.DentedCan;Base.WaterRationCan] mappers[canSorts] flags[AllowFavorite;InheritFavorite;IsExclusive],\n        }\n        outputs\n        {\n            item 1 mapper:canSorts,\n        }\n        itemMapper canSorts\n        {\n            Base.TinnedBeans_Box = Base.TinnedBeans,\n            Base.CannedBolognese_Box = Base.CannedBolognese,\n            Base.CannedCarrots_Box = Base.CannedCarrots2,\n            Base.CannedChili_Box = Base.CannedChili,\n            Base.CannedCornedBeef_Box = Base.CannedCornedBeef,\n            Base.CannedCorn_Box = Base.CannedCorn,\n            Base.CannedFruitCocktail_Box = Base.CannedFruitCocktail,\n            Base.CannedFruitBeverage_Box = Base.CannedFruitBeverage,\n            Base.CannedMilk_Box = Base.CannedMilk,\n            Base.CannedMushroomSoup_Box = Base.CannedMushroomSoup,\n            Base.CannedPeaches_Box = Base.CannedPeaches,\n            Base.CannedPeas_Box = Base.CannedPeas,\n            Base.CannedPineapple_Box = Base.CannedPineapple,\n            Base.CannedPotato_Box = Base.CannedPotato2,\n            Base.CannedSardines_Box = Base.CannedSardines,\n            Base.TinnedSoup_Box = Base.TinnedSoup,\n            Base.CannedTomato_Box = Base.CannedTomato2,\n            Base.TunaTin_Box = Base.TunaTin,\n            Base.Dogfood_Box = Base.Dogfood,\n            Base.MysteryCan_Box = Base.MysteryCan,\n            Base.DentedCan_Box = Base.DentedCan,\n            Base.WaterRationCan_Box = Base.WaterRationCan,\n            Base.Macandcheese_Box = Base.Macandcheese,\n        }"
+  },
+  {
+    "name": "OpenBoxOfWine",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Cooking;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.WineWhite_Boxed;Base.WineRed_Boxed] mappers[wineType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Wine",
+      "Base.Wine2"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 80,\n        Tags = InHandCraft;Cooking;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.WineWhite_Boxed;Base.WineRed_Boxed] mappers[wineType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 6 mapper:wineType,\n        }\n        itemMapper wineType\n        {\n            Base.Wine = Base.WineWhite_Boxed,\n            Base.Wine2 = Base.WineRed_Boxed,\n        }"
+  },
+  {
+    "name": "PackBoxOfWine",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Cooking",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 6 [Base.Wine;Base.Wine2] mappers[wineType] flags[AllowFavorite;InheritFavorite;IsExclusive;ItemCount;IsSealed]"
+    ],
+    "produces": [
+      "Base.WineRed_Boxed",
+      "Base.WineWhite_Boxed"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 80,\n        Tags = InHandCraft;Cooking,\n        category = Packing,\n        inputs\n        {\n            item 6 [Base.Wine;Base.Wine2] mappers[wineType] flags[AllowFavorite;InheritFavorite;IsExclusive;ItemCount;IsSealed],\n        }\n        outputs\n        {\n            item 1 mapper:wineType,\n        }\n        itemMapper wineType\n        {\n            Base.WineWhite_Boxed = Base.Wine,\n            Base.WineRed_Boxed = Base.Wine2,\n        }"
+  },
+  {
+    "name": "UnbundleMoney",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.MoneyBundle] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Money"
+    ],
+    "raw": "timedAction = Making,\n        time = 80,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.MoneyBundle] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 100 Base.Money,\n        }"
+  },
+  {
+    "name": "OpenBoxOfJars",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.unpackItemTypeFromBox",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BoxOfJars] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.EmptyJar",
+      "Base.JarLid"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 15,\n        OnCreate = RecipeCodeOnCreate.unpackItemTypeFromBox,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.BoxOfJars] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 6 Base.EmptyJar,\n            item 6 Base.JarLid,\n        }"
+  },
+  {
+    "name": "PutJarsInBox",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "RecipeCodeOnCreate.placeItemTypeInBox",
+    "onTest": "",
+    "inputs": [
+      "item 6 tags[base:jar] flags[AllowFavorite;InheritFavorite;ItemCount]",
+      "item 6 [Base.JarLid] flags[IsUndamaged;AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.BoxOfJars"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 15,\n        OnCreate = RecipeCodeOnCreate.placeItemTypeInBox,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 6 tags[base:jar] flags[AllowFavorite;InheritFavorite;ItemCount],\n            item 6 [Base.JarLid] flags[IsUndamaged;AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 1 Base.BoxOfJars,\n        }"
+  },
+  {
+    "name": "OpenBox100",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.NailsBox;Base.ScrewsBox;Base.CapGunCapBox] mappers[itemType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CapGunCap",
+      "Base.Nails",
+      "Base.Screws"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.NailsBox;Base.ScrewsBox;Base.CapGunCapBox] mappers[itemType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 100 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.CapGunCap = Base.CapGunCapBox,\n            Base.Nails = Base.NailsBox,\n            Base.Screws = Base.ScrewsBox,\n        }"
+  },
+  {
+    "name": "OpenCarton12",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.NailsCarton;Base.ScrewsCarton;Base.Bullets9mmCarton;Base.Bullets45Carton;Base.Bullets38Carton;Base.Bullets357Carton;Base.Bullets44Carton;Base.308Carton;Base.ShotgunShellsCarton;Base.556Carton;Base.3030Carton] mappers[boxType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.3030Box",
+      "Base.308Box",
+      "Base.556Box",
+      "Base.Bullets357Box",
+      "Base.Bullets38Box",
+      "Base.Bullets44Box",
+      "Base.Bullets45Box",
+      "Base.Bullets9mmBox",
+      "Base.NailsBox",
+      "Base.ScrewsBox",
+      "Base.ShotgunShellsBox"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 50,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.NailsCarton;Base.ScrewsCarton;Base.Bullets9mmCarton;Base.Bullets45Carton;Base.Bullets38Carton;Base.Bullets357Carton;Base.Bullets44Carton;Base.308Carton;Base.ShotgunShellsCarton;Base.556Carton;Base.3030Carton] mappers[boxType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 12 mapper:boxType,\n        }\n        itemMapper boxType\n        {\n            Base.NailsBox = Base.NailsCarton,\n            Base.ScrewsBox = Base.ScrewsCarton,\n            Base.Bullets9mmBox = Base.Bullets9mmCarton,\n            Base.Bullets45Box = Base.Bullets45Carton,\n            Base.Bullets38Box = Base.Bullets38Carton,\n            Base.Bullets357Box = Base.Bullets357Carton,\n            Base.Bullets44Box = Base.Bullets44Carton,\n            Base.308Box = Base.308Carton,\n            Base.ShotgunShellsBox = Base.ShotgunShellsCarton,\n            Base.556Box = Base.556Carton,\n            Base.3030Box = Base.3030Carton,\n        }"
+  },
+  {
+    "name": "OpenBoxOfPaperclip",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.PaperclipBox] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Paperclip"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.PaperclipBox] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 40 Base.Paperclip,\n        }"
+  },
+  {
+    "name": "PlaceInBox",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "RecipeCodeOnCreate.placeInBox",
+    "onTest": "RecipeCodeOnTest.genericPacking",
+    "inputs": [
+      "item 6 [Base.Candle;Base.Coldpack;Base.LightBulb;10:Base.FishingHook;12:Base.Scotchtape;12:Base.Antibiotics;12:Base.Bandage;12:Base.Battery;12:Base.CottonBalls;12:Base.DuctTape;12:Base.SutureNeedle;20:Base.TongueDepressor;24:Base.Bandaid;40:Base.Paperclip;100:Base.Nails;100:Base.Screws;100:Base.CapGunCap] mappers[itemType] flags[AllowFavorite;InheritFavorite;IsExclusive;ItemCount]"
+    ],
+    "produces": [
+      "Base.AdhesiveBandageBox",
+      "Base.AdhesiveTapeBox",
+      "Base.AntibioticsBox",
+      "Base.BandageBox",
+      "Base.BatteryBox",
+      "Base.CandleBox",
+      "Base.CapGunCapBox",
+      "Base.ColdpackBox",
+      "Base.CottonBallsBox",
+      "Base.DuctTapeBox",
+      "Base.FishingHookBox",
+      "Base.LightBulbBox",
+      "Base.NailsBox",
+      "Base.PaperclipBox",
+      "Base.ScrewsBox",
+      "Base.SutureNeedleBox",
+      "Base.TongueDepressorBox"
+    ],
+    "raw": "timedAction = PackingBox_Small,\n        time = 25,\n        OnTest = RecipeCodeOnTest.genericPacking,\n        OnCreate = RecipeCodeOnCreate.placeInBox,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 6 [Base.Candle;Base.Coldpack;Base.LightBulb;10:Base.FishingHook;12:Base.Scotchtape;12:Base.Antibiotics;12:Base.Bandage;12:Base.Battery;12:Base.CottonBalls;12:Base.DuctTape;12:Base.SutureNeedle;20:Base.TongueDepressor;24:Base.Bandaid;40:Base.Paperclip;100:Base.Nails;100:Base.Screws;100:Base.CapGunCap] mappers[itemType] flags[AllowFavorite;InheritFavorite;IsExclusive;ItemCount],\n        }\n        outputs\n        {\n            item 1 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.FishingHookBox = Base.FishingHook,\n            Base.CapGunCapBox = Base.CapGunCap,\n            Base.NailsBox = Base.Nails,\n            Base.ScrewsBox = Base.Screws,\n            Base.AdhesiveBandageBox = Base.Bandaid,\n            Base.AdhesiveTapeBox = Base.Scotchtape,\n            Base.AntibioticsBox = Base.Antibiotics,\n            Base.BandageBox = Base.Bandage,\n            Base.BatteryBox = Base.Battery,\n            Base.CandleBox = Base.Candle,\n            Base.ColdpackBox = Base.Coldpack,\n            Base.CottonBallsBox = Base.CottonBalls,\n            Base.DuctTapeBox = Base.DuctTape,\n            Base.FishingHookBox = Base.FishingHook,\n            Base.LightBulbBox = Base.LightBulb,\n            Base.NailsBox = Base.Nails,\n            Base.PaperclipBox = Base.Paperclip,\n            Base.ScrewsBox = Base.Screws,\n            Base.SutureNeedleBox = Base.SutureNeedle,\n            Base.TongueDepressorBox = Base.TongueDepressor,\n        }"
+  },
+  {
+    "name": "Place12BoxesInCarton",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 12 [Base.NailsBox;Base.ScrewsBox;Base.Bullets44Box;Base.308Box;Base.ShotgunShellsBox;Base.556Box;Base.Bullets9mmBox;Base.Bullets45Box;Base.Bullets38Box;Base.Bullets357Box;Base.3030Box] mappers[itemType] flags[AllowFavorite;InheritFavorite;IsExclusive]"
+    ],
+    "produces": [
+      "Base.3030Carton",
+      "Base.308Carton",
+      "Base.556Carton",
+      "Base.Bullets357Carton",
+      "Base.Bullets38Carton",
+      "Base.Bullets44Carton",
+      "Base.Bullets45Carton",
+      "Base.Bullets9mmCarton",
+      "Base.NailsCarton",
+      "Base.ScrewsCarton",
+      "Base.ShotgunShellsCarton"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 50,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 12 [Base.NailsBox;Base.ScrewsBox;Base.Bullets44Box;Base.308Box;Base.ShotgunShellsBox;Base.556Box;Base.Bullets9mmBox;Base.Bullets45Box;Base.Bullets38Box;Base.Bullets357Box;Base.3030Box] mappers[itemType] flags[AllowFavorite;InheritFavorite;IsExclusive],\n        }\n        outputs\n        {\n            item 1 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.NailsCarton = Base.NailsBox,\n            Base.ScrewsCarton = Base.ScrewsBox,\n            Base.Bullets44Carton = Base.Bullets44Box,\n            Base.308Carton = Base.308Box,\n            Base.ShotgunShellsCarton = Base.ShotgunShellsBox,\n            Base.556Carton = Base.556Box,\n            Base.Bullets9mmCarton = Base.Bullets9mmBox,\n            Base.Bullets45Carton = Base.Bullets45Box,\n            Base.Bullets38Carton = Base.Bullets38Box,\n            Base.Bullets357Carton = Base.Bullets357Box,\n            Base.3030Carton = Base.3030Box,\n        }"
+  },
+  {
+    "name": "OpenBoxOfFishingHooks",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.FishingHookBox] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.FishingHook"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        recipeGroup = OpenBox,\n        inputs\n        {\n            item 1 [Base.FishingHookBox] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 10 Base.FishingHook,\n        }"
+  },
+  {
+    "name": "UnpackSetOfBooks",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BookAimingSet;Base.BookHusbandrySet;Base.BookButcheringSet;Base.BookCarpentrySet;Base.BookCarvingSet;Base.BookCookingSet;Base.BookElectricianSet;Base.BookFarmingSet;Base.BookFirstAidSet;Base.BookFishingSet;Base.BookForagingSet;Base.BookGlassmakingSet;Base.BookLongBladeSet;Base.BookMasonrySet;Base.BookMechanicsSet;Base.BookBlacksmithSet;Base.BookMetalWeldingSet;Base.BookReloadingSet;Base.BookTailoringSet;Base.BookTrackingSet;Base.BookTrappingSet;Base.BookFlintKnappingSet;Base.BookMaintenanceSet;Base.BookPotterySet] mappers[book1;book2;book3;book4;book5] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.BookAiming1",
+      "Base.BookAiming2",
+      "Base.BookAiming3",
+      "Base.BookAiming4",
+      "Base.BookAiming5",
+      "Base.BookBlacksmith1",
+      "Base.BookBlacksmith2",
+      "Base.BookBlacksmith3",
+      "Base.BookBlacksmith4",
+      "Base.BookBlacksmith5",
+      "Base.BookButchering1",
+      "Base.BookButchering2",
+      "Base.BookButchering3",
+      "Base.BookButchering4",
+      "Base.BookButchering5",
+      "Base.BookCarpentry1",
+      "Base.BookCarpentry2",
+      "Base.BookCarpentry3",
+      "Base.BookCarpentry4",
+      "Base.BookCarpentry5",
+      "Base.BookCarving1",
+      "Base.BookCarving2",
+      "Base.BookCarving3",
+      "Base.BookCarving4",
+      "Base.BookCarving5",
+      "Base.BookCooking1",
+      "Base.BookCooking2",
+      "Base.BookCooking3",
+      "Base.BookCooking4",
+      "Base.BookCooking5",
+      "Base.BookElectrician1",
+      "Base.BookElectrician2",
+      "Base.BookElectrician3",
+      "Base.BookElectrician4",
+      "Base.BookElectrician5",
+      "Base.BookFarming1",
+      "Base.BookFarming2",
+      "Base.BookFarming3",
+      "Base.BookFarming4",
+      "Base.BookFarming5",
+      "Base.BookFirstAid1",
+      "Base.BookFirstAid2",
+      "Base.BookFirstAid3",
+      "Base.BookFirstAid4",
+      "Base.BookFirstAid5",
+      "Base.BookFishing1",
+      "Base.BookFishing2",
+      "Base.BookFishing3",
+      "Base.BookFishing4",
+      "Base.BookFishing5",
+      "Base.BookFlintKnapping1",
+      "Base.BookFlintKnapping2",
+      "Base.BookFlintKnapping3",
+      "Base.BookFlintKnapping4",
+      "Base.BookFlintKnapping5",
+      "Base.BookForaging1",
+      "Base.BookForaging2",
+      "Base.BookForaging3",
+      "Base.BookForaging4",
+      "Base.BookForaging5",
+      "Base.BookGlassmaking1",
+      "Base.BookGlassmaking2",
+      "Base.BookGlassmaking3",
+      "Base.BookGlassmaking4",
+      "Base.BookGlassmaking5",
+      "Base.BookHusbandry1",
+      "Base.BookHusbandry2",
+      "Base.BookHusbandry3",
+      "Base.BookHusbandry4",
+      "Base.BookHusbandry5",
+      "Base.BookLongBlade1",
+      "Base.BookLongBlade2",
+      "Base.BookLongBlade3",
+      "Base.BookLongBlade4",
+      "Base.BookLongBlade5",
+      "Base.BookMaintenance1",
+      "Base.BookMaintenance2",
+      "Base.BookMaintenance3",
+      "Base.BookMaintenance4",
+      "Base.BookMaintenance5",
+      "Base.BookMasonry1",
+      "Base.BookMasonry2",
+      "Base.BookMasonry3",
+      "Base.BookMasonry4",
+      "Base.BookMasonry5",
+      "Base.BookMechanic1",
+      "Base.BookMechanic2",
+      "Base.BookMechanic3",
+      "Base.BookMechanic4",
+      "Base.BookMechanic5",
+      "Base.BookMetalWelding1",
+      "Base.BookMetalWelding2",
+      "Base.BookMetalWelding3",
+      "Base.BookMetalWelding4",
+      "Base.BookMetalWelding5",
+      "Base.BookPottery1",
+      "Base.BookPottery2",
+      "Base.BookPottery3",
+      "Base.BookPottery4",
+      "Base.BookPottery5",
+      "Base.BookReloading1",
+      "Base.BookReloading2",
+      "Base.BookReloading3",
+      "Base.BookReloading4",
+      "Base.BookReloading5",
+      "Base.BookTailoring1",
+      "Base.BookTailoring2",
+      "Base.BookTailoring3",
+      "Base.BookTailoring4",
+      "Base.BookTailoring5",
+      "Base.BookTracking1",
+      "Base.BookTracking2",
+      "Base.BookTracking3",
+      "Base.BookTracking4",
+      "Base.BookTracking5",
+      "Base.BookTrapping1",
+      "Base.BookTrapping2",
+      "Base.BookTrapping3",
+      "Base.BookTrapping4",
+      "Base.BookTrapping5"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 80,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.BookAimingSet;Base.BookHusbandrySet;Base.BookButcheringSet;Base.BookCarpentrySet;Base.BookCarvingSet;Base.BookCookingSet;Base.BookElectricianSet;Base.BookFarmingSet;Base.BookFirstAidSet;Base.BookFishingSet;Base.BookForagingSet;Base.BookGlassmakingSet;Base.BookLongBladeSet;Base.BookMasonrySet;Base.BookMechanicsSet;Base.BookBlacksmithSet;Base.BookMetalWeldingSet;Base.BookReloadingSet;Base.BookTailoringSet;Base.BookTrackingSet;Base.BookTrappingSet;Base.BookFlintKnappingSet;Base.BookMaintenanceSet;Base.BookPotterySet] mappers[book1;book2;book3;book4;book5] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 1 mapper:book1,\n            item 1 mapper:book2,\n            item 1 mapper:book3,\n            item 1 mapper:book4,\n            item 1 mapper:book5,\n        }\n        itemMapper book1\n        {\n            Base.BookAiming1 = Base.BookAimingSet,\n            Base.BookHusbandry1 = Base.BookHusbandrySet,\n            Base.BookButchering1 = Base.BookButcheringSet,\n            Base.BookCarpentry1 = Base.BookCarpentrySet,\n            Base.BookCarving1 = Base.BookCarvingSet,\n            Base.BookCooking1 = Base.BookCookingSet,\n            Base.BookElectrician1 = Base.BookElectricianSet,\n            Base.BookFarming1 = Base.BookFarmingSet,\n            Base.BookFirstAid1 = Base.BookFirstAidSet,\n            Base.BookFishing1 = Base.BookFishingSet,\n            Base.BookForaging1 = Base.BookForagingSet,\n            Base.BookGlassmaking1 = Base.BookGlassmakingSet,\n            Base.BookLongBlade1 = Base.BookLongBladeSet,\n            Base.BookFlintKnapping1 = Base.BookFlintKnappingSet,\n            Base.BookMasonry1 = Base.BookMasonrySet,\n            Base.BookMechanic1 = Base.BookMechanicsSet,\n            Base.BookMaintenance1 = Base.BookMaintenanceSet,\n            Base.BookBlacksmith1 = Base.BookBlacksmithSet,\n            Base.BookMetalWelding1 = Base.BookMetalWeldingSet,\n            Base.BookReloading1 = Base.BookReloadingSet,\n            Base.BookTailoring1 = Base.BookTailoringSet,\n            Base.BookTrapping1 = Base.BookTrappingSet,\n            Base.BookTracking1 = Base.BookTrackingSet,\n            Base.BookPottery1 = Base.BookPotterySet,\n        }\n        itemMapper book2\n        {\n            Base.BookAiming2 = Base.BookAimingSet,\n            Base.BookHusbandry2 = Base.BookHusbandrySet,\n            Base.BookButchering2 = Base.BookButcheringSet,\n            Base.BookCarpentry2 = Base.BookCarpentrySet,\n            Base.BookCarving2 = Base.BookCarvingSet,\n            Base.BookCooking2 = Base.BookCookingSet,\n            Base.BookElectrician2 = Base.BookElectricianSet,\n            Base.BookFarming2 = Base.BookFarmingSet,\n            Base.BookFirstAid2 = Base.BookFirstAidSet,\n            Base.BookFishing2 = Base.BookFishingSet,\n            Base.BookForaging2 = Base.BookForagingSet,\n            Base.BookGlassmaking2 = Base.BookGlassmakingSet,\n            Base.BookLongBlade2 = Base.BookLongBladeSet,\n            Base.BookFlintKnapping2 = Base.BookFlintKnappingSet,\n            Base.BookMasonry2 = Base.BookMasonrySet,\n            Base.BookMechanic2 = Base.BookMechanicsSet,\n            Base.BookMaintenance2 = Base.BookMaintenanceSet,\n            Base.BookBlacksmith2 = Base.BookBlacksmithSet,\n            Base.BookMetalWelding2 = Base.BookMetalWeldingSet,\n            Base.BookReloading2 = Base.BookReloadingSet,\n            Base.BookTailoring2 = Base.BookTailoringSet,\n            Base.BookTrapping2 = Base.BookTrappingSet,\n            Base.BookTracking2 = Base.BookTrackingSet,\n            Base.BookPottery2 = Base.BookPotterySet,\n        }\n        itemMapper book3\n        {\n            Base.BookAiming3 = Base.BookAimingSet,\n            Base.BookHusbandry3 = Base.BookHusbandrySet,\n            Base.BookButchering3 = Base.BookButcheringSet,\n            Base.BookCarpentry3 = Base.BookCarpentrySet,\n            Base.BookCarving3 = Base.BookCarvingSet,\n            Base.BookCooking3 = Base.BookCookingSet,\n            Base.BookElectrician3 = Base.BookElectricianSet,\n            Base.BookFarming3 = Base.BookFarmingSet,\n            Base.BookFirstAid3 = Base.BookFirstAidSet,\n            Base.BookFishing3 = Base.BookFishingSet,\n            Base.BookForaging3 = Base.BookForagingSet,\n            Base.BookGlassmaking3 = Base.BookGlassmakingSet,\n            Base.BookLongBlade3 = Base.BookLongBladeSet,\n            Base.BookFlintKnapping3 = Base.BookFlintKnappingSet,\n            Base.BookMasonry3 = Base.BookMasonrySet,\n            Base.BookMechanic3 = Base.BookMechanicsSet,\n            Base.BookMaintenance3 = Base.BookMaintenanceSet,\n            Base.BookBlacksmith3 = Base.BookBlacksmithSet,\n            Base.BookMetalWelding3 = Base.BookMetalWeldingSet,\n            Base.BookReloading3 = Base.BookReloadingSet,\n            Base.BookTailoring3 = Base.BookTailoringSet,\n            Base.BookTrapping3 = Base.BookTrappingSet,\n            Base.BookTracking3 = Base.BookTrackingSet,\n            Base.BookPottery3 = Base.BookPotterySet,\n        }\n        itemMapper book4\n        {\n            Base.BookAiming4 = Base.BookAimingSet,\n            Base.BookHusbandry4 = Base.BookHusbandrySet,\n            Base.BookButchering4 = Base.BookButcheringSet,\n            Base.BookCarpentry4 = Base.BookCarpentrySet,\n            Base.BookCarving4 = Base.BookCarvingSet,\n            Base.BookCooking4 = Base.BookCookingSet,\n            Base.BookElectrician4 = Base.BookElectricianSet,\n            Base.BookFarming4 = Base.BookFarmingSet,\n            Base.BookFirstAid4 = Base.BookFirstAidSet,\n            Base.BookFishing4 = Base.BookFishingSet,\n            Base.BookForaging4 = Base.BookForagingSet,\n            Base.BookGlassmaking4 = Base.BookGlassmakingSet,\n            Base.BookLongBlade4 = Base.BookLongBladeSet,\n            Base.BookFlintKnapping4 = Base.BookFlintKnappingSet,\n            Base.BookMasonry4 = Base.BookMasonrySet,\n            Base.BookMechanic4 = Base.BookMechanicsSet,\n            Base.BookMaintenance4 = Base.BookMaintenanceSet,\n            Base.BookBlacksmith4 = Base.BookBlacksmithSet,\n            Base.BookMetalWelding4 = Base.BookMetalWeldingSet,\n            Base.BookReloading4 = Base.BookReloadingSet,\n            Base.BookTailoring4 = Base.BookTailoringSet,\n            Base.BookTrapping4 = Base.BookTrappingSet,\n            Base.BookTracking4 = Base.BookTrackingSet,\n            Base.BookPottery4 = Base.BookPotterySet,\n        }\n        itemMapper book5\n        {\n            Base.BookAiming5 = Base.BookAimingSet,\n            Base.BookHusbandry5 = Base.BookHusbandrySet,\n            Base.BookButchering5 = Base.BookButcheringSet,\n            Base.BookCarpentry5 = Base.BookCarpentrySet,\n            Base.BookCarving5 = Base.BookCarvingSet,\n            Base.BookCooking5 = Base.BookCookingSet,\n            Base.BookElectrician5 = Base.BookElectricianSet,\n            Base.BookFarming5 = Base.BookFarmingSet,\n            Base.BookFirstAid5 = Base.BookFirstAidSet,\n            Base.BookFishing5 = Base.BookFishingSet,\n            Base.BookForaging5 = Base.BookForagingSet,\n            Base.BookGlassmaking5 = Base.BookGlassmakingSet,\n            Base.BookLongBlade5 = Base.BookLongBladeSet,\n            Base.BookFlintKnapping5 = Base.BookFlintKnappingSet,\n            Base.BookMasonry5 = Base.BookMasonrySet,\n            Base.BookMechanic5 = Base.BookMechanicsSet,\n            Base.BookMaintenance5 = Base.BookMaintenanceSet,\n            Base.BookBlacksmith5 = Base.BookBlacksmithSet,\n            Base.BookMetalWelding5 = Base.BookMetalWeldingSet,\n            Base.BookReloading5 = Base.BookReloadingSet,\n            Base.BookTailoring5 = Base.BookTailoringSet,\n            Base.BookTrapping5 = Base.BookTrappingSet,\n            Base.BookTracking5 = Base.BookTrackingSet,\n            Base.BookPottery5 = Base.BookPotterySet,\n        }"
+  },
+  {
+    "name": "PackSetOfBooks",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BookAiming1;Base.BookHusbandry1;Base.BookCarpentry1;Base.BookCooking1;Base.BookElectrician1;Base.BookFarming1;Base.BookFirstAid1;Base.BookFishing1;Base.BookForaging1;Base.BookGlassmaking1;Base.BookLongBlade1;Base.BookMasonry1;Base.BookMechanic1;Base.BookBlacksmith1;Base.BookMetalWelding1;Base.BookPottery1;Base.BookReloading1;Base.BookTailoring1;Base.BookTrapping1;Base.BookCarving1;Base.BookFlintKnapping1;Base.BookButchering1;Base.BookTracking1;Base.BookMaintenance1] mappers[bookType] flags[AllowFavorite;InheritFavorite]",
+      "item 1 [Base.BookAiming2;Base.BookHusbandry2;Base.BookCarpentry2;Base.BookCooking2;Base.BookElectrician2;Base.BookFarming2;Base.BookFirstAid2;Base.BookFishing2;Base.BookForaging2;Base.BookGlassmaking2;Base.BookLongBlade2;Base.BookMasonry2;Base.BookMechanic2;Base.BookBlacksmith2;Base.BookMetalWelding2;Base.BookPottery2;Base.BookReloading2;Base.BookTailoring2;Base.BookTrapping2;Base.BookCarving2;Base.BookFlintKnapping2;Base.BookButchering2;Base.BookTracking2;Base.BookMaintenance2] mappers[bookType] flags[AllowFavorite;InheritFavorite]",
+      "item 1 [Base.BookAiming3;Base.BookHusbandry3;Base.BookCarpentry3;Base.BookCooking3;Base.BookElectrician3;Base.BookFarming3;Base.BookFirstAid3;Base.BookFishing3;Base.BookForaging3;Base.BookGlassmaking3;Base.BookLongBlade3;Base.BookMasonry3;Base.BookMechanic3;Base.BookBlacksmith3;Base.BookMetalWelding3;Base.BookPottery3;Base.BookReloading3;Base.BookTailoring3;Base.BookTrapping3;Base.BookCarving3;Base.BookFlintKnapping3;Base.BookButchering3;Base.BookTracking3;Base.BookMaintenance3] mappers[bookType] flags[AllowFavorite;InheritFavorite]",
+      "item 1 [Base.BookAiming4;Base.BookHusbandry4;Base.BookCarpentry4;Base.BookCooking4;Base.BookElectrician4;Base.BookFarming4;Base.BookFirstAid4;Base.BookFishing4;Base.BookForaging4;Base.BookGlassmaking4;Base.BookLongBlade4;Base.BookMasonry4;Base.BookMechanic4;Base.BookBlacksmith4;Base.BookMetalWelding4;Base.BookPottery4;Base.BookReloading4;Base.BookTailoring4;Base.BookTrapping4;Base.BookCarving4;Base.BookFlintKnapping4;Base.BookButchering4;Base.BookTracking4;Base.BookMaintenance4] mappers[bookType] flags[AllowFavorite;InheritFavorite]",
+      "item 1 [Base.BookAiming5;Base.BookHusbandry5;Base.BookCarpentry5;Base.BookCooking5;Base.BookElectrician5;Base.BookFarming5;Base.BookFirstAid5;Base.BookFishing5;Base.BookForaging5;Base.BookGlassmaking5;Base.BookLongBlade5;Base.BookMasonry5;Base.BookMechanic5;Base.BookBlacksmith5;Base.BookMetalWelding5;Base.BookPottery5;Base.BookReloading5;Base.BookTailoring5;Base.BookTrapping5;Base.BookCarving5;Base.BookFlintKnapping5;Base.BookButchering5;Base.BookTracking5;Base.BookMaintenance5] mappers[bookType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.BookAimingSet",
+      "Base.BookBlacksmithSet",
+      "Base.BookButcheringSet",
+      "Base.BookCarpentrySet",
+      "Base.BookCarvingSet",
+      "Base.BookCookingSet",
+      "Base.BookElectricianSet",
+      "Base.BookFarmingSet",
+      "Base.BookFirstAidSet",
+      "Base.BookFishingSet",
+      "Base.BookFlintKnappingSet",
+      "Base.BookForagingSet",
+      "Base.BookGlassmakingSet",
+      "Base.BookHusbandrySet",
+      "Base.BookLongBladeSet",
+      "Base.BookMaintenanceSet",
+      "Base.BookMasonrySet",
+      "Base.BookMechanicsSet",
+      "Base.BookMetalWeldingSet",
+      "Base.BookPotterySet",
+      "Base.BookReloadingSet",
+      "Base.BookTailoringSet",
+      "Base.BookTrackingSet",
+      "Base.BookTrappingSet"
+    ],
+    "raw": "timedAction = PackingBox,\n        time = 80,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.BookAiming1;Base.BookHusbandry1;Base.BookCarpentry1;Base.BookCooking1;Base.BookElectrician1;Base.BookFarming1;Base.BookFirstAid1;Base.BookFishing1;Base.BookForaging1;Base.BookGlassmaking1;Base.BookLongBlade1;Base.BookMasonry1;Base.BookMechanic1;Base.BookBlacksmith1;Base.BookMetalWelding1;Base.BookPottery1;Base.BookReloading1;Base.BookTailoring1;Base.BookTrapping1;Base.BookCarving1;Base.BookFlintKnapping1;Base.BookButchering1;Base.BookTracking1;Base.BookMaintenance1] mappers[bookType] flags[AllowFavorite;InheritFavorite],\n            item 1 [Base.BookAiming2;Base.BookHusbandry2;Base.BookCarpentry2;Base.BookCooking2;Base.BookElectrician2;Base.BookFarming2;Base.BookFirstAid2;Base.BookFishing2;Base.BookForaging2;Base.BookGlassmaking2;Base.BookLongBlade2;Base.BookMasonry2;Base.BookMechanic2;Base.BookBlacksmith2;Base.BookMetalWelding2;Base.BookPottery2;Base.BookReloading2;Base.BookTailoring2;Base.BookTrapping2;Base.BookCarving2;Base.BookFlintKnapping2;Base.BookButchering2;Base.BookTracking2;Base.BookMaintenance2] mappers[bookType] flags[AllowFavorite;InheritFavorite],\n            item 1 [Base.BookAiming3;Base.BookHusbandry3;Base.BookCarpentry3;Base.BookCooking3;Base.BookElectrician3;Base.BookFarming3;Base.BookFirstAid3;Base.BookFishing3;Base.BookForaging3;Base.BookGlassmaking3;Base.BookLongBlade3;Base.BookMasonry3;Base.BookMechanic3;Base.BookBlacksmith3;Base.BookMetalWelding3;Base.BookPottery3;Base.BookReloading3;Base.BookTailoring3;Base.BookTrapping3;Base.BookCarving3;Base.BookFlintKnapping3;Base.BookButchering3;Base.BookTracking3;Base.BookMaintenance3] mappers[bookType] flags[AllowFavorite;InheritFavorite],\n            item 1 [Base.BookAiming4;Base.BookHusbandry4;Base.BookCarpentry4;Base.BookCooking4;Base.BookElectrician4;Base.BookFarming4;Base.BookFirstAid4;Base.BookFishing4;Base.BookForaging4;Base.BookGlassmaking4;Base.BookLongBlade4;Base.BookMasonry4;Base.BookMechanic4;Base.BookBlacksmith4;Base.BookMetalWelding4;Base.BookPottery4;Base.BookReloading4;Base.BookTailoring4;Base.BookTrapping4;Base.BookCarving4;Base.BookFlintKnapping4;Base.BookButchering4;Base.BookTracking4;Base.BookMaintenance4] mappers[bookType] flags[AllowFavorite;InheritFavorite],\n            item 1 [Base.BookAiming5;Base.BookHusbandry5;Base.BookCarpentry5;Base.BookCooking5;Base.BookElectrician5;Base.BookFarming5;Base.BookFirstAid5;Base.BookFishing5;Base.BookForaging5;Base.BookGlassmaking5;Base.BookLongBlade5;Base.BookMasonry5;Base.BookMechanic5;Base.BookBlacksmith5;Base.BookMetalWelding5;Base.BookPottery5;Base.BookReloading5;Base.BookTailoring5;Base.BookTrapping5;Base.BookCarving5;Base.BookFlintKnapping5;Base.BookButchering5;Base.BookTracking5;Base.BookMaintenance5] mappers[bookType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 1 mapper:bookType,\n        }\n        itemMapper bookType\n        {\n            Base.BookAimingSet = Base.BookAiming1;Base.BookAiming2;Base.BookAiming3;Base.BookAiming4;Base.BookAiming5,\n            Base.BookButcheringSet = Base.BookButchering1;Base.BookButchering2;Base.BookButchering3;Base.BookButchering4;Base.BookButchering5,\n            Base.BookHusbandrySet = Base.BookHusbandry1;Base.BookHusbandry2;Base.BookHusbandry3;Base.BookHusbandry4;Base.BookHusbandry5,\n            Base.BookCarpentrySet = Base.BookCarpentry1;Base.BookCarpentry2;Base.BookCarpentry3;Base.BookCarpentry4;Base.BookCarpentry5,\n            Base.BookCarvingSet = Base.BookCarving1;Base.BookCarving2;Base.BookCarving3;Base.BookCarving4;Base.BookCarving5,\n            Base.BookCookingSet = Base.BookCooking1;Base.BookCooking2;Base.BookCooking3;Base.BookCooking4;Base.BookCooking5,\n            Base.BookElectricianSet = Base.BookElectrician1;Base.BookElectrician2;Base.BookElectrician3;Base.BookElectrician4;Base.BookElectrician5,\n            Base.BookFarmingSet = Base.BookFarming1;Base.BookFarming2;Base.BookFarming3;Base.BookFarming4;Base.BookFarming5,\n            Base.BookFirstAidSet = Base.BookFirstAid1;Base.BookFirstAid2;Base.BookFirstAid3;Base.BookFirstAid4;Base.BookFirstAid5,\n            Base.BookFishingSet = Base.BookFishing1;Base.BookFishing2;Base.BookFishing3;Base.BookFishing4;Base.BookFishing5,\n            Base.BookForagingSet = Base.BookForaging1;Base.BookForaging2;Base.BookForaging3;Base.BookForaging4;Base.BookForaging5,\n            Base.BookGlassmakingSet = Base.BookGlassmaking1;Base.BookGlassmaking2;Base.BookGlassmaking3;Base.BookGlassmaking4;Base.BookGlassmaking5,\n            Base.BookFlintKnappingSet = Base.BookFlintKnapping1;Base.BookFlintKnapping2;Base.BookFlintKnapping3;Base.BookFlintKnapping4;Base.BookFlintKnapping5,\n            Base.BookLongBladeSet = Base.BookLongBlade1;Base.BookLongBlade2;Base.BookLongBlade3;Base.BookLongBlade4;Base.BookLongBlade5,\n            Base.BookMasonrySet = Base.BookMasonry1;Base.BookMasonry2;Base.BookMasonry3;Base.BookMasonry4;Base.BookMasonry5,\n            Base.BookMechanicsSet = Base.BookMechanic1;Base.BookMechanic2;Base.BookMechanic3;Base.BookMechanic4;Base.BookMechanic5,\n            Base.BookMaintenanceSet = Base.BookMaintenance1;Base.BookMaintenance2;Base.BookMaintenance3;Base.BookMaintenance4;Base.BookMaintenance5,\n            Base.BookBlacksmithSet = Base.BookBlacksmith1;Base.BookBlacksmith2;Base.BookBlacksmith3;Base.BookBlacksmith4;Base.BookBlacksmith5,\n            Base.BookMetalWeldingSet = Base.BookMetalWelding1;Base.BookMetalWelding2;Base.BookMetalWelding3;Base.BookMetalWelding4;Base.BookMetalWelding5,\n            Base.BookPotterySet = Base.BookPottery1;Base.BookPottery2;Base.BookPottery3;Base.BookPottery4;Base.BookPottery5,\n            Base.BookReloadingSet = Base.BookReloading1;Base.BookReloading2;Base.BookReloading3;Base.BookReloading4;Base.BookReloading5,\n            Base.BookTailoringSet = Base.BookTailoring1;Base.BookTailoring2;Base.BookTailoring3;Base.BookTailoring4;Base.BookTailoring5,\n            Base.BookTrackingSet = Base.BookTracking1;Base.BookTracking2;Base.BookTracking3;Base.BookTracking4;Base.BookTracking5,\n            Base.BookTrappingSet = Base.BookTrapping1;Base.BookTrapping2;Base.BookTrapping3;Base.BookTrapping4;Base.BookTrapping5,\n        }"
+  },
+  {
+    "name": "UnpackBox12",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.unpackBox",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.AdhesiveTapeBox;Base.AntibioticsBox;Base.BandageBox;Base.BatteryBox;Base.CottonBallsBox;Base.DuctTapeBox;Base.SutureNeedleBox] mappers[itemType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Antibiotics",
+      "Base.Bandage",
+      "Base.Battery",
+      "Base.CottonBalls",
+      "Base.DuctTape",
+      "Base.Scotchtape",
+      "Base.SutureNeedle"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        OnCreate = RecipeCodeOnCreate.unpackBox,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.AdhesiveTapeBox;Base.AntibioticsBox;Base.BandageBox;Base.BatteryBox;Base.CottonBallsBox;Base.DuctTapeBox;Base.SutureNeedleBox] mappers[itemType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 12 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.Scotchtape = Base.AdhesiveTapeBox,\n            Base.Antibiotics = Base.AntibioticsBox,\n            Base.Bandage = Base.BandageBox,\n            Base.Battery = Base.BatteryBox,\n            Base.CottonBalls = Base.CottonBallsBox,\n            Base.DuctTape = Base.DuctTapeBox,\n            Base.SutureNeedle = Base.SutureNeedleBox,\n        }"
+  },
+  {
+    "name": "UnpackBoxOfAdhesiveBandages",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.AdhesiveBandageBox] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Bandaid"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 50,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.AdhesiveBandageBox] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 24 Base.Bandaid,\n        }"
+  },
+  {
+    "name": "UnpackTongueDepressors",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.TongueDepressorBox] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.TongueDepressor"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.TongueDepressorBox] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 20 Base.TongueDepressor,\n        }"
+  },
+  {
+    "name": "UnpackBox6",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.unpackBox",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CandleBox;Base.ColdpackBox;Base.LightBulbBox] mappers[itemType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.Candle",
+      "Base.Coldpack",
+      "Base.LightBulb"
+    ],
+    "raw": "timedAction = UnPackBox,\n        time = 5,\n        OnCreate = RecipeCodeOnCreate.unpackBox,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.CandleBox;Base.ColdpackBox;Base.LightBulbBox] mappers[itemType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 6 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.Candle = Base.CandleBox,\n            Base.Coldpack = Base.ColdpackBox,\n            Base.LightBulb = Base.LightBulbBox,\n        }"
+  },
+  {
+    "name": "UnpackCigarettes",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Miscellaneous",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CigarettePack] mode:destroy flags[IsFull;AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CigaretteSingle"
+    ],
+    "raw": "timedAction = UnpackCigarettes,\n        time = 25,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Miscellaneous,\n        inputs\n        {\n            item 1 [Base.CigarettePack] mode:destroy flags[IsFull;AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 20 Base.CigaretteSingle,\n        }"
+  },
+  {
+    "name": "PackCigarettes",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Miscellaneous",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 20 [Base.CigaretteSingle] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CigarettePack"
+    ],
+    "raw": "timedAction = PackCigarettes,\n        time = 25,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Miscellaneous,\n        inputs\n        {\n            item 20 [Base.CigaretteSingle] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 1 Base.CigarettePack,\n        }"
+  },
+  {
+    "name": "TakeACigarette",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Miscellaneous",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CigarettePack] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CigaretteSingle"
+    ],
+    "raw": "timedAction = TakeCigarette,\n        time = 15,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Miscellaneous,\n        inputs\n        {\n            item 1 [Base.CigarettePack] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 1 Base.CigaretteSingle,\n        }"
+  },
+  {
+    "name": "AddACigarette",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Miscellaneous",
+    "tags": "InHandCraft;CanBeDoneInDark",
+    "onCreate": "RecipeCodeOnCreate.addToPack",
+    "onTest": "RecipeCodeOnTest.canAddToPack",
+    "inputs": [
+      "item 1 [Base.CigaretteSingle] flags[AllowFavorite;InheritFavorite]",
+      "item 1 [Base.CigarettePack] mode:keep flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [],
+    "raw": "timedAction = AddCigarette,\n        time = 25,\n        OnCreate = RecipeCodeOnCreate.addToPack,\n        OnTest = RecipeCodeOnTest.canAddToPack,\n        Tags = InHandCraft;CanBeDoneInDark,\n        category = Miscellaneous,\n        inputs\n        {\n            item 1 [Base.CigaretteSingle] flags[AllowFavorite;InheritFavorite],\n            item 1 [Base.CigarettePack] mode:keep flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n        }"
+  },
+  {
+    "name": "UnpackCigaretteCarton",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.CigaretteCarton] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.CigarettePack"
+    ],
+    "raw": "timedAction = UnPackBox_Small,\n        time = 5,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.CigaretteCarton] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 10 Base.CigarettePack,\n        }"
+  },
+  {
+    "name": "PackCigaretteCarton",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "",
+    "onTest": "RecipeCodeOnTest.genericPacking",
+    "inputs": [
+      "item 10 [Base.CigarettePack] flags[IsFull;AllowFavorite;InheritFavorite;ItemCount]"
+    ],
+    "produces": [
+      "Base.CigaretteCarton"
+    ],
+    "raw": "timedAction = PackingBox_Small,\n        time = 5,\n        OnTest = RecipeCodeOnTest.genericPacking,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 10 [Base.CigarettePack] flags[IsFull;AllowFavorite;InheritFavorite;ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.CigaretteCarton,\n        }"
+  },
+  {
+    "name": "unstack_items",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing;CanBeDoneInDark",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.RippedSheetsBundle;Base.RippedSheetsDirtyBundle;Base.RippedSheetsSterilizedBundle;Base.DenimStripsBundle;Base.DenimStripsDirtyBundle;Base.LeatherStripsBundle;Base.LeatherStripsDirtyBundle;Base.TwigsBundle;Base.RopeStack;Base.SheetRopeBundle;Base.BarbedWireStack;Base.WireStack] mappers[itemType] flags[AllowFavorite;InheritFavorite]"
+    ],
+    "produces": [
+      "Base.AlcoholRippedSheets",
+      "Base.BarbedWire",
+      "Base.DenimStrips",
+      "Base.DenimStripsDirty",
+      "Base.LeatherStrips",
+      "Base.LeatherStripsDirty",
+      "Base.RippedSheets",
+      "Base.RippedSheetsDirty",
+      "Base.Rope",
+      "Base.SheetRope",
+      "Base.Twigs",
+      "Base.Wire"
+    ],
+    "raw": "timedAction = Making,\n        time = 100,\n        Tags = InHandCraft;Packing;CanBeDoneInDark,\n        category = Packing,\n        inputs\n        {\n            item 1 [Base.RippedSheetsBundle;Base.RippedSheetsDirtyBundle;Base.RippedSheetsSterilizedBundle;Base.DenimStripsBundle;Base.DenimStripsDirtyBundle;Base.LeatherStripsBundle;Base.LeatherStripsDirtyBundle;Base.TwigsBundle;Base.RopeStack;Base.SheetRopeBundle;Base.BarbedWireStack;Base.WireStack] mappers[itemType] flags[AllowFavorite;InheritFavorite],\n        }\n        outputs\n        {\n            item 12 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.RippedSheets = Base.RippedSheetsBundle,\n            Base.RippedSheetsDirty = Base.RippedSheetsDirtyBundle,\n            Base.AlcoholRippedSheets = Base.RippedSheetsSterilizedBundle,\n            Base.DenimStrips = Base.DenimStripsBundle,\n            Base.DenimStripsDirty = Base.DenimStripsDirtyBundle,\n            Base.LeatherStrips = Base.LeatherStripsBundle,\n            Base.LeatherStripsDirty = Base.LeatherStripsDirtyBundle,\n            Base.Twigs = Base.TwigsBundle,\n            Base.SheetRope = Base.SheetRopeBundle,\n            Base.Rope = Base.RopeStack,\n            Base.BarbedWire = Base.BarbedWireStack,\n            Base.Wire = Base.WireStack,\n        }"
+  },
+  {
+    "name": "stack_items",
+    "source": "recipes/recipes_packing.txt",
+    "category": "Packing",
+    "tags": "InHandCraft;Packing",
+    "onCreate": "",
+    "onTest": "RecipeCodeOnTest.genericPacking",
+    "inputs": [
+      "item 12 [Base.RippedSheets;Base.RippedSheetsDirty;Base.AlcoholRippedSheets;Base.DenimStrips;Base.DenimStripsDirty;Base.LeatherStrips;Base.LeatherStripsDirty;Base.Twigs;Base.SheetRope;Base.Rope;Base.BarbedWire;Base.Wire;100:Base.Money] mode:destroy mappers[itemType] flags[IsFull;AllowFavorite;InheritFavorite;ItemCount;IsExclusive]"
+    ],
+    "produces": [
+      "Base.BarbedWireStack",
+      "Base.DenimStripsBundle",
+      "Base.DenimStripsDirtyBundle",
+      "Base.LeatherStripsBundle",
+      "Base.LeatherStripsDirtyBundle",
+      "Base.MoneyBundle",
+      "Base.RippedSheetsBundle",
+      "Base.RippedSheetsDirtyBundle",
+      "Base.RippedSheetsSterilizedBundle",
+      "Base.RopeStack",
+      "Base.SheetRopeBundle",
+      "Base.TwigsBundle",
+      "Base.WireStack"
+    ],
+    "raw": "timedAction = Making,\n        time = 100,\n        OnTest = RecipeCodeOnTest.genericPacking,\n        Tags = InHandCraft;Packing,\n        category = Packing,\n        inputs\n        {\n            item 12 [Base.RippedSheets;Base.RippedSheetsDirty;Base.AlcoholRippedSheets;Base.DenimStrips;Base.DenimStripsDirty;Base.LeatherStrips;Base.LeatherStripsDirty;Base.Twigs;Base.SheetRope;Base.Rope;Base.BarbedWire;Base.Wire;100:Base.Money] mode:destroy mappers[itemType] flags[IsFull;AllowFavorite;InheritFavorite;ItemCount;IsExclusive],\n        }\n        outputs\n        {\n            item 1 mapper:itemType,\n        }\n        itemMapper itemType\n        {\n            Base.RippedSheetsBundle = Base.RippedSheets,\n            Base.RippedSheetsDirtyBundle = Base.RippedSheetsDirty,\n            Base.RippedSheetsSterilizedBundle = Base.AlcoholRippedSheets,\n            Base.DenimStripsBundle = Base.DenimStrips,\n            Base.DenimStripsDirtyBundle = Base.DenimStripsDirty,\n            Base.LeatherStripsBundle = Base.LeatherStrips,\n            Base.LeatherStripsDirtyBundle = Base.LeatherStripsDirty,\n            Base.TwigsBundle = Base.Twigs,\n            Base.SheetRopeBundle = Base.SheetRope,\n            Base.RopeStack = Base.Rope,\n            Base.BarbedWireStack = Base.BarbedWire,\n            Base.WireStack = Base.Wire,\n            Base.MoneyBundle = Base.Money,\n        }"
+  },
+  {
+    "name": "MakeCoffeeMug",
+    "source": "entities/appliances/workstations/entity_coffeemachine_craftRecipe.txt",
+    "category": "Cooking",
+    "tags": "CoffeeMachine",
+    "onCreate": "RecipeCodeOnCreate.makeCoffee",
+    "onTest": "",
+    "inputs": [
+      "item 5 [Base.Coffee2]",
+      "item 1 tags[base:coffeemaker] mode:destroy flags[InheritColor;InheritModelVariation] mappers[mugShot]",
+      "-fluid 0.2 categories[Water] mode:mixture"
+    ],
+    "produces": [
+      "Base.HotDrink",
+      "Base.HotDrinkClay",
+      "Base.HotDrinkCopper",
+      "Base.HotDrinkGold",
+      "Base.HotDrinkMetal",
+      "Base.HotDrinkSilver",
+      "Base.HotDrinkSpiffo",
+      "Base.HotDrinkTumbler",
+      "Base.HotDrinkWhite"
+    ],
+    "raw": "timedAction = MakeCoffee,\n        time = 40,\n        OnCreate = RecipeCodeOnCreate.makeCoffee,\n        category = Cooking,\n        Tags = CoffeeMachine,\n        inputs\n        {\n            item 5 [Base.Coffee2],\n            item 1 tags[base:coffeemaker] mode:destroy flags[InheritColor;InheritModelVariation] mappers[mugShot],\n            -fluid 0.2 categories[Water] mode:mixture,\n        }\n        outputs\n        {\n            item 1 mapper:mugShot,\n        }\n        itemMapper mugShot\n        {\n            Base.HotDrink = Base.Mugl,\n            Base.HotDrinkWhite = Base.MugWhite,\n            Base.HotDrinkSpiffo = Base.MugSpiffo,\n            Base.HotDrinkClay = Base.ClayMug,\n            Base.HotDrinkCopper = Base.CopperCup,\n            Base.HotDrinkGold = Base.GoldCup,\n            Base.HotDrinkMetal = Base.MetalCup,\n            Base.HotDrinkSilver = Base.SilverCup,\n            Base.HotDrinkTumbler = Base.GlassTumbler,\n            default = Base.HotDrinkWhite,\n        }"
+  },
+  {
+    "name": "MakeCoffeeTeacup",
+    "source": "entities/appliances/workstations/entity_coffeemachine_craftRecipe.txt",
+    "category": "Cooking",
+    "tags": "CoffeeMachine",
+    "onCreate": "RecipeCodeOnCreate.makeCoffee",
+    "onTest": "",
+    "inputs": [
+      "item 5 [Base.Coffee2]",
+      "item 1 [Base.Teacup;Base.CeramicTeacup] mode:destroy flags[InheritColor] mappers[mugShot]",
+      "-fluid 0.1 categories[Water] mode:mixture"
+    ],
+    "produces": [
+      "Base.HotDrinkTeaCeramic"
+    ],
+    "raw": "timedAction = MakeCoffee,\n        time = 20,\n        OnCreate = RecipeCodeOnCreate.makeCoffee,\n        category = Cooking,\n        Tags = CoffeeMachine,\n        inputs\n        {\n            item 5 [Base.Coffee2],\n            item 1 [Base.Teacup;Base.CeramicTeacup] mode:destroy flags[InheritColor] mappers[mugShot],\n            -fluid 0.1 categories[Water] mode:mixture,\n        }\n        outputs\n        {\n            item 1 mapper:mugShot,\n        }\n        itemMapper mugShot\n        {\n            Base.HotDrinkTeaCeramic = Base.CeramicTeacup,\n            default = Base.HotDrinkTea,\n        }"
+  },
+  {
+    "name": "MakeToast",
+    "source": "entities/appliances/workstations/entity_toaster_craftRecipe.txt",
+    "category": "Cooking",
+    "tags": "Toaster",
+    "onCreate": "",
+    "onTest": "",
+    "inputs": [
+      "item 1 [Base.BreadSlices] flags[ItemCount]"
+    ],
+    "produces": [
+      "Base.Toast"
+    ],
+    "raw": "timedAction = Making,\n        time = 20,\n        category = Cooking,\n        Tags = Toaster,\n        inputs\n        {\n            item 1 [Base.BreadSlices] flags[ItemCount],\n        }\n        outputs\n        {\n            item 1 Base.Toast,\n        }"
+  }
+]

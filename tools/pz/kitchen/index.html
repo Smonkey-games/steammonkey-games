@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e1116">
+<meta name="description" content="Project Zomboid Build 42.20 nutrition and cooking calculator backed by game data.">
+<title>Smonkey Kitchen Beta | SteamMonkey.games</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="kitchen.css?v=0.5.0b1">
+</head>
+<body>
+<header class="site-header">
+<button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button>
+<a class="brand" href="/" aria-label="SteamMonkey.games home"><span class="brand-primary">SteamMonkey</span><span class="brand-dot">.</span><span class="brand-tld">games</span></a>
+</header>
+<div class="nav-scrim" id="navScrim" hidden></div>
+<aside class="nav-drawer" id="siteNav" aria-hidden="true">
+<div class="nav-header"><div><div class="nav-eyebrow">SteamMonkey.games</div><div class="nav-title">Tools</div></div><button class="nav-close" id="navClose" type="button" aria-label="Close navigation">×</button></div>
+<nav aria-label="Tool navigation"><a class="nav-link" href="/">Home</a><div class="nav-section-label">Project Zomboid</div><a class="nav-link" href="/tools/pz/weapons/">Weapon Comparator</a><a class="nav-link active" href="/tools/pz/kitchen/">Smonkey Kitchen <span class="status-pill">Beta</span></a><div class="nav-section-label">More tools</div><div class="nav-placeholder"><span>Coming Soon</span><span class="status-pill">Soon</span></div></nav><div class="nav-footer">Smonkey</div>
+</aside>
+
+<main class="kitchen-app">
+<section class="kitchen-tool-header"><div class="tool-kicker">Project Zomboid • Build 42.20</div><h1>Smonkey Kitchen <span class="tool-version">V0.5 Beta</span></h1><p>Game-file-backed nutrition, food, preparation, and evolved-dish calculator. Beta calculations distinguish the recipe base from ingredients added afterward.</p></section>
+<section class="kitchen-content">
+<section class="panel snapshot-panel"><div class="section-heading"><div><h2>Nutrition / Weight Snapshot</h2><p class="muted">Character nutrition reservoirs and Cooking level.</p></div></div>
+<div class="snapshot-grid"><label>Weight <span>kg</span><input id="weight" type="number" min="35" value="80"></label><label>Calories<input id="calories" type="number" value="0"></label><label>Carbs<input id="carbs" type="number" value="0"></label><label>Fat<input id="lipids" type="number" value="0"></label><label>Protein<input id="proteins" type="number" value="0"></label><label>Cooking<input id="cookingLevel" type="number" min="0" max="10" value="0"></label></div>
+<div class="mini-stats"><div><b id="weightTrend">Stable</b><small>Weight</small></div><div><b id="gainThreshold">1000</b><small>Gain threshold</small></div><div><b id="macroMult">×1</b><small>Macro multiplier</small></div><div><b id="proteinMult">×1</b><small>STR XP</small></div><div><b id="cookNutrition">×1.000</b><small>Cooking nutrition</small></div><div><b id="sourceUse">100%</b><small>Normal source use</small></div></div>
+</section>
+
+<div class="tabs" role="tablist"><button class="tab-button active" data-tab="builder">Dish Builder</button><button class="tab-button" data-tab="foods">Basic Foods</button><button class="tab-button" data-tab="prep">Preparation Recipes</button><button class="tab-button" data-tab="mechanics">Mechanics</button></div>
+
+<section id="builder" class="tab-panel active">
+<section class="panel">
+<div class="section-heading"><div><h2>Evolved Dish Builder</h2><p class="muted">Choose the recipe family, then the exact vessel/base variant. Starting stats come from that actual base item.</p></div><div id="dataStatus" class="data-status">Loading game data…</div></div>
+<div class="builder-selects"><label>Dish family<select id="recipeFamily"></select></label><label>Recipe / vessel variant<select id="recipeVariant"></select></label></div>
+</section>
+
+<section class="builder-layout">
+<div>
+<section class="panel base-panel"><div class="section-heading"><div><h2>Recipe Base</h2><p class="muted">What must exist before evolved ingredients can be added.</p></div></div><div id="baseInfo"></div></section>
+<section class="panel add-panel"><h2>Ingredient</h2><div id="ingredientPicker"></div><div id="ingredientPreview" class="item-preview empty">Select an ingredient.</div></section>
+<section class="panel add-panel"><h2>Seasoning / Spice</h2><div id="spicePicker"></div><div id="spicePreview" class="item-preview empty">Select a seasoning.</div></section>
+</div>
+<section class="panel final-panel"><div class="section-heading"><div><h2>Final Dish</h2><p class="muted">Current assembled dish, beginning with the selected recipe base.</p></div><button id="clearDish" class="secondary">Reset additions</button></div><div id="finalDish"></div></section>
+</section>
+</section>
+
+<section id="foods" class="tab-panel panel"><div class="section-heading"><div><h2>Basic Foods</h2><p class="muted">Parsed food items from the supplied B42.20 scripts.</p></div><input id="foodSearch" class="search" type="search" placeholder="Search foods…"></div><div class="table-wrap"><table><thead><tr><th>Food</th><th>Calories</th><th>Carbs</th><th>Fat</th><th>Protein</th><th>Hunger</th><th>Fresh</th><th>Rotten</th></tr></thead><tbody id="foodRows"></tbody></table></div><div id="foodCount" class="table-footer"></div></section>
+
+<section id="prep" class="tab-panel panel"><div class="section-heading"><div><h2>Preparation Recipes</h2><p class="muted">Cooking-category craft recipes that create bases or otherwise prepare foods.</p></div><input id="prepSearch" class="search" type="search" placeholder="Search recipes…"></div><div id="prepRows" class="recipe-list"></div></section>
+
+<section id="mechanics" class="tab-panel panel"><h2>Beta Mechanics Scope</h2><div id="mechanicsRows" class="mechanics-grid"></div></section>
+</section>
+</main>
+
+<svg width="0" height="0" class="svg-defs" aria-hidden="true"><defs>
+<symbol id="macro-fire" viewBox="0 0 24 24"><path d="M13 2c1 4-2 5-2 8 0 2 1 3 2 4 0-3 3-4 4-7 3 3 4 6 3 9-1 4-4 6-8 6s-7-3-7-7c0-5 4-7 6-11 0 3 1 4 2 5"/></symbol>
+<symbol id="macro-protein" viewBox="0 0 24 24"><path d="M15 4c3-1 6 1 6 4 0 4-4 7-8 8l-3-3c1-4 2-8 5-9z"/><path d="M10 13l-4 4M6 17c-1-1-3 0-3 1 0 2 2 3 4 2 1 2 4 1 4-1 0-1-1-2-2-2"/></symbol>
+<symbol id="macro-fat" viewBox="0 0 24 24"><path d="M4 10l10-6 6 4-10 6-6-4z"/><path d="M4 10v7l6 3v-6M10 20l10-6V8"/></symbol>
+<symbol id="macro-carb" viewBox="0 0 24 24"><path d="M7 5c-3 0-5 2-5 5 0 2 1 3 3 4v6h14v-6c2-1 3-2 3-4 0-3-2-5-5-5-2 0-3 1-5 2-2-1-3-2-5-2z"/></symbol>
+</defs></svg>
+<script src="/js/app.js"></script><script src="kitchen.js?v=0.5.0b1"></script>
+</body></html>
