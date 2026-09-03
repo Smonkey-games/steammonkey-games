@@ -33,10 +33,77 @@ function stateValues(role){const p=role==='spice'?'sp':'in';return{fresh:$(p+'Fr
 function renderItemPreview(role,it){const p=role==='spice'?'sp':'in', target=role==='spice'?$('spicePreview'):$('ingredientPreview');const use=it.evolved[K.recipe.template];target.className='item-preview';target.innerHTML=`<div class="item-title"><b>${esc(it.name)}</b>${icons(it)}</div><div class="item-values">Full source item: ${fmt(it.calories)} cal · ${fmt(it.carbs)} carbs · ${fmt(it.fat)} fat · ${fmt(it.protein)} protein · ${fmt(Math.abs(it.hunger),0)} hunger relief • recipe use ${use.use}${use.restriction?` • requires ${esc(use.restriction)}`:''}</div><div class="state-grid"><label>Freshness<select id="${p}Fresh"><option>Fresh</option><option>Stale</option><option>Rotten</option></select></label><label>Cooking state<select id="${p}Cook"><option>Raw</option><option>Cooked</option><option>Burnt</option></select></label><label>Frozen<select id="${p}Frozen"><option>No</option><option>Yes</option></select></label></div><div id="${p}Result" class="preview-result"></div><div class="add-row"><span id="${p}Warning" class="warning"></span><button id="${p}Add" class="add-button">Add ${role==='spice'?'seasoning':'ingredient'}</button></div>`;['Fresh','Cook','Frozen'].forEach(s=>$(p+s).onchange=()=>updateItemPreview(role,it));$(p+'Add').onclick=()=>addItem(role,it);updateItemPreview(role,it)}
 function runtimeHunger(it,state){let h=num(it.hunger)/100;if(state.cook==='Cooked')return h*1.3;if(state.cook==='Burnt')return Math.sign(h||-1)*Math.max(Math.abs(h)/3,.01);if(state.fresh==='Stale')return Math.sign(h||-1)*Math.max(Math.abs(h)/1.3,.01);if(state.fresh==='Rotten')return Math.sign(h||-1)*Math.max(Math.abs(h)/2.2,.01);return h}
 function validate(role,it,state){const L=clamp(num($('cookingLevel').value),0,10), use=it.evolved[K.recipe.template];if(state.cook==='Burnt')return'Burnt source foods are rejected by evolved recipes.';if(state.frozen&&!K.recipe.allowFrozenItem)return'Frozen source foods are rejected by this evolved recipe.';if(state.fresh==='Rotten'&&L<7)return'Rotten ingredients require Cooking 7 or higher.';if(use.restriction==='Cooked'&&state.cook!=='Cooked')return'This item is only eligible when cooked.';if(role==='ingredient'&&K.added.filter(x=>x.role==='ingredient').length>=K.recipe.maxItems)return`This recipe already has ${K.recipe.maxItems} normal ingredients.`;if(role==='spice'&&K.added.some(x=>x.role==='spice'&&x.item.id===it.id))return'This seasoning is already in the dish; duplicate spices are blocked.';return''}
-function contribution(role,it,state){const L=clamp(num($('cookingLevel').value),0,10),u=it.evolved[K.recipe.template].use;let requested=u/100;const baseH=Math.abs(num(it.hunger)/100);if(state.fresh==='Rotten'){if(L===7||L===8)requested=baseH*.05;else if(L>=9)requested=baseH*.10}const getter=Math.abs(runtimeHunger(it,state));if(getter<requested)requested=getter;const sourceUsed=role==='spice'?requested:requested*(1-.03*L);const rawHung=Math.abs(num(it.hunger)/100);const fraction=rawHung?Math.min(1,Math.abs(sourceUsed/rawHung)):0;const boost=1+L/15;return{requested,sourceUsed,fraction,calories:num(it.calories)*fraction*boost,carbs:num(it.carbs)*fraction*boost,fat:num(it.fat)*fraction*boost,protein:num(it.protein)*fraction*boost,hunger:role==='spice'?0:requested*100,unhappy:role==='spice'?-requested*200:null,boredom:role==='spice'?-requested*200:null}}
-function updateItemPreview(role,it){const p=role==='spice'?'sp':'in',state=stateValues(role),err=validate(role,it,state),c=contribution(role,it,state);$(p+'Warning').textContent=err||'Ready to add.';$(p+'Warning').className='warning '+(err?'':'ok');$(p+'Add').disabled=Boolean(err);$(p+'Result').innerHTML=`<strong>Contribution if added:</strong> ${fmt(c.calories)} cal · ${fmt(c.carbs)} carbs · ${fmt(c.fat)} fat · ${fmt(c.protein)} protein${role==='ingredient'?` · ${fmt(c.hunger)} hunger relief`:` · ${fmt(c.unhappy)} unhappiness · ${fmt(c.boredom)} boredom`}<br>Source fraction used for nutrition: ${fmt(c.fraction*100)}%${role==='ingredient'?` • source use reduced by Cooking to ${fmt(c.sourceUsed*100)} hunger points`:''}.`}
-function addItem(role,it){const state=stateValues(role),err=validate(role,it,state);if(err)return;const c=contribution(role,it,state);K.added.push({role,item:it,state,contribution:c});renderFinal();renderSelectedPreviews()}
-function renderFinal(){if(!K.recipe)return;const b=K.recipe.baseStats||{};const t={calories:num(b.calories),carbs:num(b.carbs),fat:num(b.fat),protein:num(b.protein),hunger:Math.abs(num(b.hunger)),unhappy:num(b.unhappy),boredom:num(b.boredom)};K.added.forEach(x=>{for(const k of ['calories','carbs','fat','protein','hunger'])t[k]+=num(x.contribution[k]);if(x.contribution.unhappy!=null)t.unhappy+=num(x.contribution.unhappy);if(x.contribution.boredom!=null)t.boredom+=num(x.contribution.boredom)});const normals=K.added.filter(x=>x.role==='ingredient').length,spices=K.added.filter(x=>x.role==='spice').length;$('finalDish').innerHTML=`<div class="final-title">${esc(K.recipe.displayName)}</div><div class="final-sub">${esc(K.recipe.resultItem)} • ${normals}/${K.recipe.maxItems} ingredient slots • ${spices} seasoning${spices===1?'':'s'}</div><div class="final-metrics">${metric('Calories',fmt(t.calories))}${metric('Carbs',fmt(t.carbs))}${metric('Fat',fmt(t.fat))}${metric('Protein',fmt(t.protein))}${metric('Hunger relief',fmt(t.hunger))}${metric('Cooking XP',fmt(K.added.length*3,0))}</div><div class="base-contribution"><strong>Base contribution:</strong> ${esc(shortId(K.recipe.baseItem))} starts this dish at ${fmt(b.calories)} cal / ${fmt(b.carbs)} carbs / ${fmt(b.fat)} fat / ${fmt(b.protein)} protein / ${fmt(Math.abs(b.hunger),0)} hunger relief.</div>${K.added.length?`<div class="added-list">${K.added.map((x,i)=>`<div class="added-item"><div><b>${esc(x.item.name)}</b> <span class="role-pill">${x.role}</span><div class="added-meta">${esc(x.state.fresh)} • ${esc(x.state.cook)}${x.state.frozen?' • Frozen':''}</div></div><div class="added-values">+${fmt(x.contribution.calories)} cal • +${fmt(x.contribution.carbs)} C • +${fmt(x.contribution.fat)} F • +${fmt(x.contribution.protein)} P${x.role==='ingredient'?` • +${fmt(x.contribution.hunger)} hunger`:''}<button class="remove-item" data-i="${i}" title="Remove">×</button></div></div>`).join('')}</div>`:'<div class="base-contribution">No evolved ingredients added yet. These totals are the recipe base itself, not an empty zero-stat placeholder.</div>'}<div class="cook-note">${K.recipe.cookable?'After assembly, this result is marked <b>cookable</b>. Cooking/burning the completed dish is a later state of the final food and is intentionally separate from each source ingredient\'s state.':'This recipe result is not marked Cookable in the evolved recipe definition.'}</div>`;document.querySelectorAll('.remove-item').forEach(bu=>bu.onclick=()=>{K.added.splice(num(bu.dataset.i),1);renderFinal();renderSelectedPreviews()})}
+function contribution(role,it,state){
+ const L=clamp(num($('cookingLevel').value),0,10),u=it.evolved[K.recipe.template].use;
+ let requested=u/100;
+ const baseH=Math.abs(num(it.hunger)/100);
+ if(state.fresh==='Rotten'){
+  if(L===7||L===8)requested=baseH*.05;
+  else if(L>=9)requested=baseH*.10;
+ }
+ const getter=Math.abs(runtimeHunger(it,state));
+ if(getter<requested)requested=getter;
+ const rawHung=Math.abs(num(it.hunger)/100);
+ const normalAdjustedUse=requested*(1-.03*L);
+ const nutritionUse=role==='spice'?requested:normalAdjustedUse;
+ const fraction=rawHung?Math.min(1,Math.abs(nutritionUse/rawHung)):0;
+ const boost=1+L/15;
+ let sourceConsumed=role==='spice'?requested:normalAdjustedUse;
+ if(role==='ingredient'&&state.cook==='Cooked')sourceConsumed/=1.3;
+ return{
+  requested,normalAdjustedUse,nutritionUse,sourceConsumed,fraction,boost,
+  calories:num(it.calories)*fraction*boost,
+  carbs:num(it.carbs)*fraction*boost,
+  fat:num(it.fat)*fraction*boost,
+  protein:num(it.protein)*fraction*boost,
+  hunger:role==='spice'?0:requested*100,
+  unhappy:role==='spice'?-requested*200:null,
+  boredom:role==='spice'?-requested*200:null
+ };
+}
+function updateItemPreview(role,it){
+ const p=role==='spice'?'sp':'in',state=stateValues(role),err=validate(role,it,state),c=contribution(role,it,state);
+ $(p+'Warning').textContent=err||'Ready to add.';
+ $(p+'Warning').className='warning '+(err?'':'ok');
+ $(p+'Add').disabled=Boolean(err);
+ const sourceNote=role==='ingredient'
+  ?` • actual source hunger consumed: ${fmt(c.sourceConsumed*100)}${state.cook==='Cooked'?' (cooked source ÷1.3)':''}`
+  :'';
+ $(p+'Result').innerHTML=`<strong>Contribution if added at Cooking ${clamp(num($('cookingLevel').value),0,10)}:</strong> ${fmt(c.calories)} cal · ${fmt(c.carbs)} carbs · ${fmt(c.fat)} fat · ${fmt(c.protein)} protein${role==='ingredient'?` · ${fmt(c.hunger)} hunger relief`:` · ${fmt(c.unhappy)} unhappiness · ${fmt(c.boredom)} boredom`}<br>Nutrition fraction: ${fmt(c.fraction*100)}% • Cooking nutrition boost ×${fmt(c.boost,3)}${sourceNote}.`;
+}
+function addItem(role,it){
+ const state=stateValues(role),err=validate(role,it,state);
+ if(err)return;
+ K.added.push({role,item:it,state});
+ renderFinal();renderSelectedPreviews();
+}
+function dishTotals(){
+ const b=K.recipe.baseStats||{};
+ const t={calories:num(b.calories),carbs:num(b.carbs),fat:num(b.fat),protein:num(b.protein),hunger:Math.abs(num(b.hunger)),unhappy:num(b.unhappy),boredom:num(b.boredom)};
+ const rows=K.added.map(x=>({...x,contribution:contribution(x.role,x.item,x.state)}));
+ rows.forEach(x=>{
+  for(const k of ['calories','carbs','fat','protein','hunger'])t[k]+=num(x.contribution[k]);
+  if(x.contribution.unhappy!=null)t.unhappy+=num(x.contribution.unhappy);
+  if(x.contribution.boredom!=null)t.boredom+=num(x.contribution.boredom);
+ });
+ return{assembled:t,rows};
+}
+function statBlock(title,t,xp,note){
+ return `<div class="base-contribution"><strong>${esc(title)}</strong>${note?` <span>• ${esc(note)}</span>`:''}</div><div class="final-metrics">${metric('Calories',fmt(t.calories))}${metric('Carbs',fmt(t.carbs))}${metric('Fat',fmt(t.fat))}${metric('Protein',fmt(t.protein))}${metric('Hunger relief',fmt(t.hunger))}${metric('Cooking XP',fmt(xp,0))}</div>`;
+}
+function renderFinal(){
+ if(!K.recipe)return;
+ const b=K.recipe.baseStats||{},L=clamp(num($('cookingLevel').value),0,10),calc=dishTotals(),t=calc.assembled;
+ const normals=calc.rows.filter(x=>x.role==='ingredient').length,spices=calc.rows.filter(x=>x.role==='spice').length;
+ const assemblyXP=calc.rows.length*3;
+ const cooked={...t,hunger:K.recipe.cookable?t.hunger*1.3:t.hunger};
+ const cookedXP=assemblyXP+(K.recipe.cookable?10:0);
+ const cookedBlock=K.recipe.cookable
+  ?statBlock('Cooked Dish',cooked,cookedXP,'final cooking ×1.3 hunger; macros unchanged; +10 Cooking XP')
+  :`<div class="cook-note">This evolved recipe is not marked <b>Cookable</b>, so there is no separate cooked-dish state for this variant.</div>`;
+ $('finalDish').innerHTML=`<div class="final-title">${esc(K.recipe.displayName)}</div><div class="final-sub">${esc(K.recipe.resultItem)} • Cooking ${L} • ${normals}/${K.recipe.maxItems} ingredient slots • ${spices} seasoning${spices===1?'':'s'}</div>${statBlock('Assembled Dish',t,assemblyXP,'before final cooking')}${cookedBlock}<div class="base-contribution"><strong>Base contribution:</strong> ${esc(shortId(K.recipe.baseItem))} starts this dish at ${fmt(b.calories)} cal / ${fmt(b.carbs)} carbs / ${fmt(b.fat)} fat / ${fmt(b.protein)} protein / ${fmt(Math.abs(b.hunger),0)} hunger relief.</div>${calc.rows.length?`<div class="added-list">${calc.rows.map((x,i)=>`<div class="added-item"><div><b>${esc(x.item.name)}</b> <span class="role-pill">${x.role}</span><div class="added-meta">${esc(x.state.fresh)} • ${esc(x.state.cook)}${x.state.frozen?' • Frozen':''}</div></div><div class="added-values">+${fmt(x.contribution.calories)} cal • +${fmt(x.contribution.carbs)} C • +${fmt(x.contribution.fat)} F • +${fmt(x.contribution.protein)} P${x.role==='ingredient'?` • +${fmt(x.contribution.hunger)} hunger • source ${fmt(x.contribution.sourceConsumed*100)} hunger`:''}<button class="remove-item" data-i="${i}" title="Remove">×</button></div></div>`).join('')}</div>`:'<div class="base-contribution">No evolved ingredients added yet. These totals are the recipe base itself, not an empty zero-stat placeholder.</div>'}<div class="cook-note"><b>Cooking-level math used here:</b> normal ingredient nutrition fraction uses recipe use × (1 − 0.03 × Cooking), then nutrition is multiplied by (1 + Cooking/15). Cooked normal ingredients consume another ÷1.3 source hunger after the nutrition fraction is calculated. Spices skip the 3%-per-level source-use reduction but still receive the nutrition multiplier. Final-dish cooking changes effective hunger by ×1.3 and does not multiply calories or macros.</div>`;
+ document.querySelectorAll('.remove-item').forEach(bu=>bu.onclick=()=>{K.added.splice(num(bu.dataset.i),1);renderFinal();renderSelectedPreviews()});
+}
 function bindFoodBrowser(){$('foodSearch').oninput=renderFoods;document.querySelectorAll('[data-food-sort]').forEach(th=>{th.style.cursor='pointer';th.style.userSelect='none';th.style.whiteSpace='nowrap';th.setAttribute('role','button');th.setAttribute('tabindex','0');th.title='Click to sort by '+th.dataset.foodSort;const activate=()=>{const key=th.dataset.foodSort;if(K.foodSort.key===key)K.foodSort.dir*=-1;else K.foodSort={key,dir:1};renderFoods()};th.onclick=activate;th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate()}}});renderFoods()}
 function rangeValue(x,key,absolute=false){const r=x.nutritionRange&&x.nutritionRange[key];if(!r)return fmt(absolute?Math.abs(num(x[key])):num(x[key]));let a=absolute?Math.abs(num(r.min)):num(r.min),b=absolute?Math.abs(num(r.max)):num(r.max);if(absolute&&a>b)[a,b]=[b,a];return Math.abs(a-b)<1e-9?fmt(a):`${fmt(a)}–${fmt(b)}`}
 function foodSearchText(x){return [x.name,x.id,x.fluidName,x.nutritionNote,(x.categories||[]).join(' ')].join(' ').toLowerCase()}

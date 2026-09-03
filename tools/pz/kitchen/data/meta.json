@@ -1,1 +1,30 @@
-{"build":"42.20","betaVersion":"0.5.0-beta.1","counts":{"evolvedRecipes":62,"evolvedUsableItems":374,"foodItems":802,"preparationRecipes":118,"fluids":61,"fluidContainersResolved":43,"randomFluidContainers":3},"macroMax":{"calories":4095,"protein":272,"fat":454,"carbs":656},"mechanics":{"normalIngredient":"recipe use = U/100; Cooking reduces source use by 3% per level; nutrition transfer is source nutrition × used fraction × (1 + Cooking/15).","spice":"Spices do not add normal dish hunger; they can add nutrition, use the same Cooking nutrition multiplier, and cannot be duplicated.","rotten":"Rotten evolved ingredients require Cooking 7+. At Cooking 7-8 the requested use is based on 5% of base hunger; at 9-10 it is 10%.","frozen":"Supplied B42.20 evolved recipes do not set AllowFrozenItem, so frozen source foods are rejected.","burnt":"Burnt source foods are rejected from evolved-recipe additions.","base":"When an evolved result is created, Food bases pass their hunger/macros/thirst into the result. Non-food container bases start those values at zero.","Fluid nutrition":"Standalone fluid rows are normalized to 1 L from B42.20 fluid Properties. Pre-filled fluid-container items use their actual container capacity; random-fluid containers display min–max ranges instead of a fabricated single value."}}
+{
+  "build": "42.20",
+  "betaVersion": "0.5.7-beta.1",
+  "counts": {
+    "evolvedRecipes": 62,
+    "evolvedUsableItems": 374,
+    "foodItems": 802,
+    "preparationRecipes": 118,
+    "fluids": 61,
+    "fluidContainersResolved": 43,
+    "randomFluidContainers": 3
+  },
+  "macroMax": {
+    "calories": 4095,
+    "protein": 272,
+    "fat": 454,
+    "carbs": 656
+  },
+  "mechanics": {
+    "normalIngredient": "Normal ingredient nutrition fraction uses recipe use \u00d7 (1 - 0.03 \u00d7 Cooking) divided by the source getHungChange, capped at 1; transferred calories/macros are then multiplied by (1 + Cooking/15).",
+    "spice": "Spices do not add normal dish hunger; they can add nutrition, use the same Cooking nutrition multiplier, and cannot be duplicated.",
+    "rotten": "Rotten evolved ingredients require Cooking 7+. At Cooking 7-8 the requested use is based on 5% of base hunger; at 9-10 it is 10%.",
+    "frozen": "Supplied B42.20 evolved recipes do not set AllowFrozenItem, so frozen source foods are rejected.",
+    "burnt": "Burnt source foods are rejected from evolved-recipe additions.",
+    "base": "When an evolved result is created, Food bases pass their hunger/macros/thirst into the result. Non-food container bases start those values at zero.",
+    "Fluid nutrition": "Standalone fluid rows are normalized to 1 L from B42.20 fluid Properties. Pre-filled fluid-container items use their actual container capacity; random-fluid containers display min\u2013max ranges instead of a fabricated single value.",
+    "cookedSource": "For a cooked normal ingredient, the nutrition fraction is calculated first; the hunger actually removed from the source is then divided by 1.3. This stretches cooked ingredients without adding a second macro multiplier.",
+    "finalCooking": "For cookable evolved dishes, cooking the assembled result makes effective hunger relief \u00d71.3 while Calories, Carbs, Fat, and Protein stay unchanged. Normal successful completion adds 10 Cooking XP."
+  }
+}
