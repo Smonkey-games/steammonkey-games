@@ -2,17 +2,17 @@
 (() => {
 'use strict';
 const dataUrl = document.body.dataset.filterData;
-let DATA=null, rules=[], activeId=null, nextId=1;
+let DATA=null, rules=[], activeId=null, nextId=1, manualOrder=null;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
-function defaultRule(dest='unassigned'){
- return {id:nextId++,category:'Armour',destination:dest,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],mods:[],cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',sound:'None'}};
+function defaultRule(dest=null){
+ return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],mods:[],cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None'}};
 }
 function active(){return rules.find(r=>r.id===activeId)||null}
-function addRule(dest='unassigned'){const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
-function removeRule(id){rules=rules.filter(r=>r.id!==id);if(activeId===id)activeId=rules[0]?.id??null;render()}
+function addRule(dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
+function removeRule(id){rules=rules.filter(r=>r.id!==id);if(manualOrder)manualOrder=manualOrder.filter(x=>x!==id);if(activeId===id)activeId=null;render()}
 function toggle(arr,val){const i=arr.indexOf(val);if(i>=0)arr.splice(i,1);else arr.push(val)}
 const PROFILE_FILTERS={
  'Armour':{condition:'BaseArmour',prop:'armour'},
@@ -59,39 +59,93 @@ function representative(r){const a=matchedItems(r).slice().sort((x,y)=>x.dropLev
 function statProp(item,id){if(id==='DropLevel')return item.dropLevel;if(id==='BaseArmour')return item.defences?.armour?.min??0;if(id==='BaseEvasion')return item.defences?.evasion?.min??0;if(id==='BaseEnergyShield')return item.defences?.energyShield?.min??0;if(id==='BaseWard')return item.defences?.ward?.min??0;return null}
 function summary(r){const rar=r.rarities.length===4||!r.rarities.length?'Any rarity':r.rarities.join(' + ');const p=r.profiles.length?r.profiles.join(', '):'Any defence';const s=r.slots.length?r.slots.join(', '):'Any armour slot';return `${rar} · ${p} · ${s}`}
 function swatchStyle(r){return `background:linear-gradient(90deg,${r.cosmetics.text},${r.cosmetics.border},${r.cosmetics.bg})`}
-function destinationLabel(v){return v==='show'?'SHOW':v==='hide'?'HIDE':'UNASSIGNED'}
+function destinationLabel(v){return v==='show'?'SHOW':v==='hide'?'HIDE':'CHOOSE SHOW / HIDE'}
+const ICON_SHAPES=['Circle','Diamond','Hexagon','Square','Star','Triangle','Cross','Moon','Raindrop','Kite','Pentagon','UpsideDownHouse'];
+const FILTER_COLORS=['Red','Green','Blue','Brown','White','Yellow','Cyan','Grey','Orange','Pink','Purple'];
+const ICON_HEX={Red:'#e34b4b',Green:'#54c66a',Blue:'#5b7fe8',Brown:'#a66b3d',White:'#f1f1e9',Yellow:'#e7cf52',Cyan:'#54d5d8',Grey:'#969aa0',Orange:'#e78a3c',Pink:'#df72b2',Purple:'#a56be1'};
+function iconSvg(shape,color='White'){
+ const c=ICON_HEX[color]||ICON_HEX.White;
+ const common=`fill="${c}" stroke="rgba(0,0,0,.72)" stroke-width="1.5"`;
+ const shapes={
+  Circle:`<circle cx="12" cy="12" r="7.4" ${common}/>`,
+  Diamond:`<path d="M12 3.4 20.6 12 12 20.6 3.4 12Z" ${common}/>`,
+  Hexagon:`<path d="M6 4.2h12l4 7.8-4 7.8H6L2 12Z" ${common}/>`,
+  Square:`<rect x="4.2" y="4.2" width="15.6" height="15.6" rx="1.1" ${common}/>`,
+  Star:`<path d="m12 2.7 2.8 5.7 6.3.9-4.55 4.44 1.08 6.27L12 17.05 6.37 20l1.08-6.27L2.9 9.3l6.3-.9Z" ${common}/>`,
+  Triangle:`<path d="M12 3 21 20H3Z" ${common}/>`,
+  Cross:`<path d="M8.3 3.2h7.4v5.1h5.1v7.4h-5.1v5.1H8.3v-5.1H3.2V8.3h5.1Z" ${common}/>`,
+  Moon:`<path d="M17.9 17.8A8.2 8.2 0 1 1 10 4.1a6.4 6.4 0 0 0 7.9 13.7Z" ${common}/>`,
+  Raindrop:`<path d="M12 2.8s7.1 8.05 7.1 12.2A7.1 7.1 0 1 1 4.9 15C4.9 10.85 12 2.8 12 2.8Z" ${common}/>`,
+  Kite:`<path d="M12 2.5 19.5 10 12 21.5 4.5 10Z" ${common}/>`,
+  Pentagon:`<path d="m12 2.8 8.7 6.3-3.3 10.2H6.6L3.3 9.1Z" ${common}/>`,
+  UpsideDownHouse:`<path d="M3.2 4.3h17.6v8.2L12 21 3.2 12.5Z" ${common}/>`
+ };
+ return `<svg viewBox="0 0 24 24" aria-hidden="true">${shapes[shape]||shapes.Circle}</svg>`;
+}
 
 function renderBoard(){
- for(const lane of ['unassigned','show','hide']){
-   const el=$(`#lane-${lane}`), arr=rules.filter(r=>r.destination===lane);
-   el.querySelector('.count').textContent=arr.length;
-   el.querySelector('.lane-rules').innerHTML=arr.map(r=>`<article class="rule-card ${r.id===activeId?'active':''}" draggable="true" data-id="${r.id}"><button class="remove-rule" data-remove="${r.id}" title="Remove">×</button><h3>${esc(r.category)} Rule #${r.id}</h3><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div></article>`).join('');
+ const r=active(),slot=$('#activeRuleCard');
+ if(slot){
+   if(!r)slot.innerHTML='<div class="active-empty">Drag Armour here to start a rule.</div>';
+   else slot.innerHTML=`<article class="rule-card active active-build-card" draggable="false" data-id="${r.id}"><h3>${esc(r.category)} Rule #${r.id}</h3><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div></article>`;
  }
- $$('.rule-card').forEach(el=>{el.addEventListener('click',e=>{if(e.target.closest('[data-remove]'))return;activeId=+el.dataset.id;render()});el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/rule-id',el.dataset.id);e.dataTransfer.effectAllowed='move'})});
- $$('[data-remove]').forEach(b=>b.onclick=e=>{e.stopPropagation();removeRule(+b.dataset.remove)});
+ const show=$('#activeShow'),hide=$('#activeHide');
+ if(show)show.classList.toggle('on',r?.destination==='show');
+ if(hide)hide.classList.toggle('on',r?.destination==='hide');
+ renderCompletedRules();
+}
+function renderCompletedRules(){
+ const el=$('#completedRules');
+ if(!el)return;
+ const ordered=orderedAssignedRules();
+ if(!ordered.length){
+   el.innerHTML='<div class="completed-empty">No rules have been added yet.<br><span>Build a rule, choose Show or Hide, then click Add to Filter.</span></div>';
+   return;
+ }
+ el.innerHTML=ordered.map((r,i)=>`<article class="completed-card ${r.id===activeId?'active':''}" draggable="true" data-completed-id="${r.id}" data-order-index="${i}"><div class="completed-order">${i+1}</div><div class="completed-body"><div class="completed-top"><strong>${esc(r.category)} Rule #${r.id}</strong><em class="${r.destination}">${destinationLabel(r.destination)}</em></div><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div><small>${ruleSpecificity(r)===0?'catch-all':`smart priority ${ruleSpecificity(r)}`}</small></div><button class="remove-rule completed-remove" data-completed-remove="${r.id}" title="Remove">×</button></article>`).join('');
+ $$('[data-completed-id]').forEach(card=>{
+   card.onclick=e=>{if(e.target.closest('[data-completed-remove]'))return;activeId=+card.dataset.completedId;render()};
+   card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/completed-rule-id',card.dataset.completedId);e.dataTransfer.effectAllowed='move';card.classList.add('dragging')});
+   card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+   card.addEventListener('dragover',e=>{e.preventDefault();card.classList.add('drag-target')});
+   card.addEventListener('dragleave',()=>card.classList.remove('drag-target'));
+   card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('drag-target');const fromId=+e.dataTransfer.getData('text/completed-rule-id');const toId=+card.dataset.completedId;if(fromId&&toId&&fromId!==toId)attemptManualReorder(fromId,toId)});
+ });
+ $$('[data-completed-remove]').forEach(b=>b.onclick=e=>{e.stopPropagation();removeRule(+b.dataset.completedRemove)});
 }
 
 function chipGroup(title,sub,values,selected,key,disableFn){return `<div class="edit-section"><div class="section-title"><h3>${title}</h3><span>${sub||''}</span></div><div class="chips">${values.map(v=>{const dis=disableFn?.(v);return `<button class="chip ${selected.includes(v)?'on':''} ${dis?'disabled':''}" data-chip="${key}" data-val="${esc(v)}" ${dis?'disabled':''}>${esc(v)}</button>`}).join('')}</div></div>`}
-function renderEditor(){const r=active();const root=$('#editor');if(!r){root.innerHTML='<div class="empty-editor">Drag <strong>Armour</strong> into a lane or click it to create a rule.</div>';return}
+function renderEditor(){const r=active();const root=$('#editor');if(!r){root.innerHTML='<div class="empty-editor">Drag <strong>Armour</strong> down from the palette or click it to create a rule.</div>';updateAddButton();return}
  const items=allowedItems(r);const baseSearch=($('#baseSearch')?.value||'').toLowerCase();
  root.innerHTML=
- `<div class="edit-section"><div class="section-title"><h3>Rule #${r.id}</h3><span>${destinationLabel(r.destination)}</span></div><div class="dest-buttons">${['unassigned','show','hide'].map(d=>`<button data-dest="${d}" class="${r.destination===d?'on':''}">${destinationLabel(d)}</button>`).join('')}</div></div>`+
+ `<div class="edit-section"><div class="section-title"><h3>Rule #${r.id}</h3><span>${destinationLabel(r.destination)}</span></div></div>`+
  chipGroup('Rarity','OR within layer',DATA.rarities,r.rarities,'rarity')+
  chipGroup('Defence Type','OR within layer · positive requirements; extra defences stay included',DATA.profiles,r.profiles,'profile')+
  chipGroup('Armour Slot','OR within layer',DATA.slots,r.slots,'slot',slot=>!DATA.items.some(x=>itemMatchesSelectedProfiles(x,r.profiles)&&x.slot===slot))+
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Numeric Filters</h3><span>AND between rows</span></div><div id="statRows">${r.stats.map((s,i)=>statRow(s,i)).join('')}</div><button class="add-stat" id="addStat">+ Add numeric condition</button></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Explicit Modifier Names</h3><span>advanced</span></div><div class="search-row"><input id="modSearch" type="text" placeholder="Search ${DATA.explicitModNames.length} item affix names…"></div><div id="modList" class="mod-list"></div><p class="layer-note">Uses <code>HasExplicitMod</code> name matching. This does not test an affix's numeric rolled value.</p></div>`+
- `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text)}${colorCtl('bg','Background',r.cosmetics.bg)}${colorCtl('border','Border',r.cosmetics.border)}<div class="control"><label>Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}"></div><div class="control"><label>Beam</label><select data-cos="beam">${['None','Red','Green','Blue','Brown','White','Yellow','Cyan','Grey','Orange','Pink','Purple'].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap icon</label><select data-cos="icon">${['None','Circle','Diamond','Hexagon','Square','Star','Triangle','Cross','Moon','Raindrop','Kite','Pentagon','UpsideDownHouse'].map(x=>`<option ${x===r.cosmetics.icon?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select></div></div></div>`;
- bindEditor(); renderBaseList(''); renderModList('');
+ `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text)}${colorCtl('bg','Background',r.cosmetics.bg)}${colorCtl('border','Border',r.cosmetics.border)}<div class="control"><label>Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}"></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div></div>`;
+ bindEditor(); renderBaseList(''); renderModList(''); updateAddButton();
 }
+function updateAddButton(){
+ const b=$('#addToFilter'),note=$('#addFilterNote'),r=active();
+ if(!b||!note)return;
+ if(!r){b.disabled=true;b.textContent='Add to Filter';note.textContent='Drag an item type into Active Rule to start.';return}
+ if(!r.destination){b.disabled=true;b.textContent=r.committed?'Save Rule':'Add to Filter';note.textContent='Choose Show or Hide first.';return}
+ b.disabled=false;b.textContent=r.committed?'Save Rule':'Add to Filter';
+ note.textContent=r.committed?'Save changes and return this rule to Completed Rules.':'The rule will be inserted into its current execution position.';
+ b.onclick=()=>{r.committed=true;activeId=null;clearReorderError();render()};
+}
+
 function colorCtl(id,label,val){return `<div class="control"><label>${label}</label><div class="color-field"><input data-cos="${id}" type="color" value="${val}"><input data-cos-text="${id}" type="text" value="${val}"></div></div>`}
 function statRow(s,i){return `<div class="filter-row"><select data-stat-field="${i}">${DATA.filterableStats.map(x=>`<option value="${x.id}" ${x.id===s.field?'selected':''}>${x.label}</option>`).join('')}</select><select data-stat-op="${i}">${['>=','>','=','<=','<'].map(x=>`<option ${x===s.op?'selected':''}>${x}</option>`).join('')}</select><input data-stat-val="${i}" type="number" value="${s.value}"><button data-stat-remove="${i}">×</button></div>`}
-function bindEditor(){const r=active();$$('[data-dest]').forEach(b=>b.onclick=()=>{r.destination=b.dataset.dest;render()});$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
+function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
  $('#baseSearch').oninput=e=>renderBaseList(e.target.value);$('#modSearch').oninput=e=>renderModList(e.target.value);
  $('#addStat').onclick=()=>{r.stats.push({field:'ItemLevel',op:'>=',value:65});render()};
  $$('[data-stat-field]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statField].field=x.value;renderPreview()});$$('[data-stat-op]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statOp].op=x.value;renderPreview()});$$('[data-stat-val]').forEach(x=>x.oninput=()=>{r.stats[+x.dataset.statVal].value=Number(x.value);renderPreview()});$$('[data-stat-remove]').forEach(x=>x.onclick=()=>{r.stats.splice(+x.dataset.statRemove,1);render()});
- $$('[data-cos]').forEach(x=>x.oninput=()=>{const k=x.dataset.cos;r.cosmetics[k]=x.type==='number'?Number(x.value):x.value;const t=$(`[data-cos-text="${k}"]`);if(t)t.value=x.value;renderPreview();renderBoard()});$$('[data-cos-text]').forEach(x=>x.onchange=()=>{const k=x.dataset.cosText;if(/^#[0-9a-f]{6}$/i.test(x.value)){r.cosmetics[k]=x.value;const c=$(`[data-cos="${k}"]`);if(c)c.value=x.value;renderPreview();renderBoard()}})
+ $$('[data-cos]').forEach(x=>x.oninput=()=>{const k=x.dataset.cos;r.cosmetics[k]=(x.type==='number'||k==='iconSize')?Number(x.value):x.value;const t=$(`[data-cos-text="${k}"]`);if(t)t.value=x.value;if(k==='iconColor')renderEditor();else{renderPreview();renderBoard()}});$$('[data-cos-text]').forEach(x=>x.onchange=()=>{const k=x.dataset.cosText;if(/^#[0-9a-f]{6}$/i.test(x.value)){r.cosmetics[k]=x.value;const c=$(`[data-cos="${k}"]`);if(c)c.value=x.value;renderPreview();renderBoard()}});
+ $$('[data-icon-shape]').forEach(x=>x.onclick=()=>{r.cosmetics.icon=x.dataset.iconShape;renderEditor();renderPreview();renderBoard()})
 }
 function renderBaseList(search=''){const r=active();if(!r)return;const list=allowedItems(r).filter(x=>!search||x.name.toLowerCase().includes(search.toLowerCase())).slice(0,160);$('#baseList').innerHTML=list.length?list.map(x=>`<label class="check-row"><input type="checkbox" data-base="${esc(x.name)}" ${r.bases.includes(x.name)?'checked':''}><span>${esc(x.name)}</span><small>Lv ${x.dropLevel}</small></label>`).join(''):'<div class="check-row">No matching bases.</div>';$$('[data-base]').forEach(x=>x.onchange=()=>{toggle(r.bases,x.dataset.base);renderPreview()})}
 function renderModList(search=''){const r=active();if(!r)return;const qv=search.toLowerCase().trim();let vals=qv?DATA.explicitModNames.filter(x=>x.toLowerCase().includes(qv)).slice(0,100):r.mods.slice(0,50);$('#modList').innerHTML=vals.length?vals.map(n=>`<label class="check-row"><input type="checkbox" data-mod="${esc(n)}" ${r.mods.includes(n)?'checked':''}><span>${esc(n)}</span></label>`).join(''):'<div class="check-row">Type to search mod names.</div>';$$('[data-mod]').forEach(x=>x.onchange=()=>{toggle(r.mods,x.dataset.mod);renderPreview()})}
@@ -139,14 +193,131 @@ function compileRule(r,full=true){
  lines.push(`    SetBorderColor ${hexRgba(r.cosmetics.border)}`);
  lines.push(`    SetFontSize ${r.cosmetics.font}`);
  if(r.cosmetics.sound!=='None')lines.push(`    PlayAlertSound ${r.cosmetics.sound} 100`);
- if(r.cosmetics.icon!=='None')lines.push(`    MinimapIcon 1 ${r.cosmetics.beam==='None'?'White':r.cosmetics.beam} ${r.cosmetics.icon}`);
+ if(r.cosmetics.icon!=='None')lines.push(`    MinimapIcon ${Number(r.cosmetics.iconSize??1)} ${r.cosmetics.iconColor||'White'} ${r.cosmetics.icon}`);
  if(r.cosmetics.beam!=='None')lines.push(`    PlayEffect ${r.cosmetics.beam}`);
  return lines.join('\n')
 }
-function compileAll(){const ordered=[...rules.filter(r=>r.destination==='show'),...rules.filter(r=>r.destination==='hide')];return ordered.map(r=>`# SteamMonkey visual rule #${r.id}\n${compileRule(r)}`).join('\n\n')}
-function renderPreview(){const r=active();if(!r){$('#lootLabel').textContent='No rule selected';$('#previewDetails').innerHTML='';$('#compiled').textContent='';return}const item=representative(r);const matches=matchedItems(r);const rarity=r.rarities.length===1?r.rarities[0]:r.rarities.length?`${r.rarities.join(' / ')}`:'Any';const label=$('#lootLabel');label.innerHTML=`<div class="rarity-line">${esc(rarity)}</div>${esc(item?.name||'No matching armour base')}`;label.style.color=r.cosmetics.text;label.style.background=r.cosmetics.bg;label.style.borderColor=r.cosmetics.border;label.style.fontSize=`${Math.max(13,r.cosmetics.font*.48)}px`;const defs=item?[['Armour',item.defences?.armour?.min],['Evasion',item.defences?.evasion?.min],['Energy Shield',item.defences?.energyShield?.min],['Ward',item.defences?.ward?.min]].filter(x=>x[1]):[];$('#previewDetails').innerHTML=item?`<div class="preview-item-name">${esc(item.name)}</div><div class="preview-meta">${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}<br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span></div>`:'<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';$('#compiled').textContent=compileRule(r)}
+function ruleSpecificity(r){
+ let score=0;
+ if(r.bases.length)score+=10000+Math.max(0,1000-r.bases.length);
+ if(r.mods.length)score+=r.mods.length*900;
+ if(r.stats.length)score+=r.stats.length*650;
+ if(r.profiles.length)score+=900+(DATA.profiles.length-r.profiles.length)*70;
+ if(r.slots.length)score+=700+(DATA.slots.length-r.slots.length)*60;
+ if(r.rarities.length&&r.rarities.length<DATA.rarities.length)score+=450+(DATA.rarities.length-r.rarities.length)*50;
+ return score;
+}
+function smartOrderedRules(){
+ return rules.filter(r=>r.committed&&r.destination).slice().sort((a,b)=>{
+  const delta=ruleSpecificity(b)-ruleSpecificity(a);
+  return delta||a.id-b.id;
+ });
+}
+function orderedAssignedRules(){
+ const committed=rules.filter(r=>r.committed&&r.destination);
+ if(!manualOrder)return smartOrderedRules();
+ const byId=new Map(committed.map(r=>[r.id,r]));
+ const ordered=manualOrder.map(id=>byId.get(id)).filter(Boolean);
+ for(const r of committed)if(!ordered.includes(r))ordered.push(r);
+ return ordered;
+}
+function ruleActionSignature(r){
+ return JSON.stringify({destination:r.destination,cosmetics:r.cosmetics});
+}
+function rulePotentialBases(r){
+ return new Set(matchedItems(r).map(x=>x.id||x.name));
+}
+function raritySet(r){
+ return new Set((!r.rarities.length||r.rarities.length===DATA.rarities.length)?DATA.rarities:r.rarities);
+}
+function raritiesOverlap(a,b){
+ const A=raritySet(a),B=raritySet(b);
+ return [...A].some(x=>B.has(x));
+}
+function numericConditionCouldOverlap(a,b){
+ // Conservative by design: unless we can prove disjointness, treat numeric/mod filters as overlapping.
+ return true;
+}
+function rulesCouldOverlap(a,b){
+ if(!raritiesOverlap(a,b))return false;
+ const A=rulePotentialBases(a),B=rulePotentialBases(b);
+ if(![...A].some(x=>B.has(x)))return false;
+ return numericConditionCouldOverlap(a,b);
+}
+function clearReorderError(){const el=$('#reorderError');if(el){el.hidden=true;el.textContent=''}}
+function showReorderError(msg){const el=$('#reorderError');if(el){el.hidden=false;el.textContent=msg}}
+function attemptManualReorder(fromId,toId){
+ clearReorderError();
+ const current=orderedAssignedRules();
+ const from=current.findIndex(r=>r.id===fromId),to=current.findIndex(r=>r.id===toId);
+ if(from<0||to<0||from===to)return;
+ const moving=current[from];
+ const crossed=current.slice(Math.min(from,to),Math.max(from,to)+1).filter(r=>r.id!==fromId);
+ for(const other of crossed){
+   if(rulesCouldOverlap(moving,other)&&ruleActionSignature(moving)!==ruleActionSignature(other)){
+     showReorderError(`Can't move Rule #${moving.id} across Rule #${other.id}: they can match the same item and their resulting actions differ. Changing their order could change filter behaviour.`);
+     renderCompletedRules();
+     return;
+   }
+ }
+ const ids=current.map(r=>r.id);
+ ids.splice(from,1);
+ const targetIndex=ids.indexOf(toId);
+ ids.splice(to>from?targetIndex+1:targetIndex,0,fromId);
+ manualOrder=ids;
+ render();
+}
+function compileAll(){return orderedAssignedRules().map((r,i)=>`# SteamMonkey visual rule #${r.id} · execution ${i+1}\n${compileRule(r)}`).join('\n\n')}
+function previewExamples(r){
+ const matches=matchedItems(r).slice().sort((a,b)=>a.dropLevel-b.dropLevel||a.name.localeCompare(b.name));
+ if(!matches.length)return [];
+ if(matches.length<=3)return matches;
+ return [matches[Math.floor(matches.length*.25)],matches[Math.floor(matches.length*.58)],matches[Math.floor(matches.length*.82)]];
+}
+function renderExecutionOrder(){
+ const el=$('#executionOrder');
+ if(!el)return;
+ const ordered=orderedAssignedRules();
+ if(!ordered.length){el.innerHTML='<div class="order-empty">Add completed rules to see export order.</div>';return}
+ el.innerHTML=`<div class="order-head"><strong>Execution order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>Rule #${r.id}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
+}
+function renderPreview(){
+ const r=active();
+ if(!r){
+  $('#lootStage').innerHTML='<div class="stage-empty">No rule selected</div>';
+  $('#previewDetails').innerHTML='';
+  $('#compiled').textContent='';
+  renderExecutionOrder();
+  return
+ }
+ const item=representative(r),matches=matchedItems(r),examples=previewExamples(r);
+ const rarity=r.rarities.length===1?r.rarities[0]:r.rarities.length?`${r.rarities.join(' / ')}`:'Any';
+ const positions=[['18%','26%'],['55%','54%'],['76%','22%']];
+ const beamColor=ICON_HEX[r.cosmetics.beam]||'#ffffff';
+ $('#lootStage').innerHTML=examples.length?examples.map((ex,i)=>{
+   const [left,top]=positions[i]||positions[0];
+   const beam=r.cosmetics.beam!=='None'?`<span class="loot-beam" style="--beam:${beamColor}"></span>`:'';
+   return `<div class="ground-drop" style="left:${left};top:${top}">${beam}<div class="ground-label" style="color:${r.cosmetics.text};background:${r.cosmetics.bg};border-color:${r.cosmetics.border};font-size:${Math.max(11,r.cosmetics.font*.43)}px">${esc(ex.name)}</div></div>`;
+ }).join(''):'<div class="stage-empty">No matching armour base</div>';
+ const defs=item?[['Armour',item.defences?.armour?.min],['Evasion',item.defences?.evasion?.min],['Energy Shield',item.defences?.energyShield?.min],['Ward',item.defences?.ward?.min]].filter(x=>x[1]):[];
+ const mapPreview=r.cosmetics.icon!=='None'?`<span class="selected-map-icon" title="${esc(r.cosmetics.icon)}">${iconSvg(r.cosmetics.icon,r.cosmetics.iconColor)}</span>`:'';
+ $('#previewDetails').innerHTML=item?`<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div><div class="preview-meta">${esc(rarity)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}<br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span></div>`:'<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
+ $('#compiled').textContent=compileRule(r);
+ renderExecutionOrder();
+}
 function render(){renderBoard();renderEditor();renderPreview()}
-function setupDnD(){const palette=$('#armourPalette');palette.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/palette','Armour');e.dataTransfer.effectAllowed='copy'});palette.addEventListener('click',()=>addRule('unassigned'));$$('.lane').forEach(l=>{l.addEventListener('dragover',e=>{e.preventDefault();l.classList.add('dragover')});l.addEventListener('dragleave',()=>l.classList.remove('dragover'));l.addEventListener('drop',e=>{e.preventDefault();l.classList.remove('dragover');const dest=l.dataset.dest;const rid=e.dataTransfer.getData('text/rule-id');const pal=e.dataTransfer.getData('text/palette');if(rid){const r=rules.find(x=>x.id===+rid);if(r){r.destination=dest;activeId=r.id;render()}}else if(pal){addRule(dest)}})})}
-async function init(){DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());$('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} armour bases`;setupDnD();addRule('unassigned');$('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};$('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}
+function setupDnD(){
+ const palette=$('#armourPalette'),slot=$('#activeRuleSlot');
+ palette.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/palette','Armour');e.dataTransfer.effectAllowed='copy'});
+ palette.addEventListener('click',()=>addRule(null));
+ if(slot){
+   slot.addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('text/palette')){e.preventDefault();slot.classList.add('dragover')}});
+   slot.addEventListener('dragleave',()=>slot.classList.remove('dragover'));
+   slot.addEventListener('drop',e=>{const pal=e.dataTransfer.getData('text/palette');if(pal){e.preventDefault();slot.classList.remove('dragover');addRule(null)}});
+ }
+ $('#activeShow').onclick=()=>{const r=active();if(r){r.destination='show';render()}};
+ $('#activeHide').onclick=()=>{const r=active();if(r){r.destination='hide';render()}};
+}
+async function init(){DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());$('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} armour bases`;setupDnD();render();$('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};$('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}
 init().catch(err=>{$('#editor').innerHTML=`<div class="empty-editor">Failed to load filter data: ${esc(err.message)}</div>`;console.error(err)})
 })();
