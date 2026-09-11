@@ -3,12 +3,13 @@
 'use strict';
 const dataUrl = document.body.dataset.filterData;
 let DATA=null, rules=[], activeId=null, nextId=1, manualOrder=null;
+let hideAllEnabled=false;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
 function defaultRule(dest=null){
- return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],mods:[],cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None'}};
+ return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],mods:[],cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
 }
 function active(){return rules.find(r=>r.id===activeId)||null}
 function addRule(dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
@@ -125,7 +126,7 @@ function renderEditor(){const r=active();const root=$('#editor');if(!r){root.inn
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Numeric Filters</h3><span>AND between rows</span></div><div id="statRows">${r.stats.map((s,i)=>statRow(s,i)).join('')}</div><button class="add-stat" id="addStat">+ Add numeric condition</button></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Explicit Modifier Names</h3><span>advanced</span></div><div class="search-row"><input id="modSearch" type="text" placeholder="Search ${DATA.explicitModNames.length} item affix names…"></div><div id="modList" class="mod-list"></div><p class="layer-note">Uses <code>HasExplicitMod</code> name matching. This does not test an affix's numeric rolled value.</p></div>`+
- `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text)}${colorCtl('bg','Background',r.cosmetics.bg)}${colorCtl('border','Border',r.cosmetics.border)}<div class="control"><label>Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}"></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div></div>`;
+ `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text,'overrideText')}${colorCtl('bg','Background',r.cosmetics.bg,'overrideBg')}${colorCtl('border','Border',r.cosmetics.border,'overrideBorder')}<div class="control"><label><input type="checkbox" data-cos-override="overrideFont" ${r.cosmetics.overrideFont?'checked':''}> Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}" ${r.cosmetics.overrideFont?'':'disabled'}></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div><p class="layer-note">Cosmetic overrides are optional. Leave an override unchecked to keep the game's normal appearance for that property.</p></div>`;
  bindEditor(); renderBaseList(''); renderModList(''); updateAddButton();
 }
 function updateAddButton(){
@@ -138,12 +139,16 @@ function updateAddButton(){
  b.onclick=()=>{r.committed=true;activeId=null;clearReorderError();render()};
 }
 
-function colorCtl(id,label,val){return `<div class="control"><label>${label}</label><div class="color-field"><input data-cos="${id}" type="color" value="${val}"><input data-cos-text="${id}" type="text" value="${val}"></div></div>`}
+function colorCtl(id,label,val,overrideKey){
+ const enabled=!!active()?.cosmetics?.[overrideKey];
+ return `<div class="control"><label><input type="checkbox" data-cos-override="${overrideKey}" ${enabled?'checked':''}> ${label}</label><div class="color-field"><input data-cos="${id}" type="color" value="${val}" ${enabled?'':'disabled'}><input data-cos-text="${id}" type="text" value="${val}" ${enabled?'':'disabled'}></div></div>`
+}
 function statRow(s,i){return `<div class="filter-row"><select data-stat-field="${i}">${DATA.filterableStats.map(x=>`<option value="${x.id}" ${x.id===s.field?'selected':''}>${x.label}</option>`).join('')}</select><select data-stat-op="${i}">${['>=','>','=','<=','<'].map(x=>`<option ${x===s.op?'selected':''}>${x}</option>`).join('')}</select><input data-stat-val="${i}" type="number" value="${s.value}"><button data-stat-remove="${i}">×</button></div>`}
 function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
  $('#baseSearch').oninput=e=>renderBaseList(e.target.value);$('#modSearch').oninput=e=>renderModList(e.target.value);
  $('#addStat').onclick=()=>{r.stats.push({field:'ItemLevel',op:'>=',value:65});render()};
  $$('[data-stat-field]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statField].field=x.value;renderPreview()});$$('[data-stat-op]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statOp].op=x.value;renderPreview()});$$('[data-stat-val]').forEach(x=>x.oninput=()=>{r.stats[+x.dataset.statVal].value=Number(x.value);renderPreview()});$$('[data-stat-remove]').forEach(x=>x.onclick=()=>{r.stats.splice(+x.dataset.statRemove,1);render()});
+ $$('[data-cos-override]').forEach(x=>x.onchange=()=>{r.cosmetics[x.dataset.cosOverride]=x.checked;renderEditor();renderPreview();renderBoard()});
  $$('[data-cos]').forEach(x=>x.oninput=()=>{const k=x.dataset.cos;r.cosmetics[k]=(x.type==='number'||k==='iconSize')?Number(x.value):x.value;const t=$(`[data-cos-text="${k}"]`);if(t)t.value=x.value;if(k==='iconColor')renderEditor();else{renderPreview();renderBoard()}});$$('[data-cos-text]').forEach(x=>x.onchange=()=>{const k=x.dataset.cosText;if(/^#[0-9a-f]{6}$/i.test(x.value)){r.cosmetics[k]=x.value;const c=$(`[data-cos="${k}"]`);if(c)c.value=x.value;renderPreview();renderBoard()}});
  $$('[data-icon-shape]').forEach(x=>x.onclick=()=>{r.cosmetics.icon=x.dataset.iconShape;renderEditor();renderPreview();renderBoard()})
 }
@@ -188,10 +193,10 @@ function compileRule(r,full=true){
 
  for(const s of r.stats)lines.push(`    ${s.field} ${s.op} ${s.value}`);
  if(r.mods.length)lines.push(`    HasExplicitMod ${r.mods.map(q).join(' ')}`);
- lines.push(`    SetTextColor ${hexRgba(r.cosmetics.text)}`);
- lines.push(`    SetBackgroundColor ${hexRgba(r.cosmetics.bg,230)}`);
- lines.push(`    SetBorderColor ${hexRgba(r.cosmetics.border)}`);
- lines.push(`    SetFontSize ${r.cosmetics.font}`);
+ if(r.cosmetics.overrideText)lines.push(`    SetTextColor ${hexRgba(r.cosmetics.text)}`);
+ if(r.cosmetics.overrideBg)lines.push(`    SetBackgroundColor ${hexRgba(r.cosmetics.bg,230)}`);
+ if(r.cosmetics.overrideBorder)lines.push(`    SetBorderColor ${hexRgba(r.cosmetics.border)}`);
+ if(r.cosmetics.overrideFont)lines.push(`    SetFontSize ${r.cosmetics.font}`);
  if(r.cosmetics.sound!=='None')lines.push(`    PlayAlertSound ${r.cosmetics.sound} 100`);
  if(r.cosmetics.icon!=='None')lines.push(`    MinimapIcon ${Number(r.cosmetics.iconSize??1)} ${r.cosmetics.iconColor||'White'} ${r.cosmetics.icon}`);
  if(r.cosmetics.beam!=='None')lines.push(`    PlayEffect ${r.cosmetics.beam}`);
@@ -222,7 +227,8 @@ function orderedAssignedRules(){
  return ordered;
 }
 function ruleActionSignature(r){
- return JSON.stringify({destination:r.destination,cosmetics:r.cosmetics});
+ const c=r.cosmetics||{};
+ return JSON.stringify({destination:r.destination,cosmetics:{text:c.overrideText?c.text:null,bg:c.overrideBg?c.bg:null,border:c.overrideBorder?c.border:null,font:c.overrideFont?c.font:null,beam:c.beam||'None',icon:c.icon||'None',iconColor:c.icon!=='None'?c.iconColor:null,iconSize:c.icon!=='None'?c.iconSize:null,sound:c.sound||'None'}});
 }
 function rulePotentialBases(r){
  return new Set(matchedItems(r).map(x=>x.id||x.name));
@@ -267,7 +273,11 @@ function attemptManualReorder(fromId,toId){
  manualOrder=ids;
  render();
 }
-function compileAll(){return orderedAssignedRules().map((r,i)=>`# SteamMonkey visual rule #${r.id} · execution ${i+1}\n${compileRule(r)}`).join('\n\n')}
+function compileAll(){
+ const blocks=orderedAssignedRules().map((r,i)=>`# SteamMonkey visual rule #${r.id} · execution ${i+1}\n${compileRule(r)}`);
+ if(hideAllEnabled)blocks.push('# SteamMonkey fallback · hide all unmatched loot\nHide');
+ return blocks.join('\n\n')
+}
 function previewExamples(r){
  const matches=matchedItems(r).slice().sort((a,b)=>a.dropLevel-b.dropLevel||a.name.localeCompare(b.name));
  if(!matches.length)return [];
@@ -280,6 +290,11 @@ function renderExecutionOrder(){
  const ordered=orderedAssignedRules();
  if(!ordered.length){el.innerHTML='<div class="order-empty">Add completed rules to see export order.</div>';return}
  el.innerHTML=`<div class="order-head"><strong>Execution order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>Rule #${r.id}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
+}
+function defaultLabelStyle(r,item){
+ const rarity=r.rarities.length===1?r.rarities[0]:'';
+ const styles={Normal:{text:'#c8c8c8',bg:'#161616',border:'#4b4b4b',font:15},Magic:{text:'#8888ff',bg:'#151520',border:'#46466b',font:15},Rare:{text:'#ffff77',bg:'#201f13',border:'#6f6a2d',font:15},Unique:{text:'#af6025',bg:'#21170f',border:'#74421f',font:15}};
+ return styles[rarity]||{text:'#d8d8d8',bg:'#171717',border:'#525252',font:15}
 }
 function renderPreview(){
  const r=active();
@@ -297,15 +312,26 @@ function renderPreview(){
  $('#lootStage').innerHTML=examples.length?examples.map((ex,i)=>{
    const [left,top]=positions[i]||positions[0];
    const beam=r.cosmetics.beam!=='None'?`<span class="loot-beam" style="--beam:${beamColor}"></span>`:'';
-   return `<div class="ground-drop" style="left:${left};top:${top}">${beam}<div class="ground-label" style="color:${r.cosmetics.text};background:${r.cosmetics.bg};border-color:${r.cosmetics.border};font-size:${Math.max(11,r.cosmetics.font*.43)}px">${esc(ex.name)}</div></div>`;
+   const d=defaultLabelStyle(r,ex);
+   const text=r.cosmetics.overrideText?r.cosmetics.text:d.text;
+   const bg=r.cosmetics.overrideBg?r.cosmetics.bg:d.bg;
+   const border=r.cosmetics.overrideBorder?r.cosmetics.border:d.border;
+   const font=r.cosmetics.overrideFont?Math.max(11,r.cosmetics.font*.43):d.font;
+   return `<div class="ground-drop" style="left:${left};top:${top}">${beam}<div class="ground-label" style="color:${text};background:${bg};border-color:${border};font-size:${font}px">${esc(ex.name)}</div></div>`;
  }).join(''):'<div class="stage-empty">No matching armour base</div>';
  const defs=item?[['Armour',item.defences?.armour?.min],['Evasion',item.defences?.evasion?.min],['Energy Shield',item.defences?.energyShield?.min],['Ward',item.defences?.ward?.min]].filter(x=>x[1]):[];
  const mapPreview=r.cosmetics.icon!=='None'?`<span class="selected-map-icon" title="${esc(r.cosmetics.icon)}">${iconSvg(r.cosmetics.icon,r.cosmetics.iconColor)}</span>`:'';
- $('#previewDetails').innerHTML=item?`<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div><div class="preview-meta">${esc(rarity)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}<br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span></div>`:'<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
+ $('#previewDetails').innerHTML=item?`<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div><div class="preview-meta">${esc(rarity)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}<br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span><br><span>${(r.cosmetics.overrideText||r.cosmetics.overrideBg||r.cosmetics.overrideBorder||r.cosmetics.overrideFont||r.cosmetics.beam!=='None'||r.cosmetics.icon!=='None'||r.cosmetics.sound!=='None')?'Custom cosmetics':'Game default appearance (preview approximation)'}</span></div>`:'<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
  $('#compiled').textContent=compileRule(r);
  renderExecutionOrder();
 }
-function render(){renderBoard();renderEditor();renderPreview()}
+function renderHideAll(){
+ const b=$('#hideAllToggle');if(!b)return;
+ b.classList.toggle('on',hideAllEnabled);
+ b.setAttribute('aria-pressed',hideAllEnabled?'true':'false');
+ b.textContent=`Hide All: ${hideAllEnabled?'ON':'OFF'}`;
+}
+function render(){renderBoard();renderEditor();renderPreview();renderHideAll()}
 function setupDnD(){
  const palette=$('#armourPalette'),slot=$('#activeRuleSlot');
  palette.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/palette','Armour');e.dataTransfer.effectAllowed='copy'});
@@ -317,6 +343,7 @@ function setupDnD(){
  }
  $('#activeShow').onclick=()=>{const r=active();if(r){r.destination='show';render()}};
  $('#activeHide').onclick=()=>{const r=active();if(r){r.destination='hide';render()}};
+ const hideAll=$('#hideAllToggle');if(hideAll)hideAll.onclick=()=>{hideAllEnabled=!hideAllEnabled;render()};
 }
 async function init(){DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());$('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} armour bases`;setupDnD();render();$('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};$('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}
 init().catch(err=>{$('#editor').innerHTML=`<div class="empty-editor">Failed to load filter data: ${esc(err.message)}</div>`;console.error(err)})
