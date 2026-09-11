@@ -73,3 +73,36 @@
 .code{margin:0;max-height:310px;overflow:auto;padding:10px 12px;background:#121116;color:#c9c3ce;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word}.warning{margin:8px 10px 10px;padding:7px 8px;border-left:3px solid var(--sm-orange);background:rgba(216,77,8,.07);color:var(--sm-muted);font-size:10px;line-height:1.4}
 @media(max-width:1180px){.builder-grid{grid-template-columns:minmax(210px,.75fr) minmax(430px,1.5fr)}.preview-panel{grid-column:1/-1;position:static;display:grid;grid-template-columns:1fr 1fr}.compiler{border-top:0;border-left:1px solid var(--sm-line)}.completed-rules{max-height:520px}}
 @media(max-width:800px){.filter-app{padding-left:10px;padding-right:10px}.builder-grid{grid-template-columns:1fr}.completed-panel,.build-panel,.preview-panel{grid-column:auto}.completed-rules{max-height:none}.preview-panel{display:block}.compiler{border-left:0;border-top:1px solid var(--sm-line)}.palette-horizontal .palette-card{max-width:none;flex:1 1 190px}.cos-grid{grid-template-columns:1fr}.active-rule-row{grid-template-columns:1fr 96px}}
+
+/* v0.6.6 preview-only refinements */
+.poe2-label{
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  letter-spacing:.01em;
+  line-height:1.05;
+  padding:4px 8px 5px;
+  border-width:1px;
+  border-style:solid;
+  border-radius:0;
+  text-shadow:0 1px 0 #000;
+  box-shadow:0 1px 2px rgba(0,0,0,.55);
+  white-space:nowrap;
+}
+.rarity-drop{
+  transform:translate(-50%,-50%);
+  min-width:150px;
+  text-align:center;
+}
+.rarity-caption{
+  margin-bottom:5px;
+  color:#8f8794;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  text-shadow:0 1px 2px #000;
+}
+.preview-icon-note{
+  margin-top:3px;
+  color:#8f8794;
+  font-size:9px;
+}

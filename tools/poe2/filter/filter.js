@@ -291,38 +291,127 @@ function renderExecutionOrder(){
  if(!ordered.length){el.innerHTML='<div class="order-empty">Add completed rules to see export order.</div>';return}
  el.innerHTML=`<div class="order-head"><strong>Execution order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>Rule #${r.id}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
 }
-function defaultLabelStyle(r,item){
- const rarity=r.rarities.length===1?r.rarities[0]:'';
- const styles={Normal:{text:'#c8c8c8',bg:'#161616',border:'#4b4b4b',font:15},Magic:{text:'#8888ff',bg:'#151520',border:'#46466b',font:15},Rare:{text:'#ffff77',bg:'#201f13',border:'#6f6a2d',font:15},Unique:{text:'#af6025',bg:'#21170f',border:'#74421f',font:15}};
- return styles[rarity]||{text:'#d8d8d8',bg:'#171717',border:'#525252',font:15}
+function defaultLabelStyle(rarity){
+ // Approximation of POE2 ground-label defaults. Each cosmetic property can still
+ // be independently overridden by the active filter rule.
+ const styles={
+  Normal:{
+   text:'#c8c8c8',
+   bg:'#1b1b1b',
+   border:'#5a5a5a',
+   font:16,
+   weight:600
+  },
+  Magic:{
+   text:'#8888ff',
+   bg:'#161622',
+   border:'#4f4f83',
+   font:16,
+   weight:600
+  },
+  Rare:{
+   text:'#ffff77',
+   bg:'#211f12',
+   border:'#7b7434',
+   font:16,
+   weight:600
+  },
+  Unique:{
+   text:'#af6025',
+   bg:'#21170f',
+   border:'#7a4825',
+   font:16,
+   weight:600
+  }
+ };
+ return styles[rarity]||styles.Normal
 }
 function renderPreview(){
  const r=active();
+ const stage=$('#lootStage'),details=$('#previewDetails'),compiled=$('#compiled');
+ if(!stage||!details||!compiled)return;
+
  if(!r){
-  $('#lootStage').innerHTML='<div class="stage-empty">No rule selected</div>';
-  $('#previewDetails').innerHTML='';
-  $('#compiled').textContent='';
+  stage.innerHTML='<div class="stage-empty">No rule selected</div>';
+  details.innerHTML='';
+  compiled.textContent='';
   renderExecutionOrder();
   return
  }
- const item=representative(r),matches=matchedItems(r),examples=previewExamples(r);
- const rarity=r.rarities.length===1?r.rarities[0]:r.rarities.length?`${r.rarities.join(' / ')}`:'Any';
- const positions=[['18%','26%'],['55%','54%'],['76%','22%']];
+
+ const matches=matchedItems(r).slice().sort((a,b)=>a.dropLevel-b.dropLevel||a.name.localeCompare(b.name));
+ const item=representative(r);
+
+ // Empty rarity selection means the rule has no Rarity condition ("Any"),
+ // so demonstrate all four item rarities that may retain their native styles.
+ const rarities=(r.rarities&&r.rarities.length)?r.rarities:['Normal','Magic','Rare','Unique'];
+
+ if(!matches.length){
+  stage.innerHTML='<div class="stage-empty">No matching armour base</div>';
+  details.innerHTML='<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
+  compiled.textContent=compileRule(r);
+  renderExecutionOrder();
+  return
+ }
+
+ // One legitimate matching base per selected rarity. Spread across the real preview stage.
+ const examples=rarities.map((rarity,i)=>{
+   const index=rarities.length===1
+     ? Math.floor(matches.length*.67)
+     : Math.round((matches.length-1)*(i/(Math.max(1,rarities.length-1))));
+   return {rarity,item:matches[Math.max(0,Math.min(matches.length-1,index))]}
+ });
+
+ const positions={
+  1:[['50%','48%']],
+  2:[['31%','48%'],['69%','48%']],
+  3:[['50%','30%'],['31%','64%'],['69%','64%']],
+  4:[['31%','31%'],['69%','31%'],['31%','65%'],['69%','65%']]
+ };
+ const pos=positions[Math.min(4,examples.length)]||positions[4];
  const beamColor=ICON_HEX[r.cosmetics.beam]||'#ffffff';
- $('#lootStage').innerHTML=examples.length?examples.map((ex,i)=>{
-   const [left,top]=positions[i]||positions[0];
-   const beam=r.cosmetics.beam!=='None'?`<span class="loot-beam" style="--beam:${beamColor}"></span>`:'';
-   const d=defaultLabelStyle(r,ex);
+
+ stage.innerHTML=examples.map((entry,i)=>{
+   const rarity=entry.rarity,ex=entry.item;
+   const [left,top]=pos[i]||pos[pos.length-1];
+   const d=defaultLabelStyle(rarity);
+
+   // Apply only explicitly enabled overrides. Every untouched property keeps
+   // the default for this specific rarity.
    const text=r.cosmetics.overrideText?r.cosmetics.text:d.text;
    const bg=r.cosmetics.overrideBg?r.cosmetics.bg:d.bg;
    const border=r.cosmetics.overrideBorder?r.cosmetics.border:d.border;
    const font=r.cosmetics.overrideFont?Math.max(11,r.cosmetics.font*.43):d.font;
-   return `<div class="ground-drop" style="left:${left};top:${top}">${beam}<div class="ground-label" style="color:${text};background:${bg};border-color:${border};font-size:${font}px">${esc(ex.name)}</div></div>`;
- }).join(''):'<div class="stage-empty">No matching armour base</div>';
+
+   const beam=r.cosmetics.beam!=='None'
+     ? `<span class="loot-beam" style="--beam:${beamColor}"></span>`
+     : '';
+
+   return `<div class="ground-drop rarity-drop" style="left:${left};top:${top}">
+    ${beam}
+    <div class="rarity-caption">${esc(rarity)}</div>
+    <div class="ground-label poe2-label" style="color:${text};background:${bg};border-color:${border};font-size:${font}px;font-weight:${d.weight}">${esc(ex.name)}</div>
+   </div>`;
+ }).join('');
+
  const defs=item?[['Armour',item.defences?.armour?.min],['Evasion',item.defences?.evasion?.min],['Energy Shield',item.defences?.energyShield?.min],['Ward',item.defences?.ward?.min]].filter(x=>x[1]):[];
- const mapPreview=r.cosmetics.icon!=='None'?`<span class="selected-map-icon" title="${esc(r.cosmetics.icon)}">${iconSvg(r.cosmetics.icon,r.cosmetics.iconColor)}</span>`:'';
- $('#previewDetails').innerHTML=item?`<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div><div class="preview-meta">${esc(rarity)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}<br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span><br><span>${(r.cosmetics.overrideText||r.cosmetics.overrideBg||r.cosmetics.overrideBorder||r.cosmetics.overrideFont||r.cosmetics.beam!=='None'||r.cosmetics.icon!=='None'||r.cosmetics.sound!=='None')?'Custom cosmetics':'Game default appearance (preview approximation)'}</span></div>`:'<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
- $('#compiled').textContent=compileRule(r);
+ const mapPreview=r.cosmetics.icon!=='None'
+   ? `<span class="selected-map-icon" title="${esc(r.cosmetics.icon)}">${iconSvg(r.cosmetics.icon,r.cosmetics.iconColor)}</span>`
+   : '';
+ const hasCustom=(r.cosmetics.overrideText||r.cosmetics.overrideBg||r.cosmetics.overrideBorder||r.cosmetics.overrideFont||r.cosmetics.beam!=='None'||r.cosmetics.icon!=='None'||r.cosmetics.sound!=='None');
+ const raritySummary=(r.rarities&&r.rarities.length)?r.rarities.join(' / '):'Any rarity';
+
+ details.innerHTML=item
+  ? `<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div>
+     <div class="preview-meta">
+      ${esc(raritySummary)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}
+      <br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span>
+      <br><span>${examples.length} preview item${examples.length===1?'':'s'} · one per ${r.rarities.length?'selected':'possible'} rarity</span>
+      <br><span>${hasCustom?'Only enabled cosmetic properties are overridden':'Game default appearance (preview approximation)'}</span>
+     </div>`
+  : '<div class="preview-item-name">No matching item</div>';
+
+ compiled.textContent=compileRule(r);
  renderExecutionOrder();
 }
 function renderHideAll(){
