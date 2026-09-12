@@ -126,7 +126,7 @@ function renderEditor(){const r=active();const root=$('#editor');if(!r){root.inn
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Numeric Filters</h3><span>AND between rows</span></div><div id="statRows">${r.stats.map((s,i)=>statRow(s,i)).join('')}</div><button class="add-stat" id="addStat">+ Add numeric condition</button></div>`+
  `<div class="edit-section"><div class="section-title"><h3>Explicit Modifier Names</h3><span>advanced</span></div><div class="search-row"><input id="modSearch" type="text" placeholder="Search ${DATA.explicitModNames.length} item affix names…"></div><div id="modList" class="mod-list"></div><p class="layer-note">Uses <code>HasExplicitMod</code> name matching. This does not test an affix's numeric rolled value.</p></div>`+
- `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text,'overrideText')}${colorCtl('bg','Background',r.cosmetics.bg,'overrideBg')}${colorCtl('border','Border',r.cosmetics.border,'overrideBorder')}<div class="control"><label><input type="checkbox" data-cos-override="overrideFont" ${r.cosmetics.overrideFont?'checked':''}> Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}" ${r.cosmetics.overrideFont?'':'disabled'}></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div><p class="layer-note">Cosmetic overrides are optional. Leave an override unchecked to keep the game's normal appearance for that property.</p></div>`;
+ `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text,'overrideText')}${colorCtl('bg','Background',r.cosmetics.bg,'overrideBg')}${colorCtl('border','Border',r.cosmetics.border,'overrideBorder')}<div class="control"><label><input type="checkbox" data-cos-override="overrideFont" ${r.cosmetics.overrideFont?'checked':''}> Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}" ${r.cosmetics.overrideFont?'':'disabled'}></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><div class="sound-control-row"><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select><button type="button" class="sound-preview-btn" data-action="play-alert-sound" title="Play selected alert sound" aria-label="Play selected alert sound">▶ Play</button></div></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div><p class="layer-note">Cosmetic overrides are optional. Leave an override unchecked to keep the game's normal appearance for that property.</p></div>`;
  bindEditor(); renderBaseList(''); renderModList(''); updateAddButton();
 }
 function updateAddButton(){
@@ -434,7 +434,7 @@ function selectedAlertSoundId(){
      if(n>=1&&n<=16)return n;
    }
  }
- const sel=$('#alertSound')||$('#sound')||document.querySelector('select[name="alertSound"]');
+ const sel=document.querySelector('select[data-cos="sound"]');
  if(sel){
    const m=String(sel.value||'').match(/(\d+)/);
    if(m){
@@ -452,7 +452,7 @@ function playSelectedAlertSound(){
    _alertPreviewAudio.currentTime=0;
  }
  _alertPreviewAudio=new Audio(`assets/sounds/AlertSound${id}.mp3`);
- const btn=$('#playAlertSound');
+ const btn=document.querySelector('[data-action="play-alert-sound"]');
  if(btn)btn.classList.add('is-playing');
  const done=()=>{ if(btn)btn.classList.remove('is-playing'); };
  _alertPreviewAudio.addEventListener('ended',done,{once:true});
@@ -460,3 +460,11 @@ function playSelectedAlertSound(){
  _alertPreviewAudio.play().catch(done);
 }
 
+
+
+document.addEventListener('click',e=>{
+ const btn=e.target.closest('[data-action="play-alert-sound"]');
+ if(!btn)return;
+ e.preventDefault();
+ playSelectedAlertSound();
+});
