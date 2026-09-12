@@ -292,37 +292,13 @@ function renderExecutionOrder(){
  el.innerHTML=`<div class="order-head"><strong>Execution order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>Rule #${r.id}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
 }
 function defaultLabelStyle(rarity){
- // Approximation of POE2 ground-label defaults. Each cosmetic property can still
- // be independently overridden by the active filter rule.
+ // Close visual approximation of POE2 ground-label defaults. The actual game
+ // font asset is not bundled with this site, so typography uses a web-safe serif fallback.
  const styles={
-  Normal:{
-   text:'#c8c8c8',
-   bg:'#1b1b1b',
-   border:'#5a5a5a',
-   font:16,
-   weight:600
-  },
-  Magic:{
-   text:'#8888ff',
-   bg:'#161622',
-   border:'#4f4f83',
-   font:16,
-   weight:600
-  },
-  Rare:{
-   text:'#ffff77',
-   bg:'#211f12',
-   border:'#7b7434',
-   font:16,
-   weight:600
-  },
-  Unique:{
-   text:'#af6025',
-   bg:'#21170f',
-   border:'#7a4825',
-   font:16,
-   weight:600
-  }
+  Normal:{text:'#c8c8c8',bg:'#101010',border:'#555555',font:16,weight:700},
+  Magic:{text:'#8888ff',bg:'#101019',border:'#55558a',font:16,weight:700},
+  Rare:{text:'#ffff77',bg:'#151508',border:'#77772f',font:16,weight:700},
+  Unique:{text:'#af6025',bg:'#160f0a',border:'#7b421f',font:16,weight:700}
  };
  return styles[rarity]||styles.Normal
 }
@@ -341,9 +317,6 @@ function renderPreview(){
 
  const matches=matchedItems(r).slice().sort((a,b)=>a.dropLevel-b.dropLevel||a.name.localeCompare(b.name));
  const item=representative(r);
-
- // Empty rarity selection means the rule has no Rarity condition ("Any"),
- // so demonstrate all four item rarities that may retain their native styles.
  const rarities=(r.rarities&&r.rarities.length)?r.rarities:['Normal','Magic','Rare','Unique'];
 
  if(!matches.length){
@@ -354,7 +327,6 @@ function renderPreview(){
   return
  }
 
- // One legitimate matching base per selected rarity. Spread across the real preview stage.
  const examples=rarities.map((rarity,i)=>{
    const index=rarities.length===1
      ? Math.floor(matches.length*.67)
@@ -362,37 +334,51 @@ function renderPreview(){
    return {rarity,item:matches[Math.max(0,Math.min(matches.length-1,index))]}
  });
 
- const positions={
-  1:[['50%','48%']],
-  2:[['31%','48%'],['69%','48%']],
-  3:[['50%','30%'],['31%','64%'],['69%','64%']],
-  4:[['31%','31%'],['69%','31%'],['31%','65%'],['69%','65%']]
- };
- const pos=positions[Math.min(4,examples.length)]||positions[4];
  const beamColor=ICON_HEX[r.cosmetics.beam]||'#ffffff';
 
  stage.innerHTML=examples.map((entry,i)=>{
    const rarity=entry.rarity,ex=entry.item;
-   const [left,top]=pos[i]||pos[pos.length-1];
    const d=defaultLabelStyle(rarity);
-
-   // Apply only explicitly enabled overrides. Every untouched property keeps
-   // the default for this specific rarity.
    const text=r.cosmetics.overrideText?r.cosmetics.text:d.text;
    const bg=r.cosmetics.overrideBg?r.cosmetics.bg:d.bg;
    const border=r.cosmetics.overrideBorder?r.cosmetics.border:d.border;
    const font=r.cosmetics.overrideFont?Math.max(11,r.cosmetics.font*.43):d.font;
 
    const beam=r.cosmetics.beam!=='None'
-     ? `<span class="loot-beam" style="--beam:${beamColor}"></span>`
+     ? `<span class="loot-beam-wrap" style="--beam:${beamColor}">
+          <span class="loot-beam-glow"></span>
+          <span class="loot-beam-core"></span>
+          <span class="loot-beam-ground"></span>
+        </span>`
      : '';
 
-   return `<div class="ground-drop rarity-drop" style="left:${left};top:${top}">
+   return `<div class="ground-drop rarity-drop" data-preview-index="${i}">
     ${beam}
-    <div class="rarity-caption">${esc(rarity)}</div>
     <div class="ground-label poe2-label" style="color:${text};background:${bg};border-color:${border};font-size:${font}px;font-weight:${d.weight}">${esc(ex.name)}</div>
    </div>`;
  }).join('');
+
+ // Layout after the browser has measured each real rendered label.
+ requestAnimationFrame(()=>{
+   const nodes=[...stage.querySelectorAll('.rarity-drop')];
+   if(!nodes.length)return;
+   const sw=stage.clientWidth||520, sh=stage.clientHeight||320;
+   const widths=nodes.map(n=>Math.min(sw*.78, Math.max(150,n.getBoundingClientRect().width)));
+   const rowGap=52;
+   const totalH=(nodes.length-1)*rowGap;
+   let baseY=Math.max(54,(sh-totalH)/2);
+   if(nodes.length===1) baseY=sh*.52;
+
+   nodes.forEach((n,i)=>{
+     const side = nodes.length===1 ? 0 : (i%2===0 ? -1 : 1);
+     const maxShift=Math.max(0,(sw-widths[i])/2-18);
+     const desired=Math.min(maxShift, Math.max(58, sw*.16));
+     const x=sw/2 + side*desired;
+     const y=baseY + i*rowGap;
+     n.style.left=`${x}px`;
+     n.style.top=`${y}px`;
+   });
+ });
 
  const defs=item?[['Armour',item.defences?.armour?.min],['Evasion',item.defences?.evasion?.min],['Energy Shield',item.defences?.energyShield?.min],['Ward',item.defences?.ward?.min]].filter(x=>x[1]):[];
  const mapPreview=r.cosmetics.icon!=='None'
@@ -437,3 +423,40 @@ function setupDnD(){
 async function init(){DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());$('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} armour bases`;setupDnD();render();$('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};$('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}
 init().catch(err=>{$('#editor').innerHTML=`<div class="empty-editor">Failed to load filter data: ${esc(err.message)}</div>`;console.error(err)})
 })();
+
+let _alertPreviewAudio=null;
+function selectedAlertSoundId(){
+ const r=active();
+ if(r&&r.cosmetics&&r.cosmetics.sound){
+   const m=String(r.cosmetics.sound).match(/(\d+)/);
+   if(m){
+     const n=Number(m[1]);
+     if(n>=1&&n<=16)return n;
+   }
+ }
+ const sel=$('#alertSound')||$('#sound')||document.querySelector('select[name="alertSound"]');
+ if(sel){
+   const m=String(sel.value||'').match(/(\d+)/);
+   if(m){
+     const n=Number(m[1]);
+     if(n>=1&&n<=16)return n;
+   }
+ }
+ return null;
+}
+function playSelectedAlertSound(){
+ const id=selectedAlertSoundId();
+ if(!id)return;
+ if(_alertPreviewAudio){
+   _alertPreviewAudio.pause();
+   _alertPreviewAudio.currentTime=0;
+ }
+ _alertPreviewAudio=new Audio(`assets/sounds/AlertSound${id}.mp3`);
+ const btn=$('#playAlertSound');
+ if(btn)btn.classList.add('is-playing');
+ const done=()=>{ if(btn)btn.classList.remove('is-playing'); };
+ _alertPreviewAudio.addEventListener('ended',done,{once:true});
+ _alertPreviewAudio.addEventListener('error',done,{once:true});
+ _alertPreviewAudio.play().catch(done);
+}
+
