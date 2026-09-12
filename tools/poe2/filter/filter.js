@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
 function defaultRule(dest=null){
- return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],mods:[],cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
+ return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
 }
 function active(){return rules.find(r=>r.id===activeId)||null}
 function addRule(dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
@@ -124,8 +124,47 @@ function renderEditor(){const r=active();const root=$('#editor');if(!r){root.inn
  chipGroup('Defence Type','OR within layer · positive requirements; extra defences stay included',DATA.profiles,r.profiles,'profile')+
  chipGroup('Armour Slot','OR within layer',DATA.slots,r.slots,'slot',slot=>!DATA.items.some(x=>itemMatchesSelectedProfiles(x,r.profiles)&&x.slot===slot))+
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
- `<div class="edit-section"><div class="section-title"><h3>Numeric Filters</h3><span>AND between rows</span></div><div id="statRows">${r.stats.map((s,i)=>statRow(s,i)).join('')}</div><button class="add-stat" id="addStat">+ Add numeric condition</button></div>`+
- `<div class="edit-section"><div class="section-title"><h3>Explicit Modifier Names</h3><span>advanced</span></div><div class="search-row"><input id="modSearch" type="text" placeholder="Search ${DATA.explicitModNames.length} item affix names…"></div><div id="modList" class="mod-list"></div><p class="layer-note">Uses <code>HasExplicitMod</code> name matching. This does not test an affix's numeric rolled value.</p></div>`+
+ `<div class="edit-section item-properties-section">
+   <div class="section-title"><h3>Item Properties</h3><span>unidentified loot</span></div>
+   <p class="layer-note itemization-note">These properties are visible to the loot filter before an item is identified. Leaving an option off means it does not affect the rule.</p>
+
+   <div class="simple-property-grid">
+    <label class="simple-property-row">
+     <span class="simple-property-label"><b>Item Level</b><small>Only show items at or above this item level.</small></span>
+     <div class="simple-ilvl-control">
+      <span>≥</span>
+      <input id="itemLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='ItemLevel'&&x.op==='>=')||{}).value??''}">
+     </div>
+    </label>
+
+    <label class="simple-property-row simple-toggle-row">
+     <span class="simple-property-label"><b>Has Sockets</b><small>Require the item to have one or more sockets.</small></span>
+     <input id="hasSockets" type="checkbox" ${r.hasSockets?'checked':''}>
+    </label>
+
+    <label class="simple-property-row simple-toggle-row">
+     <span class="simple-property-label"><b>Has Quality</b><small>Require the item to have quality above 0%.</small></span>
+     <input id="hasQuality" type="checkbox" ${r.hasQuality?'checked':''}>
+    </label>
+   </div>
+  </div>`+
+ `<details class="edit-section affix-section advanced-section">
+   <summary class="advanced-summary">
+    <span><b>Advanced — Identified Items</b><small>Affixes / Mods</small></span>
+    <span>${r.mods.length?`${r.mods.length} selected`:'optional'}</span>
+   </summary>
+   <div class="section-title"><h3>Affixes / Mods</h3><span>${r.mods.length?`${r.mods.length} selected`:'optional'}</span></div>
+   <p class="layer-note itemization-note">Choose named prefixes or suffixes that can roll on the item types selected above. Suggestions are filtered to the current item bases.</p>
+   <div id="selectedAffixes">${selectedAffixChips(r)}</div>
+   <div class="affix-match-row">
+    <label for="modCount">Match at least</label>
+    <input id="modCount" type="number" min="1" max="${Math.max(1,r.mods.length)}" value="${Math.min(Math.max(1,Number(r.modCount)||1),Math.max(1,r.mods.length))}" ${r.mods.length?'':'disabled'}>
+    <span>of the selected affixes</span>
+   </div>
+   <div class="search-row"><input id="modSearch" type="text" placeholder="Search prefixes and suffixes…"></div>
+   <div id="modList" class="mod-list"></div>
+   <p class="layer-note">Explicit modifiers generally matter only after an item is identified. This section is intentionally secondary to the unidentified-item properties above.</p>
+  </details>`+
  `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text,'overrideText')}${colorCtl('bg','Background',r.cosmetics.bg,'overrideBg')}${colorCtl('border','Border',r.cosmetics.border,'overrideBorder')}<div class="control"><label><input type="checkbox" data-cos-override="overrideFont" ${r.cosmetics.overrideFont?'checked':''}> Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}" ${r.cosmetics.overrideFont?'':'disabled'}></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><div class="sound-control-row"><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select><button type="button" class="sound-preview-btn" data-action="play-alert-sound" title="Play selected alert sound" aria-label="Play selected alert sound">▶ Play</button></div></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div><p class="layer-note">Cosmetic overrides are optional. Leave an override unchecked to keep the game's normal appearance for that property.</p></div>`;
  bindEditor(); renderBaseList(''); renderModList(''); updateAddButton();
 }
@@ -143,9 +182,84 @@ function colorCtl(id,label,val,overrideKey){
  const enabled=!!active()?.cosmetics?.[overrideKey];
  return `<div class="control"><label><input type="checkbox" data-cos-override="${overrideKey}" ${enabled?'checked':''}> ${label}</label><div class="color-field"><input data-cos="${id}" type="color" value="${val}" ${enabled?'':'disabled'}><input data-cos-text="${id}" type="text" value="${val}" ${enabled?'':'disabled'}></div></div>`
 }
-function statRow(s,i){return `<div class="filter-row"><select data-stat-field="${i}">${DATA.filterableStats.map(x=>`<option value="${x.id}" ${x.id===s.field?'selected':''}>${x.label}</option>`).join('')}</select><select data-stat-op="${i}">${['>=','>','=','<=','<'].map(x=>`<option ${x===s.op?'selected':''}>${x}</option>`).join('')}</select><input data-stat-val="${i}" type="number" value="${s.value}"><button data-stat-remove="${i}">×</button></div>`}
+
+const ITEM_PROPERTY_META={
+ ItemLevel:{label:'Item Level',group:'Progression',hint:'The item level of the dropped item.'},
+ DropLevel:{label:'Drop Level',group:'Progression',hint:'The level at which this base type starts dropping.'},
+ Quality:{label:'Quality',group:'Item Quality',hint:'The quality shown on the item.'},
+ BaseArmour:{label:'Base Armour',group:'Base Defences',hint:'Armour on the base item before explicit affixes.'},
+ BaseEvasion:{label:'Base Evasion',group:'Base Defences',hint:'Evasion on the base item before explicit affixes.'},
+ BaseEnergyShield:{label:'Base Energy Shield',group:'Base Defences',hint:'Energy Shield on the base item before explicit affixes.'},
+ BaseWard:{label:'Base Ward',group:'Base Defences',hint:'Ward on the base item before explicit affixes.'},
+ BaseDefencePercentile:{label:'Base Defence Percentile',group:'Base Defences',hint:'How high the base defence roll is within its possible range.'}
+};
+const FRIENDLY_OPS=[
+ ['>=','at least'],
+ ['>','more than'],
+ ['=','exactly'],
+ ['<=','at most'],
+ ['<','less than']
+];
+function propertyMeta(id){
+ const src=(DATA.filterableStats||[]).find(x=>x.id===id);
+ return ITEM_PROPERTY_META[id]||{label:src?.label||id,group:'Other',hint:''};
+}
+function propertyOptions(selected){
+ const groups=['Progression','Item Quality','Base Defences','Other'];
+ return groups.map(group=>{
+   const rows=(DATA.filterableStats||[]).filter(x=>propertyMeta(x.id).group===group);
+   if(!rows.length)return '';
+   return `<optgroup label="${group}">${rows.map(x=>`<option value="${x.id}" ${x.id===selected?'selected':''}>${esc(propertyMeta(x.id).label)}</option>`).join('')}</optgroup>`;
+ }).join('');
+}
+function relevantAffixTags(r){
+ const source=(r.bases&&r.bases.length)?matchedItems(r):allowedItems(r);
+ return new Set(source.flatMap(x=>x.tags||[]));
+}
+function affixRelevantToRule(affix,r){
+ const tags=affix.spawnTags||[];
+ if(!tags.length)return true;
+ const relevant=relevantAffixTags(r);
+ return tags.some(tag=>relevant.has(tag));
+}
+function selectedAffixChips(r){
+ if(!r.mods.length)return '<div class="affix-empty">No affixes selected.</div>';
+ const lookup=new Map((DATA.itemAffixes||[]).map(x=>[x.name,x]));
+ return `<div class="selected-affixes">${r.mods.map(name=>{
+   const a=lookup.get(name);
+   const relevant=!a||affixRelevantToRule(a,r);
+   return `<button type="button" class="affix-chip ${relevant?'':'affix-chip-warning'}" data-mod-remove-name="${esc(name)}" title="${relevant?'Remove affix':'This affix may not occur on the currently selected item bases. Click to remove.'}"><span>${esc(name)}</span><b>×</b></button>`;
+ }).join('')}</div>`;
+}
+
+function statRow(s,i){
+ const meta=propertyMeta(s.field);
+ return `<div class="filter-row item-property-row">
+   <div class="property-main">
+    <select class="property-name" data-stat-field="${i}" title="${esc(meta.hint)}">${propertyOptions(s.field)}</select>
+    <select class="property-op" data-stat-op="${i}">${FRIENDLY_OPS.map(([v,l])=>`<option value="${v}" ${v===s.op?'selected':''}>${l}</option>`).join('')}</select>
+    <input class="property-value" data-stat-val="${i}" type="number" value="${s.value}">
+    <button class="property-remove" data-stat-remove="${i}" title="Remove item property">×</button>
+   </div>
+   <div class="property-hint">${esc(meta.hint)}</div>
+  </div>`;
+}
 function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
  $('#baseSearch').oninput=e=>renderBaseList(e.target.value);$('#modSearch').oninput=e=>renderModList(e.target.value);
+ const itemLevelMin=$('#itemLevelMin');
+ if(itemLevelMin)itemLevelMin.oninput=e=>{
+   r.stats=r.stats.filter(x=>x.field!=='ItemLevel');
+   const v=Number(e.target.value);
+   if(e.target.value!==''&&Number.isFinite(v))r.stats.push({field:'ItemLevel',op:'>=',value:v});
+   renderPreview();
+ };
+ const hasSockets=$('#hasSockets');
+ if(hasSockets)hasSockets.onchange=e=>{r.hasSockets=e.target.checked;renderPreview()};
+ const hasQuality=$('#hasQuality');
+ if(hasQuality)hasQuality.onchange=e=>{r.hasQuality=e.target.checked;renderPreview()};
+ const modCount=$('#modCount');
+ if(modCount)modCount.oninput=e=>{r.modCount=Math.max(1,Math.min(r.mods.length||1,Number(e.target.value)||1));renderPreview()};
+ $$('[data-mod-remove-name]').forEach(x=>x.onclick=()=>{toggle(r.mods,x.dataset.modRemoveName);r.modCount=Math.min(Math.max(1,r.modCount||1),Math.max(1,r.mods.length));renderEditor();renderPreview()});
  $('#addStat').onclick=()=>{r.stats.push({field:'ItemLevel',op:'>=',value:65});render()};
  $$('[data-stat-field]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statField].field=x.value;renderPreview()});$$('[data-stat-op]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statOp].op=x.value;renderPreview()});$$('[data-stat-val]').forEach(x=>x.oninput=()=>{r.stats[+x.dataset.statVal].value=Number(x.value);renderPreview()});$$('[data-stat-remove]').forEach(x=>x.onclick=()=>{r.stats.splice(+x.dataset.statRemove,1);render()});
  $$('[data-cos-override]').forEach(x=>x.onchange=()=>{r.cosmetics[x.dataset.cosOverride]=x.checked;renderEditor();renderPreview();renderBoard()});
@@ -153,7 +267,31 @@ function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()
  $$('[data-icon-shape]').forEach(x=>x.onclick=()=>{r.cosmetics.icon=x.dataset.iconShape;renderEditor();renderPreview();renderBoard()})
 }
 function renderBaseList(search=''){const r=active();if(!r)return;const list=allowedItems(r).filter(x=>!search||x.name.toLowerCase().includes(search.toLowerCase())).slice(0,160);$('#baseList').innerHTML=list.length?list.map(x=>`<label class="check-row"><input type="checkbox" data-base="${esc(x.name)}" ${r.bases.includes(x.name)?'checked':''}><span>${esc(x.name)}</span><small>Lv ${x.dropLevel}</small></label>`).join(''):'<div class="check-row">No matching bases.</div>';$$('[data-base]').forEach(x=>x.onchange=()=>{toggle(r.bases,x.dataset.base);renderPreview()})}
-function renderModList(search=''){const r=active();if(!r)return;const qv=search.toLowerCase().trim();let vals=qv?DATA.explicitModNames.filter(x=>x.toLowerCase().includes(qv)).slice(0,100):r.mods.slice(0,50);$('#modList').innerHTML=vals.length?vals.map(n=>`<label class="check-row"><input type="checkbox" data-mod="${esc(n)}" ${r.mods.includes(n)?'checked':''}><span>${esc(n)}</span></label>`).join(''):'<div class="check-row">Type to search mod names.</div>';$$('[data-mod]').forEach(x=>x.onchange=()=>{toggle(r.mods,x.dataset.mod);renderPreview()})}
+function renderModList(search=''){
+ const r=active();if(!r)return;
+ const qv=search.toLowerCase().trim();
+ const all=(DATA.itemAffixes||[]).filter(a=>affixRelevantToRule(a,r));
+ const vals=(qv?all.filter(a=>a.name.toLowerCase().includes(qv)):all.filter(a=>r.mods.includes(a.name))).slice(0,100);
+ const list=$('#modList');
+ if(!list)return;
+ if(!qv&&!r.mods.length){
+   list.innerHTML=`<div class="check-row affix-search-prompt">Search the affixes available to the selected ${r.slots.length?r.slots.join(' / '):'armour'} bases.</div>`;
+   return;
+ }
+ list.innerHTML=vals.length?vals.map(a=>{
+   const kind=a.types.length===1?a.types[0]:'prefix / suffix';
+   const lv=a.minRequiredLevel?`Requires item level ${a.minRequiredLevel}+`:'No level requirement shown';
+   return `<label class="check-row affix-result">
+    <input type="checkbox" data-mod="${esc(a.name)}" ${r.mods.includes(a.name)?'checked':''}>
+    <span class="affix-result-main"><b>${esc(a.name)}</b><small>${esc(kind)} · ${esc(lv)}</small></span>
+   </label>`;
+ }).join(''):'<div class="check-row">No matching affixes for the currently selected item bases.</div>';
+ $$('[data-mod]').forEach(x=>x.onchange=()=>{
+   toggle(r.mods,x.dataset.mod);
+   r.modCount=Math.min(Math.max(1,r.modCount||1),Math.max(1,r.mods.length));
+   renderEditor();renderPreview()
+ })
+}
 function hexRgba(hex,a=255){const n=parseInt(hex.slice(1),16);return `${(n>>16)&255} ${(n>>8)&255} ${n&255} ${a}`}
 function compileRule(r,full=true){
  const lines=[r.destination==='hide'?'Hide':'Show'];
@@ -192,7 +330,9 @@ function compileRule(r,full=true){
  }
 
  for(const s of r.stats)lines.push(`    ${s.field} ${s.op} ${s.value}`);
- if(r.mods.length)lines.push(`    HasExplicitMod ${r.mods.map(q).join(' ')}`);
+ if(r.hasSockets)lines.push('    Sockets > 0');
+ if(r.hasQuality)lines.push('    Quality > 0');
+ if(r.mods.length)lines.push(`    HasExplicitMod >=${Math.min(Math.max(1,Number(r.modCount)||1),r.mods.length)} ${r.mods.map(q).join(' ')}`);
  if(r.cosmetics.overrideText)lines.push(`    SetTextColor ${hexRgba(r.cosmetics.text)}`);
  if(r.cosmetics.overrideBg)lines.push(`    SetBackgroundColor ${hexRgba(r.cosmetics.bg,230)}`);
  if(r.cosmetics.overrideBorder)lines.push(`    SetBorderColor ${hexRgba(r.cosmetics.border)}`);
