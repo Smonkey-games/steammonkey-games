@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
 function defaultRule(dest=null){
- return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:['Rare'],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
+ return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:[],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
 }
 function active(){return rules.find(r=>r.id===activeId)||null}
 function addRule(dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
@@ -245,7 +245,10 @@ function statRow(s,i){
   </div>`;
 }
 function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
- $('#baseSearch').oninput=e=>renderBaseList(e.target.value);$('#modSearch').oninput=e=>renderModList(e.target.value);
+ const baseSearchInput=$('#baseSearch');
+ if(baseSearchInput)baseSearchInput.oninput=e=>renderBaseList(e.target.value);
+ const modSearchInput=$('#modSearch');
+ if(modSearchInput)modSearchInput.oninput=e=>renderModList(e.target.value);
  const itemLevelMin=$('#itemLevelMin');
  if(itemLevelMin)itemLevelMin.oninput=e=>{
    r.stats=r.stats.filter(x=>x.field!=='ItemLevel');
@@ -260,8 +263,7 @@ function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()
  const modCount=$('#modCount');
  if(modCount)modCount.oninput=e=>{r.modCount=Math.max(1,Math.min(r.mods.length||1,Number(e.target.value)||1));renderPreview()};
  $$('[data-mod-remove-name]').forEach(x=>x.onclick=()=>{toggle(r.mods,x.dataset.modRemoveName);r.modCount=Math.min(Math.max(1,r.modCount||1),Math.max(1,r.mods.length));renderEditor();renderPreview()});
- $('#addStat').onclick=()=>{r.stats.push({field:'ItemLevel',op:'>=',value:65});render()};
- $$('[data-stat-field]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statField].field=x.value;renderPreview()});$$('[data-stat-op]').forEach(x=>x.onchange=()=>{r.stats[+x.dataset.statOp].op=x.value;renderPreview()});$$('[data-stat-val]').forEach(x=>x.oninput=()=>{r.stats[+x.dataset.statVal].value=Number(x.value);renderPreview()});$$('[data-stat-remove]').forEach(x=>x.onclick=()=>{r.stats.splice(+x.dataset.statRemove,1);render()});
+
  $$('[data-cos-override]').forEach(x=>x.onchange=()=>{r.cosmetics[x.dataset.cosOverride]=x.checked;renderEditor();renderPreview();renderBoard()});
  $$('[data-cos]').forEach(x=>x.oninput=()=>{const k=x.dataset.cos;r.cosmetics[k]=(x.type==='number'||k==='iconSize')?Number(x.value):x.value;const t=$(`[data-cos-text="${k}"]`);if(t)t.value=x.value;if(k==='iconColor')renderEditor();else{renderPreview();renderBoard()}});$$('[data-cos-text]').forEach(x=>x.onchange=()=>{const k=x.dataset.cosText;if(/^#[0-9a-f]{6}$/i.test(x.value)){r.cosmetics[k]=x.value;const c=$(`[data-cos="${k}"]`);if(c)c.value=x.value;renderPreview();renderBoard()}});
  $$('[data-icon-shape]').forEach(x=>x.onclick=()=>{r.cosmetics.icon=x.dataset.iconShape;renderEditor();renderPreview();renderBoard()})
