@@ -426,32 +426,29 @@ init().catch(err=>{$('#editor').innerHTML=`<div class="empty-editor">Failed to l
 
 let _alertPreviewAudio=null;
 function selectedAlertSoundId(){
- const r=active();
- if(r&&r.cosmetics&&r.cosmetics.sound){
-   const m=String(r.cosmetics.sound).match(/(\d+)/);
-   if(m){
-     const n=Number(m[1]);
-     if(n>=1&&n<=16)return n;
-   }
- }
  const sel=document.querySelector('select[data-cos="sound"]');
- if(sel){
-   const m=String(sel.value||'').match(/(\d+)/);
-   if(m){
-     const n=Number(m[1]);
-     if(n>=1&&n<=16)return n;
-   }
- }
- return null;
+ if(!sel)return null;
+ const m=String(sel.value||'').match(/^(\d+)$/);
+ if(!m)return null;
+ const n=Number(m[1]);
+ return n>=1&&n<=16?n:null;
 }
 function playSelectedAlertSound(){
  const id=selectedAlertSoundId();
- if(!id)return;
+ if(!id){
+  const btn=document.querySelector('[data-action="play-alert-sound"]');
+  if(btn){
+   const old=btn.textContent;
+   btn.textContent='Select 1–16';
+   setTimeout(()=>{if(btn.textContent==='Select 1–16')btn.textContent=old},1200);
+  }
+  return;
+ }
  if(_alertPreviewAudio){
    _alertPreviewAudio.pause();
    _alertPreviewAudio.currentTime=0;
  }
- _alertPreviewAudio=new Audio(`assets/sounds/AlertSound${id}.mp3`);
+ _alertPreviewAudio=new Audio(`/tools/poe2/filter/assets/sounds/AlertSound${id}.mp3`);
  const btn=document.querySelector('[data-action="play-alert-sound"]');
  if(btn)btn.classList.add('is-playing');
  const done=()=>{ if(btn)btn.classList.remove('is-playing'); };
