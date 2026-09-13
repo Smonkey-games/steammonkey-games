@@ -355,32 +355,7 @@ function renderModList(search=''){
  })
 }
 function hexRgba(hex,a=255){const n=parseInt(hex.slice(1),16);return `${(n>>16)&255} ${(n>>8)&255} ${n&255} ${a}`}
-function compileRule(r,full=true){
- const lines=[r.destination==='hide'?'Hide':'Show'];
- if(r.rarities.length&&r.rarities.length<4)lines.push(`    Rarity ${r.rarities.join(' ')}`);
-
- // If the user explicitly picked individual bases, use exactly those bases.
- if(r.bases.length){
-   const names=[...new Set(r.bases)];
-   lines.push(`    BaseType == ${names.map(q).join(' ')}`);
- }else if(r.category==='Armour'){
-   const branches=simplifiedProfileBranches(r.profiles);
-   const classes=armourClassesForSlots(r.slots);
-   if(branches.length<=1){
-     if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
-     if(branches.length===1){
-       const lookup=Object.values(PROFILE_FILTERS).reduce((m,x)=>(m[x.condition]=x,m),{});
-       for(const condition of branches[0].reqs)if(lookup[condition])lines.push(`    ${condition} > 0`);
-     }
-   }else{
-     const names=[...new Set(allowedItems(r).map(x=>x.name))];
-     if(names.length)lines.push(`    BaseType == ${names.map(q).join(' ')}`);
-   }
- }else{
-   const classes=(r.types&&r.types.length)?r.types:(DATA.categoryTypes?.[r.category]||[]);
-   if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
- }
-
+function appendSharedRuleConditions(lines,r){
  for(const s of r.stats)lines.push(`    ${s.field} ${s.op} ${s.value}`);
  if(r.hasSockets)lines.push('    Sockets > 0');
  if(r.hasQuality)lines.push('    Quality > 0');
@@ -392,7 +367,58 @@ function compileRule(r,full=true){
  if(r.cosmetics.sound!=='None')lines.push(`    PlayAlertSound ${r.cosmetics.sound} 100`);
  if(r.cosmetics.icon!=='None')lines.push(`    MinimapIcon ${Number(r.cosmetics.iconSize??1)} ${r.cosmetics.iconColor||'White'} ${r.cosmetics.icon}`);
  if(r.cosmetics.beam!=='None')lines.push(`    PlayEffect ${r.cosmetics.beam}`);
- return lines.join('\n')
+}
+
+function compileRuleBlocks(r){
+ const action=r.destination==='hide'?'Hide':'Show';
+ const rarityLines=[];
+ if(r.rarities.length&&r.rarities.length<4)rarityLines.push(`    Rarity ${r.rarities.join(' ')}`);
+
+ // Explicit individual bases are the only normal reason to emit BaseType.
+ if(r.bases.length){
+   const lines=[action,...rarityLines];
+   const names=[...new Set(r.bases)];
+   lines.push(`    BaseType == ${names.map(q).join(' ')}`);
+   appendSharedRuleConditions(lines,r);
+   return [lines.join('\n')];
+ }
+
+ if(r.category==='Armour'){
+   const branches=simplifiedProfileBranches(r.profiles);
+   const classes=armourClassesForSlots(r.slots);
+
+   // No defence profile selected: one class-based Armour block.
+   if(!branches.length){
+     const lines=[action,...rarityLines];
+     if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
+     appendSharedRuleConditions(lines,r);
+     return [lines.join('\n')];
+   }
+
+   const lookup=Object.values(PROFILE_FILTERS).reduce((acc,x)=>(acc[x.condition]=x,acc),{});
+
+   // Each irreducible profile branch becomes one adjacent native filter block.
+   // This preserves OR-between-profiles without expanding to BaseType lists.
+   return branches.map(branch=>{
+     const lines=[action,...rarityLines];
+     if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
+     for(const condition of branch.reqs){
+       if(lookup[condition])lines.push(`    ${condition} > 0`);
+     }
+     appendSharedRuleConditions(lines,r);
+     return lines.join('\n');
+   });
+ }
+
+ const lines=[action,...rarityLines];
+ const classes=(r.types&&r.types.length)?r.types:(DATA.categoryTypes?.[r.category]||[]);
+ if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
+ appendSharedRuleConditions(lines,r);
+ return [lines.join('\n')];
+}
+
+function compileRule(r,full=true){
+ return compileRuleBlocks(r).join('\n\n');
 }
 function ruleSpecificity(r){
  let score=0;
@@ -469,7 +495,14 @@ function attemptManualReorder(fromId,toId){
  render();
 }
 function compileAll(){
- const blocks=orderedAssignedRules().map((r,i)=>`# ${r.name||r.category} · execution ${i+1}\n${compileRule(r)}`);
+ const blocks=[];
+ orderedAssignedRules().forEach((r,i)=>{
+   const compiled=compileRuleBlocks(r);
+   compiled.forEach((block,j)=>{
+     const branchNote=compiled.length>1?` · branch ${j+1}/${compiled.length}`:'';
+     blocks.push(`# ${r.name||r.category} · execution ${i+1}${branchNote}\n${block}`);
+   });
+ });
  if(hideAllEnabled)blocks.push('# Hide all unmatched loot\nHide');
  return blocks.join('\n\n')
 }
@@ -484,9 +517,14 @@ function renderFullFilterPreview(){
  const blocks=ordered.map((saved,i)=>{
    const isEditing=saved.id===activeId&&!!editBuffer;
    const shown=isEditing?editBuffer:saved;
+   const compiledBlocks=compileRuleBlocks(shown);
+   const body=compiledBlocks.map((block,j)=>{
+     const branchNote=compiledBlocks.length>1?` · branch ${j+1}/${compiledBlocks.length}`:'';
+     return `${esc(`# ${shown.name||shown.category} · execution ${i+1}${branchNote}\n${block}`)}`;
+   }).join('\n\n');
    return `<div class="filter-block ${saved.id===activeId?'active-filter-block':''}" data-filter-rule="${saved.id}">
     <div class="filter-block-head"><span>${esc(shown.name||shown.category)}</span><small>${isEditing?'Editing preview · Save Rule to commit':`Saved · execution ${i+1}`}</small></div>
-    <pre>${esc(`# ${shown.name||shown.category} · execution ${i+1}\n${compileRule(shown)}`)}</pre>
+    <pre>${body}</pre>
    </div>`;
  }).join('');
  const fallback=hideAllEnabled?`<div class="filter-block"><div class="filter-block-head"><span>Hide all unmatched loot</span><small>Saved fallback</small></div><pre># Hide all unmatched loot\nHide</pre></div>`:'';
