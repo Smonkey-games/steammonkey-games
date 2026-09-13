@@ -8,11 +8,11 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
-function defaultRule(dest=null){
- return {id:nextId++,category:'Armour',destination:dest,committed:false,rarities:[],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
+function defaultRule(category='Armour',dest=null){
+ return {id:nextId++,category,types:[],destination:dest,committed:false,rarities:[],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
 }
 function active(){return rules.find(r=>r.id===activeId)||null}
-function addRule(dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(dest);rules.push(r);activeId=r.id;render()}
+function addRule(category='Armour',dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(category,dest);rules.push(r);activeId=r.id;render()}
 function removeRule(id){rules=rules.filter(r=>r.id!==id);if(manualOrder)manualOrder=manualOrder.filter(x=>x!==id);if(activeId===id)activeId=null;render()}
 function toggle(arr,val){const i=arr.indexOf(val);if(i>=0)arr.splice(i,1);else arr.push(val)}
 const PROFILE_FILTERS={
@@ -53,12 +53,27 @@ function armourClassesForSlots(slots){
  return [...new Set(DATA.items.filter(x=>wanted.includes(x.slot)).map(x=>x.class))];
 }
 function allowedItems(r){
- return DATA.items.filter(x=>itemMatchesSelectedProfiles(x,r.profiles)&&(!r.slots.length||r.slots.includes(x.slot)));
+ let items=DATA.items.filter(x=>(x.broadCategory||'Armour')===r.category);
+ if(r.category==='Armour'){
+  items=items.filter(x=>itemMatchesSelectedProfiles(x,r.profiles)&&(!r.slots.length||r.slots.includes(x.slot)));
+ }else if(r.types?.length){
+  items=items.filter(x=>r.types.includes(x.class));
+ }
+ return items;
 }
 function matchedItems(r){let a=allowedItems(r);if(r.bases.length)a=a.filter(x=>r.bases.includes(x.name));return a}
 function representative(r){const a=matchedItems(r).slice().sort((x,y)=>x.dropLevel-y.dropLevel||x.name.localeCompare(y.name));return a[Math.floor(a.length*.67)]||null}
 function statProp(item,id){if(id==='DropLevel')return item.dropLevel;if(id==='BaseArmour')return item.defences?.armour?.min??0;if(id==='BaseEvasion')return item.defences?.evasion?.min??0;if(id==='BaseEnergyShield')return item.defences?.energyShield?.min??0;if(id==='BaseWard')return item.defences?.ward?.min??0;return null}
-function summary(r){const rar=r.rarities.length===4||!r.rarities.length?'Any rarity':r.rarities.join(' + ');const p=r.profiles.length?r.profiles.join(', '):'Any defence';const s=r.slots.length?r.slots.join(', '):'Any armour slot';return `${rar} · ${p} · ${s}`}
+function summary(r){
+ const rar=r.rarities.length===DATA.rarities.length||!r.rarities.length?'Any rarity':r.rarities.join(' + ');
+ if(r.category==='Armour'){
+  const p=r.profiles.length?r.profiles.join(', '):'Any defence';
+  const s=r.slots.length?r.slots.join(', '):'Any armour slot';
+  return `${rar} · ${p} · ${s}`;
+ }
+ const t=r.types?.length?r.types.join(', '):`Any ${r.category}`;
+ return `${rar} · ${t}`;
+}
 function swatchStyle(r){return `background:linear-gradient(90deg,${r.cosmetics.text},${r.cosmetics.border},${r.cosmetics.bg})`}
 function destinationLabel(v){return v==='show'?'SHOW':v==='hide'?'HIDE':'CHOOSE SHOW / HIDE'}
 const ICON_SHAPES=['Circle','Diamond','Hexagon','Square','Star','Triangle','Cross','Moon','Raindrop','Kite','Pentagon','UpsideDownHouse'];
@@ -87,7 +102,7 @@ function iconSvg(shape,color='White'){
 function renderBoard(){
  const r=active(),slot=$('#activeRuleCard');
  if(slot){
-   if(!r)slot.innerHTML='<div class="active-empty">Drag Armour here to start a rule.</div>';
+   if(!r)slot.innerHTML='<div class="active-empty">Drag an item type here to start a rule.</div>';
    else slot.innerHTML=`<article class="rule-card active active-build-card" draggable="false" data-id="${r.id}"><h3>${esc(r.category)} Rule #${r.id}</h3><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div></article>`;
  }
  const show=$('#activeShow'),hide=$('#activeHide');
@@ -116,57 +131,43 @@ function renderCompletedRules(){
 }
 
 function chipGroup(title,sub,values,selected,key,disableFn){return `<div class="edit-section"><div class="section-title"><h3>${title}</h3><span>${sub||''}</span></div><div class="chips">${values.map(v=>{const dis=disableFn?.(v);return `<button class="chip ${selected.includes(v)?'on':''} ${dis?'disabled':''}" data-chip="${key}" data-val="${esc(v)}" ${dis?'disabled':''}>${esc(v)}</button>`}).join('')}</div></div>`}
-function renderEditor(){const r=active();const root=$('#editor');if(!r){root.innerHTML='<div class="empty-editor">Drag <strong>Armour</strong> down from the palette or click it to create a rule.</div>';updateAddButton();return}
- const items=allowedItems(r);const baseSearch=($('#baseSearch')?.value||'').toLowerCase();
+function renderEditor(){
+ const r=active(),root=$('#editor');
+ if(!r){root.innerHTML='<div class="empty-editor">Drag an item category down from the palette or click it to create a rule.</div>';updateAddButton();return}
+ const items=allowedItems(r);
+ const categoryMeta=(DATA.paletteCategories||[]).find(x=>x.id===r.category);
+ const typeValues=DATA.categoryTypes?.[r.category]||[];
+ const hierarchy=r.category==='Armour'
+   ? chipGroup('Defence Type','OR within layer · positive requirements; extra defences stay included',DATA.profiles,r.profiles,'profile')+
+     chipGroup('Armour Slot','OR within layer',DATA.slots,r.slots,'slot',slot=>!DATA.items.some(x=>(x.broadCategory||'Armour')==='Armour'&&itemMatchesSelectedProfiles(x,r.profiles)&&x.slot===slot))
+   : chipGroup(r.category==='Weapons'?'Weapon Type':'Item Type','OR within layer',typeValues,r.types||[],'type');
  root.innerHTML=
- `<div class="edit-section"><div class="section-title"><h3>Rule #${r.id}</h3><span>${destinationLabel(r.destination)}</span></div></div>`+
+ `<div class="edit-section"><div class="section-title"><h3>${esc(categoryMeta?.label||r.category)} Rule #${r.id}</h3><span>${destinationLabel(r.destination)}</span></div></div>`+
  chipGroup('Rarity','OR within layer',DATA.rarities,r.rarities,'rarity')+
- chipGroup('Defence Type','OR within layer · positive requirements; extra defences stay included',DATA.profiles,r.profiles,'profile')+
- chipGroup('Armour Slot','OR within layer',DATA.slots,r.slots,'slot',slot=>!DATA.items.some(x=>itemMatchesSelectedProfiles(x,r.profiles)&&x.slot===slot))+
+ hierarchy+
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
  `<div class="edit-section item-properties-section">
    <div class="section-title"><h3>Item Properties</h3><span>unidentified loot</span></div>
    <p class="layer-note itemization-note">These properties are visible to the loot filter before an item is identified. Leaving an option off means it does not affect the rule.</p>
-
    <div class="simple-property-grid">
-    <label class="simple-property-row">
-     <span class="simple-property-label"><b>Item Level</b><small>Only show items at or above this item level.</small></span>
-     <div class="simple-ilvl-control">
-      <span>≥</span>
-      <input id="itemLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='ItemLevel'&&x.op==='>=')||{}).value??''}">
-     </div>
-    </label>
-
-    <label class="simple-property-row simple-toggle-row">
-     <span class="simple-property-label"><b>Has Sockets</b><small>Require the item to have one or more sockets.</small></span>
-     <input id="hasSockets" type="checkbox" ${r.hasSockets?'checked':''}>
-    </label>
-
-    <label class="simple-property-row simple-toggle-row">
-     <span class="simple-property-label"><b>Has Quality</b><small>Require the item to have quality above 0%.</small></span>
-     <input id="hasQuality" type="checkbox" ${r.hasQuality?'checked':''}>
-    </label>
+    <label class="simple-property-row"><span class="simple-property-label"><b>Item Level</b><small>Only show items at or above this item level.</small></span><div class="simple-ilvl-control"><span>≥</span><input id="itemLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='ItemLevel'&&x.op==='>=')||{}).value??''}"></div></label>
+    <label class="simple-property-row simple-toggle-row"><span class="simple-property-label"><b>Has Sockets</b><small>Require the item to have one or more sockets.</small></span><input id="hasSockets" type="checkbox" ${r.hasSockets?'checked':''}></label>
+    <label class="simple-property-row simple-toggle-row"><span class="simple-property-label"><b>Has Quality</b><small>Require the item to have quality above 0%.</small></span><input id="hasQuality" type="checkbox" ${r.hasQuality?'checked':''}></label>
    </div>
   </div>`+
  `<details class="edit-section affix-section advanced-section">
-   <summary class="advanced-summary">
-    <span><b>Advanced — Identified Items</b><small>Affixes / Mods</small></span>
-    <span>${r.mods.length?`${r.mods.length} selected`:'optional'}</span>
-   </summary>
+   <summary class="advanced-summary"><span><b>Advanced — Identified Items</b><small>Affixes / Mods</small></span><span>${r.mods.length?`${r.mods.length} selected`:'optional'}</span></summary>
    <div class="section-title"><h3>Affixes / Mods</h3><span>${r.mods.length?`${r.mods.length} selected`:'optional'}</span></div>
    <p class="layer-note itemization-note">Choose named prefixes or suffixes that can roll on the item types selected above. Suggestions are filtered to the current item bases.</p>
    <div id="selectedAffixes">${selectedAffixChips(r)}</div>
-   <div class="affix-match-row">
-    <label for="modCount">Match at least</label>
-    <input id="modCount" type="number" min="1" max="${Math.max(1,r.mods.length)}" value="${Math.min(Math.max(1,Number(r.modCount)||1),Math.max(1,r.mods.length))}" ${r.mods.length?'':'disabled'}>
-    <span>of the selected affixes</span>
-   </div>
+   <div class="affix-match-row"><label for="modCount">Match at least</label><input id="modCount" type="number" min="1" max="${Math.max(1,r.mods.length)}" value="${Math.min(Math.max(1,Number(r.modCount)||1),Math.max(1,r.mods.length))}" ${r.mods.length?'':'disabled'}><span>of the selected affixes</span></div>
    <div class="search-row"><input id="modSearch" type="text" placeholder="Search prefixes and suffixes…"></div>
    <div id="modList" class="mod-list"></div>
    <p class="layer-note">Explicit modifiers generally matter only after an item is identified. This section is intentionally secondary to the unidentified-item properties above.</p>
   </details>`+
  `<div class="edit-section"><div class="section-title"><h3>Cosmetics</h3><span>shared by this rule</span></div><div class="cos-grid">${colorCtl('text','Text',r.cosmetics.text,'overrideText')}${colorCtl('bg','Background',r.cosmetics.bg,'overrideBg')}${colorCtl('border','Border',r.cosmetics.border,'overrideBorder')}<div class="control"><label><input type="checkbox" data-cos-override="overrideFont" ${r.cosmetics.overrideFont?'checked':''}> Font size</label><input data-cos="font" type="number" min="1" max="45" value="${r.cosmetics.font}" ${r.cosmetics.overrideFont?'':'disabled'}></div><div class="control"><label>Beam</label><select data-cos="beam">${['None',...FILTER_COLORS].map(x=>`<option ${x===r.cosmetics.beam?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Alert sound</label><div class="sound-control-row"><select data-cos="sound">${['None',...Array.from({length:16},(_,i)=>String(i+1))].map(x=>`<option ${x===r.cosmetics.sound?'selected':''}>${x}</option>`).join('')}</select><button type="button" class="sound-preview-btn" data-action="play-alert-sound" title="Play selected alert sound" aria-label="Play selected alert sound">▶ Play</button></div></div><div class="control icon-control"><label>Minimap icon</label><div class="icon-picker"><button type="button" class="icon-choice none-choice ${r.cosmetics.icon==='None'?'on':''}" data-icon-shape="None" title="None">None</button>${ICON_SHAPES.map(shape=>`<button type="button" class="icon-choice ${shape===r.cosmetics.icon?'on':''}" data-icon-shape="${shape}" title="${shape}" aria-label="${shape}">${iconSvg(shape,r.cosmetics.iconColor)}</button>`).join('')}</div></div><div class="control"><label>Minimap color</label><select data-cos="iconColor">${FILTER_COLORS.map(x=>`<option ${x===r.cosmetics.iconColor?'selected':''}>${x}</option>`).join('')}</select></div><div class="control"><label>Minimap size</label><select data-cos="iconSize">${[0,1,2].map(x=>`<option value="${x}" ${Number(x)===Number(r.cosmetics.iconSize)?'selected':''}>${x} — ${x===0?'small':x===1?'medium':'large'}</option>`).join('')}</select></div></div><p class="layer-note">Cosmetic overrides are optional. Leave an override unchecked to keep the game's normal appearance for that property.</p></div>`;
- bindEditor(); renderBaseList(''); renderModList(''); updateAddButton();
+;
+ bindEditor();renderBaseList('');renderModList('');updateAddButton();
 }
 function updateAddButton(){
  const b=$('#addToFilter'),note=$('#addFilterNote'),r=active();
@@ -244,7 +245,13 @@ function statRow(s,i){
    <div class="property-hint">${esc(meta.hint)}</div>
   </div>`;
 }
-function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{const map={rarity:'rarities',profile:'profiles',slot:'slots'};toggle(r[map[b.dataset.chip]],b.dataset.val); if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));render()});
+function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{
+ const map={rarity:'rarities',profile:'profiles',slot:'slots',type:'types'};
+ const key=map[b.dataset.chip];if(!key)return;
+ toggle(r[key],b.dataset.val);
+ if(b.dataset.chip!=='rarity')r.bases=r.bases.filter(n=>allowedItems(r).some(x=>x.name===n));
+ render()
+});
  const baseSearchInput=$('#baseSearch');
  if(baseSearchInput)baseSearchInput.oninput=e=>renderBaseList(e.target.value);
  const modSearchInput=$('#modSearch');
@@ -268,7 +275,13 @@ function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()
  $$('[data-cos]').forEach(x=>x.oninput=()=>{const k=x.dataset.cos;r.cosmetics[k]=(x.type==='number'||k==='iconSize')?Number(x.value):x.value;const t=$(`[data-cos-text="${k}"]`);if(t)t.value=x.value;if(k==='iconColor')renderEditor();else{renderPreview();renderBoard()}});$$('[data-cos-text]').forEach(x=>x.onchange=()=>{const k=x.dataset.cosText;if(/^#[0-9a-f]{6}$/i.test(x.value)){r.cosmetics[k]=x.value;const c=$(`[data-cos="${k}"]`);if(c)c.value=x.value;renderPreview();renderBoard()}});
  $$('[data-icon-shape]').forEach(x=>x.onclick=()=>{r.cosmetics.icon=x.dataset.iconShape;renderEditor();renderPreview();renderBoard()})
 }
-function renderBaseList(search=''){const r=active();if(!r)return;const list=allowedItems(r).filter(x=>!search||x.name.toLowerCase().includes(search.toLowerCase())).slice(0,160);$('#baseList').innerHTML=list.length?list.map(x=>`<label class="check-row"><input type="checkbox" data-base="${esc(x.name)}" ${r.bases.includes(x.name)?'checked':''}><span>${esc(x.name)}</span><small>Lv ${x.dropLevel}</small></label>`).join(''):'<div class="check-row">No matching bases.</div>';$$('[data-base]').forEach(x=>x.onchange=()=>{toggle(r.bases,x.dataset.base);renderPreview()})}
+function renderBaseList(search=''){
+ const r=active();if(!r)return;
+ const list=allowedItems(r).filter(x=>!search||x.name.toLowerCase().includes(search.toLowerCase())).slice().sort((a,b)=>(b.dropLevel||0)-(a.dropLevel||0)||a.name.localeCompare(b.name)).slice(0,160);
+ const target=$('#baseList');if(!target)return;
+ target.innerHTML=list.length?list.map(x=>`<label class="check-row"><input type="checkbox" data-base="${esc(x.name)}" ${r.bases.includes(x.name)?'checked':''}><span>${esc(x.name)}</span><small>Lv ${x.dropLevel}</small></label>`).join(''):'<div class="check-row">No matching bases.</div>';
+ $$('[data-base]').forEach(x=>x.onchange=()=>{toggle(r.bases,x.dataset.base);renderPreview()})
+}
 function renderModList(search=''){
  const r=active();if(!r)return;
  const qv=search.toLowerCase().trim();
@@ -277,7 +290,7 @@ function renderModList(search=''){
  const list=$('#modList');
  if(!list)return;
  if(!qv&&!r.mods.length){
-   list.innerHTML=`<div class="check-row affix-search-prompt">Search the affixes available to the selected ${r.slots.length?r.slots.join(' / '):'armour'} bases.</div>`;
+   list.innerHTML=`<div class="check-row affix-search-prompt">Search the affixes available to the currently selected item bases.</div>`;
    return;
  }
  list.innerHTML=vals.length?vals.map(a=>{
@@ -303,32 +316,22 @@ function compileRule(r,full=true){
  if(r.bases.length){
    const names=[...new Set(r.bases)];
    lines.push(`    BaseType == ${names.map(q).join(' ')}`);
- }else{
+ }else if(r.category==='Armour'){
    const branches=simplifiedProfileBranches(r.profiles);
-
-   // Native Class is the smallest exact expression for broad Armour/slot selection.
-   // Every visual Armour rule stays scoped to Armour classes.
    const classes=armourClassesForSlots(r.slots);
-
-   // A single positive defence conjunction is directly expressible.
-   // Example Armour / Energy Shield => BaseArmour > 0 AND BaseEnergyShield > 0.
-   // We intentionally DO NOT add negative conditions for unselected defences:
-   // triple-defence bases remain included when they satisfy what the user asked for.
    if(branches.length<=1){
      if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
      if(branches.length===1){
        const lookup=Object.values(PROFILE_FILTERS).reduce((m,x)=>(m[x.condition]=x,m),{});
-       for(const condition of branches[0].reqs){
-         if(lookup[condition])lines.push(`    ${condition} > 0`);
-       }
+       for(const condition of branches[0].reqs)if(lookup[condition])lines.push(`    ${condition} > 0`);
      }
    }else{
-     // Multiple incomparable defence profiles are an OR-of-ANDs, which a single
-     // native filter block cannot express directly. Fall back only in that case
-     // to the exact set of current BaseTypes matching the user's positive requests.
      const names=[...new Set(allowedItems(r).map(x=>x.name))];
      if(names.length)lines.push(`    BaseType == ${names.map(q).join(' ')}`);
    }
+ }else{
+   const classes=(r.types&&r.types.length)?r.types:(DATA.categoryTypes?.[r.category]||[]);
+   if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
  }
 
  for(const s of r.stats)lines.push(`    ${s.field} ${s.op} ${s.value}`);
@@ -351,6 +354,9 @@ function ruleSpecificity(r){
  if(r.stats.length)score+=r.stats.length*650;
  if(r.profiles.length)score+=900+(DATA.profiles.length-r.profiles.length)*70;
  if(r.slots.length)score+=700+(DATA.slots.length-r.slots.length)*60;
+ if(r.types?.length){const total=DATA.categoryTypes?.[r.category]?.length||r.types.length;score+=700+Math.max(0,total-r.types.length)*40}
+ if(r.hasSockets)score+=500;
+ if(r.hasQuality)score+=500;
  if(r.rarities.length&&r.rarities.length<DATA.rarities.length)score+=450+(DATA.rarities.length-r.rarities.length)*50;
  return score;
 }
@@ -462,8 +468,8 @@ function renderPreview(){
  const rarities=(r.rarities&&r.rarities.length)?r.rarities:['Normal','Magic','Rare','Unique'];
 
  if(!matches.length){
-  stage.innerHTML='<div class="stage-empty">No matching armour base</div>';
-  details.innerHTML='<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust defence type / slot / base selections.</div>';
+  stage.innerHTML='<div class="stage-empty">No matching base item</div>';
+  details.innerHTML='<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust the item type or base selections.</div>';
   compiled.textContent=compileRule(r);
   renderExecutionOrder();
   return
@@ -532,7 +538,7 @@ function renderPreview(){
  details.innerHTML=item
   ? `<div class="preview-item-name">${esc(item.name)} ${mapPreview}</div>
      <div class="preview-meta">
-      ${esc(raritySummary)} · ${esc(item.profile)} · ${esc(item.slot)} · Drop level ${item.dropLevel}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}
+      ${esc(raritySummary)} · ${esc(r.category)} · ${esc(item.class||item.slot)} · Drop level ${item.dropLevel}${r.category==='Armour'&&item.profile?` · ${esc(item.profile)}`:''}${defs.length?' · '+defs.map(x=>`${x[0]} ${x[1]}`).join(' · '):''}
       <br><span class="match-count">${matches.length} legitimate base${matches.length===1?'':'s'} match this structural rule</span>
       <br><span>${examples.length} preview item${examples.length===1?'':'s'} · one per ${r.rarities.length?'selected':'possible'} rarity</span>
       <br><span>${hasCustom?'Only enabled cosmetic properties are overridden':'Game default appearance (preview approximation)'}</span>
@@ -549,20 +555,32 @@ function renderHideAll(){
  b.textContent=`Hide All: ${hideAllEnabled?'ON':'OFF'}`;
 }
 function render(){renderBoard();renderEditor();renderPreview();renderHideAll()}
+function renderPalette(){
+ const el=$('#itemPalette');if(!el)return;
+ el.innerHTML=(DATA.paletteCategories||[]).map(cat=>`<button type="button" class="palette-card" draggable="true" data-palette-category="${esc(cat.id)}"><strong>${esc(cat.label)}</strong><small>${esc(cat.description)}</small></button>`).join('');
+}
 function setupDnD(){
- const palette=$('#armourPalette'),slot=$('#activeRuleSlot');
- palette.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/palette','Armour');e.dataTransfer.effectAllowed='copy'});
- palette.addEventListener('click',()=>addRule(null));
+ const slot=$('#activeRuleSlot');
+ $$('[data-palette-category]').forEach(card=>{
+  card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/palette',card.dataset.paletteCategory);e.dataTransfer.effectAllowed='copy'});
+  card.addEventListener('click',()=>addRule(card.dataset.paletteCategory,null));
+ });
  if(slot){
-   slot.addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('text/palette')){e.preventDefault();slot.classList.add('dragover')}});
-   slot.addEventListener('dragleave',()=>slot.classList.remove('dragover'));
-   slot.addEventListener('drop',e=>{const pal=e.dataTransfer.getData('text/palette');if(pal){e.preventDefault();slot.classList.remove('dragover');addRule(null)}});
+  slot.addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('text/palette')){e.preventDefault();slot.classList.add('dragover')}});
+  slot.addEventListener('dragleave',()=>slot.classList.remove('dragover'));
+  slot.addEventListener('drop',e=>{const pal=e.dataTransfer.getData('text/palette');if(pal){e.preventDefault();slot.classList.remove('dragover');addRule(pal,null)}});
  }
  $('#activeShow').onclick=()=>{const r=active();if(r){r.destination='show';render()}};
  $('#activeHide').onclick=()=>{const r=active();if(r){r.destination='hide';render()}};
  const hideAll=$('#hideAllToggle');if(hideAll)hideAll.onclick=()=>{hideAllEnabled=!hideAllEnabled;render()};
 }
-async function init(){DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());$('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} armour bases`;setupDnD();render();$('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};$('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}}
+async function init(){
+ DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());
+ $('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} released bases`;
+ renderPalette();setupDnD();render();
+ $('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};
+ $('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+}
 init().catch(err=>{$('#editor').innerHTML=`<div class="empty-editor">Failed to load filter data: ${esc(err.message)}</div>`;console.error(err)})
 })();
 

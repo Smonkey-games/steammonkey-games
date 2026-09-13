@@ -378,3 +378,8 @@
 .advanced-section[open] > :last-child{
   margin-bottom:12px;
 }
+
+/* v0.9.0 expanded item palette */
+.palette-panel .palette-horizontal{flex-wrap:wrap}
+.palette-panel .palette-card{flex:1 1 180px;min-width:160px}
+.palette-loading{color:#958b9d;font-size:12px}
