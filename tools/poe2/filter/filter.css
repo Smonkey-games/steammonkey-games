@@ -979,3 +979,211 @@
     min-height:42px;
   }
 }
+
+
+/* v0.9.8 align top row to main three-column grid */
+:root{
+  --sm-grid-gap:18px;
+  --sm-left-col:minmax(220px,.8fr);
+  --sm-mid-col:minmax(360px,1.2fr);
+  --sm-right-col:minmax(300px,1fr);
+}
+
+/* Force both top and lower rows to share the same column math */
+.builder-grid{
+  display:grid;
+  grid-template-columns:var(--sm-left-col) var(--sm-mid-col) var(--sm-right-col);
+  gap:var(--sm-grid-gap);
+  align-items:start;
+}
+
+.top-control-grid{
+  display:grid;
+  grid-template-columns:var(--sm-left-col) var(--sm-mid-col) var(--sm-right-col);
+  gap:var(--sm-grid-gap);
+  align-items:stretch;
+  margin-top:8px;
+  margin-bottom:var(--sm-grid-gap);
+}
+
+/* Palette spans exactly Completed + Build columns, including their internal gap */
+.top-control-grid .palette-panel{
+  grid-column:1 / 3;
+}
+
+/* Mass Actions aligns exactly with Preview column */
+.top-control-grid .mass-actions-panel{
+  grid-column:3;
+}
+
+/* Equal-height top frames */
+.top-control-grid > .panel{
+  height:190px;
+  min-height:190px;
+  max-height:190px;
+  box-sizing:border-box;
+  padding:12px 14px;
+  overflow:hidden;
+}
+
+/* Shared header rhythm */
+.top-control-grid .panel-head{
+  margin:0 0 8px;
+  padding:0 0 7px;
+  min-height:36px;
+  box-sizing:border-box;
+}
+
+.top-control-grid .panel-head h2{
+  margin:0 0 2px;
+  font-size:13px;
+  line-height:1.1;
+}
+
+.top-control-grid .panel-head p{
+  margin:0;
+  font-size:9.5px;
+  line-height:1.18;
+}
+
+/* 3x3 palette fills remaining panel height evenly */
+.palette-panel{
+  display:flex;
+  flex-direction:column;
+}
+
+.palette-panel .palette-horizontal{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:repeat(3,1fr);
+  gap:6px;
+  flex:1 1 auto;
+  min-height:0;
+}
+
+.palette-panel .palette-card{
+  min-width:0;
+  min-height:0;
+  height:auto;
+  padding:6px 9px;
+  gap:1px;
+  justify-content:center;
+  border-radius:6px;
+}
+
+.palette-panel .palette-card strong,
+.palette-panel .palette-card b{
+  font-size:11px;
+  line-height:1.05;
+  margin:0;
+}
+
+.palette-panel .palette-card small,
+.palette-panel .palette-card span{
+  font-size:8.5px;
+  line-height:1.05;
+  margin:0;
+}
+
+/* Mass Actions fills the identical frame height cleanly */
+.mass-actions-panel{
+  display:flex;
+  flex-direction:column;
+  align-self:stretch;
+}
+
+.mass-actions-panel .panel-head{
+  margin-bottom:8px;
+}
+
+.mass-action-buttons{
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:repeat(4,1fr);
+  gap:6px;
+  flex:1 1 auto;
+  min-height:0;
+}
+
+.mass-action-btn{
+  width:100%;
+  min-height:0;
+  height:auto;
+  padding:5px 8px;
+  font-size:10px;
+  line-height:1;
+  border-radius:5px;
+  box-sizing:border-box;
+}
+
+/* Keep the lower row aligned with top frame edges */
+.completed-panel,
+.build-panel,
+.preview-panel{
+  margin:0;
+}
+
+/* At widths where lower layout becomes two columns, keep top layout coherent */
+@media (max-width:1180px){
+  :root{
+    --sm-left-col:minmax(220px,.8fr);
+    --sm-mid-col:minmax(360px,1.2fr);
+    --sm-right-col:0px;
+  }
+
+  .builder-grid{
+    grid-template-columns:minmax(220px,.8fr) minmax(360px,1.2fr);
+  }
+
+  .preview-panel{
+    grid-column:1 / -1;
+  }
+
+  .top-control-grid{
+    grid-template-columns:minmax(220px,.8fr) minmax(360px,1.2fr);
+  }
+
+  .top-control-grid .palette-panel{
+    grid-column:1;
+  }
+
+  .top-control-grid .mass-actions-panel{
+    grid-column:2;
+  }
+}
+
+@media (max-width:760px){
+  .builder-grid,
+  .top-control-grid{
+    grid-template-columns:1fr;
+  }
+
+  .top-control-grid .palette-panel,
+  .top-control-grid .mass-actions-panel,
+  .preview-panel{
+    grid-column:auto;
+  }
+
+  .top-control-grid > .panel{
+    height:auto;
+    min-height:0;
+    max-height:none;
+  }
+
+  .palette-panel .palette-horizontal{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:auto;
+  }
+
+  .palette-panel .palette-card{
+    min-height:44px;
+  }
+
+  .mass-action-buttons{
+    grid-template-rows:none;
+  }
+
+  .mass-action-btn{
+    min-height:30px;
+  }
+}
