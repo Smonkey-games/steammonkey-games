@@ -2,18 +2,41 @@
 (() => {
 'use strict';
 const dataUrl = document.body.dataset.filterData;
-let DATA=null, rules=[], activeId=null, nextId=1, manualOrder=null;
+let DATA=null, rules=[], activeId=null, nextId=1, manualOrder=null, editBuffer=null;
 let hideAllEnabled=false;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const q=s=>'"'+String(s).replaceAll('"','\\"')+'"';
 
 function defaultRule(category='Armour',dest=null){
- return {id:nextId++,category,types:[],destination:dest,committed:false,rarities:[],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
+ return {id:nextId++,name:category,category,types:[],destination:dest,committed:false,rarities:[],profiles:[],slots:[],bases:[],stats:[],hasSockets:false,hasQuality:false,mods:[],modCount:1,cosmetics:{text:'#f5efe6',bg:'#18120d',border:'#c8a86b',font:36,beam:'None',icon:'None',iconColor:'White',iconSize:1,sound:'None',overrideText:false,overrideBg:false,overrideBorder:false,overrideFont:false}};
 }
-function active(){return rules.find(r=>r.id===activeId)||null}
-function addRule(category='Armour',dest=null){const existing=active();if(existing&&!existing.committed){rules=rules.filter(x=>x.id!==existing.id)}const r=defaultRule(category,dest);rules.push(r);activeId=r.id;render()}
-function removeRule(id){rules=rules.filter(r=>r.id!==id);if(manualOrder)manualOrder=manualOrder.filter(x=>x!==id);if(activeId===id)activeId=null;render()}
+function cloneRule(r){return JSON.parse(JSON.stringify(r))}
+function active(){return editBuffer||rules.find(r=>r.id===activeId)||null}
+function beginEdit(id){
+ const saved=rules.find(r=>r.id===id&&r.committed);
+ if(!saved)return;
+ const existing=rules.find(r=>r.id===activeId);
+ if(existing&&!existing.committed)rules=rules.filter(x=>x.id!==existing.id);
+ activeId=id;
+ editBuffer=cloneRule(saved);
+ render();
+}
+function addRule(category='Armour',dest=null){
+ const existing=rules.find(r=>r.id===activeId);
+ if(existing&&!existing.committed)rules=rules.filter(x=>x.id!==existing.id);
+ editBuffer=null;
+ const r=defaultRule(category,dest);
+ rules.push(r);
+ activeId=r.id;
+ render()
+}
+function removeRule(id){
+ rules=rules.filter(r=>r.id!==id);
+ if(manualOrder)manualOrder=manualOrder.filter(x=>x!==id);
+ if(activeId===id){activeId=null;editBuffer=null}
+ render()
+}
 function toggle(arr,val){const i=arr.indexOf(val);if(i>=0)arr.splice(i,1);else arr.push(val)}
 const PROFILE_FILTERS={
  'Armour':{condition:'BaseArmour',prop:'armour'},
@@ -103,7 +126,7 @@ function renderBoard(){
  const r=active(),slot=$('#activeRuleCard');
  if(slot){
    if(!r)slot.innerHTML='<div class="active-empty">Drag an item type here to start a rule.</div>';
-   else slot.innerHTML=`<article class="rule-card active active-build-card" draggable="false" data-id="${r.id}"><h3>${esc(r.category)} Rule #${r.id}</h3><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div></article>`;
+   else slot.innerHTML=`<article class="rule-card active active-build-card" draggable="false" data-id="${r.id}"><h3>${esc(r.name||r.category)}</h3><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div></article>`;
  }
  const show=$('#activeShow'),hide=$('#activeHide');
  if(show)show.classList.toggle('on',r?.destination==='show');
@@ -115,12 +138,12 @@ function renderCompletedRules(){
  if(!el)return;
  const ordered=orderedAssignedRules();
  if(!ordered.length){
-   el.innerHTML='<div class="completed-empty">No rules have been added yet.<br><span>Build a rule, choose Show or Hide, then click Add to Filter.</span></div>';
+   el.innerHTML='<div class="completed-empty">No rules have been added yet.<br><span>Build a rule, choose its action, then click Add to Filter.</span></div>';
    return;
  }
- el.innerHTML=ordered.map((r,i)=>`<article class="completed-card ${r.id===activeId?'active':''}" draggable="true" data-completed-id="${r.id}" data-order-index="${i}"><div class="completed-order">${i+1}</div><div class="completed-body"><div class="completed-top"><strong>${esc(r.category)} Rule #${r.id}</strong><em class="${r.destination}">${destinationLabel(r.destination)}</em></div><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div><small>${ruleSpecificity(r)===0?'catch-all':`smart priority ${ruleSpecificity(r)}`}</small></div><button class="remove-rule completed-remove" data-completed-remove="${r.id}" title="Remove">×</button></article>`).join('');
+ el.innerHTML=ordered.map((r,i)=>`<article class="completed-card ${r.id===activeId?'active':''}" draggable="true" data-completed-id="${r.id}" data-order-index="${i}"><div class="completed-order">${i+1}</div><div class="completed-body"><div class="completed-top"><strong>${esc(r.name||r.category)}</strong><em class="${r.destination}">${destinationLabel(r.destination)}</em></div><div class="rule-summary">${esc(summary(r))}</div><div class="rule-swatch" style="${swatchStyle(r)}"></div><small>${ruleSpecificity(r)===0?'catch-all':`smart priority ${ruleSpecificity(r)}`}</small></div><button class="remove-rule completed-remove" data-completed-remove="${r.id}" title="Remove">×</button></article>`).join('');
  $$('[data-completed-id]').forEach(card=>{
-   card.onclick=e=>{if(e.target.closest('[data-completed-remove]'))return;activeId=+card.dataset.completedId;render()};
+   card.onclick=e=>{if(e.target.closest('[data-completed-remove]'))return;beginEdit(+card.dataset.completedId)};
    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/completed-rule-id',card.dataset.completedId);e.dataTransfer.effectAllowed='move';card.classList.add('dragging')});
    card.addEventListener('dragend',()=>card.classList.remove('dragging'));
    card.addEventListener('dragover',e=>{e.preventDefault();card.classList.add('drag-target')});
@@ -142,7 +165,7 @@ function renderEditor(){
      chipGroup('Armour Slot','OR within layer',DATA.slots,r.slots,'slot',slot=>!DATA.items.some(x=>(x.broadCategory||'Armour')==='Armour'&&itemMatchesSelectedProfiles(x,r.profiles)&&x.slot===slot))
    : chipGroup(r.category==='Weapons'?'Weapon Type':'Item Type','OR within layer',typeValues,r.types||[],'type');
  root.innerHTML=
- `<div class="edit-section"><div class="section-title"><h3>${esc(categoryMeta?.label||r.category)} Rule #${r.id}</h3><span>${destinationLabel(r.destination)}</span></div></div>`+
+ `<div class="edit-section rule-name-section"><div class="section-title"><h3>Rule Name</h3><span>${r.committed?'editing saved rule':'new rule'}</span></div><input id="ruleName" class="rule-name-input" type="text" maxlength="80" value="${esc(r.name||r.category)}" placeholder="${esc(categoryMeta?.label||r.category)}"></div>`+
  chipGroup('Rarity','OR within layer',DATA.rarities,r.rarities,'rarity')+
  hierarchy+
  `<div class="edit-section"><div class="section-title"><h3>Specific Bases</h3><span>${r.bases.length?`${r.bases.length} selected`:'optional'}</span></div><div class="search-row"><input id="baseSearch" type="text" placeholder="Search ${items.length} matching bases…" value=""></div><div id="baseList" class="base-list"></div><p class="layer-note">Selecting bases narrows this rule further. Leave empty to include all bases matched above.</p></div>`+
@@ -173,10 +196,31 @@ function updateAddButton(){
  const b=$('#addToFilter'),note=$('#addFilterNote'),r=active();
  if(!b||!note)return;
  if(!r){b.disabled=true;b.textContent='Add to Filter';note.textContent='Drag an item type into Active Rule to start.';return}
- if(!r.destination){b.disabled=true;b.textContent=r.committed?'Save Rule':'Add to Filter';note.textContent='Choose Show or Hide first.';return}
- b.disabled=false;b.textContent=r.committed?'Save Rule':'Add to Filter';
- note.textContent=r.committed?'Save changes and return this rule to Completed Rules.':'The rule will be inserted into its current execution position.';
- b.onclick=()=>{r.committed=true;activeId=null;clearReorderError();render()};
+ if(!r.destination){
+   b.disabled=true;
+   b.textContent=r.committed?'Save Rule':'Add to Filter';
+   note.textContent='Choose Show or Hide for this rule first.';
+   return
+ }
+ b.disabled=false;
+ b.textContent=r.committed?'Save Rule':'Add to Filter';
+ note.textContent=r.committed
+   ?'Save applies these edits to the existing filter block.'
+   :'This draft is not part of the filter until you click Add to Filter.';
+ b.onclick=()=>{
+   const cleanName=(r.name||'').trim();
+   r.name=cleanName||r.category;
+   if(r.committed&&editBuffer){
+     const idx=rules.findIndex(x=>x.id===r.id);
+     if(idx>=0)rules[idx]=cloneRule(r);
+     editBuffer=null;
+   }else{
+     r.committed=true;
+   }
+   activeId=null;
+   clearReorderError();
+   render()
+ };
 }
 
 function colorCtl(id,label,val,overrideKey){
@@ -245,7 +289,10 @@ function statRow(s,i){
    <div class="property-hint">${esc(meta.hint)}</div>
   </div>`;
 }
-function bindEditor(){const r=active();$$('[data-chip]').forEach(b=>b.onclick=()=>{
+function bindEditor(){const r=active();
+ const ruleName=$('#ruleName');
+ if(ruleName)ruleName.oninput=e=>{r.name=e.target.value;renderBoard();renderFullFilterPreview();};
+ $$('[data-chip]').forEach(b=>b.onclick=()=>{
  const map={rarity:'rarities',profile:'profiles',slot:'slots',type:'types'};
  const key=map[b.dataset.chip];if(!key)return;
  toggle(r[key],b.dataset.val);
@@ -422,9 +469,28 @@ function attemptManualReorder(fromId,toId){
  render();
 }
 function compileAll(){
- const blocks=orderedAssignedRules().map((r,i)=>`# SteamMonkey visual rule #${r.id} · execution ${i+1}\n${compileRule(r)}`);
- if(hideAllEnabled)blocks.push('# SteamMonkey fallback · hide all unmatched loot\nHide');
+ const blocks=orderedAssignedRules().map((r,i)=>`# ${r.name||r.category} · execution ${i+1}\n${compileRule(r)}`);
+ if(hideAllEnabled)blocks.push('# Hide all unmatched loot\nHide');
  return blocks.join('\n\n')
+}
+function renderFullFilterPreview(){
+ const compiled=$('#compiled');
+ if(!compiled)return;
+ const ordered=orderedAssignedRules();
+ if(!ordered.length&&!hideAllEnabled){
+   compiled.innerHTML='<div class="filter-empty">No saved rules yet. Draft rules appear here after Add to Filter.</div>';
+   return
+ }
+ const blocks=ordered.map((saved,i)=>{
+   const isEditing=saved.id===activeId&&!!editBuffer;
+   const shown=isEditing?editBuffer:saved;
+   return `<div class="filter-block ${saved.id===activeId?'active-filter-block':''}" data-filter-rule="${saved.id}">
+    <div class="filter-block-head"><span>${esc(shown.name||shown.category)}</span><small>${isEditing?'Editing preview · Save Rule to commit':`Saved · execution ${i+1}`}</small></div>
+    <pre>${esc(`# ${shown.name||shown.category} · execution ${i+1}\n${compileRule(shown)}`)}</pre>
+   </div>`;
+ }).join('');
+ const fallback=hideAllEnabled?`<div class="filter-block"><div class="filter-block-head"><span>Hide all unmatched loot</span><small>Saved fallback</small></div><pre># Hide all unmatched loot\nHide</pre></div>`:'';
+ compiled.innerHTML=blocks+fallback;
 }
 function previewExamples(r){
  const matches=matchedItems(r).slice().sort((a,b)=>a.dropLevel-b.dropLevel||a.name.localeCompare(b.name));
@@ -436,8 +502,8 @@ function renderExecutionOrder(){
  const el=$('#executionOrder');
  if(!el)return;
  const ordered=orderedAssignedRules();
- if(!ordered.length){el.innerHTML='<div class="order-empty">Add completed rules to see export order.</div>';return}
- el.innerHTML=`<div class="order-head"><strong>Execution order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>Rule #${r.id}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
+ if(!ordered.length){el.innerHTML='<div class="order-empty">Add rules to the filter to see execution order.</div>';return}
+ el.innerHTML=`<div class="order-head"><strong>Saved filter order</strong><span>${manualOrder?'manual, validated':'automatic'}</span></div><div class="order-list">${ordered.map((r,i)=>`<div class="order-row ${r.id===activeId?'active':''}"><b>${i+1}</b><span>${esc(r.name||r.category)}</span><em>${destinationLabel(r.destination)}</em><small>${ruleSpecificity(r)===0?'catch-all':`priority ${ruleSpecificity(r)}`}</small></div>`).join('')}</div><p>${manualOrder?'Manual order is active. Unsafe overlap-crossing moves are blocked.':'Rules start in specificity order. Drag Completed Rules to make safe manual adjustments.'}</p>`;
 }
 function defaultLabelStyle(rarity){
  // Close visual approximation of POE2 ground-label defaults. The actual game
@@ -458,7 +524,7 @@ function renderPreview(){
  if(!r){
   stage.innerHTML='<div class="stage-empty">No rule selected</div>';
   details.innerHTML='';
-  compiled.textContent='';
+  renderFullFilterPreview();
   renderExecutionOrder();
   return
  }
@@ -470,7 +536,7 @@ function renderPreview(){
  if(!matches.length){
   stage.innerHTML='<div class="stage-empty">No matching base item</div>';
   details.innerHTML='<div class="preview-item-name">No matching item</div><div class="preview-meta">Adjust the item type or base selections.</div>';
-  compiled.textContent=compileRule(r);
+  renderFullFilterPreview();
   renderExecutionOrder();
   return
  }
@@ -545,7 +611,7 @@ function renderPreview(){
      </div>`
   : '<div class="preview-item-name">No matching item</div>';
 
- compiled.textContent=compileRule(r);
+ renderFullFilterPreview();
  renderExecutionOrder();
 }
 function renderHideAll(){
@@ -576,7 +642,10 @@ function setupDnD(){
 }
 async function init(){
  DATA=window.EMBEDDED_FILTER_DATA||await fetch(dataUrl).then(r=>r.json());
- $('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} released bases`;
+ const blockedWeaponClasses=new Set(['Claws','Daggers','Flails','One Hand Axes','One Hand Swords','Two Hand Axes','Two Hand Swords']);
+ DATA.items=DATA.items.filter(x=>!(x.broadCategory==='Weapons'&&blockedWeaponClasses.has(x.class)));
+ DATA.categoryTypes.Weapons=(DATA.categoryTypes.Weapons||[]).filter(x=>!blockedWeaponClasses.has(x));
+ $('#dataVersion').textContent=`RePoE POE2 ${DATA.metadata.repoeVersion} · ${DATA.items.length} live-filter bases`;
  renderPalette();setupDnD();render();
  $('#copyFilter').onclick=async()=>{await navigator.clipboard.writeText(compileAll());$('#copyFilter').textContent='Copied';setTimeout(()=>$('#copyFilter').textContent='Copy all',1200)};
  $('#downloadFilter').onclick=()=>{const blob=new Blob([compileAll()+'\n'],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SteamMonkey-POE2.filter';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
