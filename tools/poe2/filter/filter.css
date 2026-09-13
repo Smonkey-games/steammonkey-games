@@ -404,3 +404,268 @@
 .filter-block-head small{font-size:10px;color:#968d9b;text-align:right}
 .filter-block pre{margin:0;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;color:inherit;font:inherit}
 .filter-empty{padding:16px;border:1px dashed rgba(255,255,255,.12);border-radius:8px;color:#918896;text-align:center}
+
+
+/* v0.9.4 visual/layout cleanup only */
+
+/* Main three-column rhythm */
+.builder-grid{
+  align-items:start;
+  gap:18px;
+}
+.builder-grid > .panel{
+  min-width:0;
+  box-sizing:border-box;
+}
+.completed-panel,
+.build-panel,
+.preview-panel{
+  padding:18px;
+}
+.panel-head{
+  margin-bottom:14px;
+}
+.panel-head h2{
+  margin-bottom:4px;
+}
+.panel-head p{
+  margin-top:0;
+  line-height:1.45;
+}
+
+/* Palette: equal card sizing and alignment */
+.palette-panel .palette-horizontal{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+.palette-panel .palette-card{
+  min-width:0;
+  min-height:94px;
+  width:100%;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+  padding:14px 15px;
+  text-align:left;
+}
+.palette-panel .palette-card > *{
+  max-width:100%;
+}
+.palette-panel .palette-card strong,
+.palette-panel .palette-card b{
+  display:block;
+  line-height:1.2;
+}
+.palette-panel .palette-card small,
+.palette-panel .palette-card span{
+  line-height:1.35;
+}
+
+/* Completed rule tiles */
+.completed-rules{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.completed-card{
+  box-sizing:border-box;
+  min-width:0;
+}
+.completed-top{
+  gap:10px;
+}
+.completed-top strong{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+/* Build column: remove overlap risk */
+.active-rule-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 154px;
+  gap:14px;
+  align-items:stretch;
+}
+.active-rule-slot{
+  min-width:0;
+  width:auto;
+  box-sizing:border-box;
+}
+.active-rule-card,
+.active-build-card{
+  min-width:0;
+}
+.active-build-card h3{
+  overflow-wrap:anywhere;
+}
+.rule-action-wrap{
+  min-width:0;
+  width:154px;
+  box-sizing:border-box;
+  justify-content:flex-start;
+}
+.visibility-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  width:100%;
+}
+.visibility-btn{
+  min-width:0;
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 8px;
+  white-space:nowrap;
+}
+.rule-action-label,
+.rule-action-note{
+  width:100%;
+  box-sizing:border-box;
+}
+.rule-action-note{
+  overflow-wrap:anywhere;
+}
+
+.add-filter-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:12px;
+  margin-bottom:14px;
+}
+.add-to-filter{
+  flex:0 0 auto;
+  min-width:138px;
+}
+.add-filter-note{
+  flex:1 1 220px;
+  min-width:0;
+  line-height:1.4;
+}
+
+/* Editor spacing */
+.editor{
+  min-width:0;
+}
+.edit-section{
+  margin-top:14px;
+}
+.edit-section:first-child{
+  margin-top:0;
+}
+.section-title{
+  gap:10px;
+}
+.rule-name-input{
+  min-width:0;
+}
+
+/* Preview column */
+.preview-panel{
+  gap:16px;
+}
+.loot-stage{
+  box-sizing:border-box;
+  width:100%;
+}
+.preview-details{
+  margin-top:10px;
+}
+.compiler{
+  margin-top:16px;
+}
+.compiler-toolbar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.compiler-toolbar > div:first-child{
+  min-width:0;
+  flex:1 1 220px;
+}
+.compiler-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.copy-btn{
+  box-sizing:border-box;
+  min-height:34px;
+  padding:8px 11px;
+  white-space:nowrap;
+}
+.execution-order{
+  margin-top:10px;
+  margin-bottom:10px;
+}
+.order-row{
+  gap:8px;
+}
+.order-row span{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+/* Full filter preview blocks */
+.filter-block{
+  margin-bottom:10px;
+}
+.filter-block:last-child{
+  margin-bottom:0;
+}
+.filter-block-head{
+  align-items:flex-start;
+}
+.filter-block-head span{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.filter-block-head small{
+  flex:0 0 auto;
+  max-width:48%;
+}
+
+/* Keep controls from colliding at narrower desktop widths */
+@media (max-width:1180px){
+  .builder-grid{
+    grid-template-columns:minmax(220px,.8fr) minmax(360px,1.2fr);
+  }
+  .preview-panel{
+    grid-column:1 / -1;
+  }
+}
+
+@media (max-width:760px){
+  .builder-grid{
+    grid-template-columns:1fr;
+  }
+  .preview-panel{
+    grid-column:auto;
+  }
+  .active-rule-row{
+    grid-template-columns:1fr;
+  }
+  .rule-action-wrap{
+    width:100%;
+  }
+  .compiler-toolbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .compiler-actions{
+    width:100%;
+  }
+  .compiler-actions .copy-btn{
+    flex:1 1 0;
+  }
+}
