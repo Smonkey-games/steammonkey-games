@@ -55,7 +55,11 @@ function hasPositiveDefence(item,req){
 }
 function itemMatchesProfile(item,profile){
  const reqs=profileRequirements(profile);
- return reqs.length>0&&reqs.every(req=>hasPositiveDefence(item,req));
+ if(!reqs.length)return false;
+ const required=new Set(reqs.map(req=>req.condition));
+ return Object.values(PROFILE_FILTERS).every(req=>
+   required.has(req.condition) ? hasPositiveDefence(item,req) : !hasPositiveDefence(item,req)
+ );
 }
 function itemMatchesSelectedProfiles(item,profiles){
  return !profiles.length||profiles.some(profile=>itemMatchesProfile(item,profile));
@@ -404,6 +408,9 @@ function compileRuleBlocks(r){
      if(classes.length)lines.push(`    Class == ${classes.map(q).join(' ')}`);
      for(const condition of branch.reqs){
        if(lookup[condition])lines.push(`    ${condition} > 0`);
+     }
+     for(const condition of Object.keys(lookup)){
+       if(!branch.reqs.includes(condition))lines.push(`    ${condition} = 0`);
      }
      appendSharedRuleConditions(lines,r);
      return lines.join('\n');
