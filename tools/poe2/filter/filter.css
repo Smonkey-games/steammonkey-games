@@ -1187,3 +1187,14 @@
     min-height:30px;
   }
 }
+
+/* v0.11.0 Build Rule action geometry */
+.active-rule-row{grid-template-columns:minmax(0,1fr) 154px;gap:14px;align-items:stretch}
+.rule-action-wrap{min-width:0;display:grid;grid-template-rows:auto 34px 34px 1fr;gap:6px;align-self:stretch}
+.visibility-buttons{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:34px;gap:6px}
+.visibility-btn{min-height:34px;height:34px;padding:4px 7px}
+.rule-action-wrap .add-to-filter{width:100%;min-height:34px;height:34px;padding:4px 7px;font-size:11px}
+.rule-action-wrap .add-filter-note{align-self:end;margin:0;font-size:8.5px;line-height:1.2;text-align:left}
+.simple-range-control{display:grid;grid-template-columns:auto minmax(52px,1fr) auto minmax(52px,1fr);align-items:center;gap:6px;min-width:180px}
+.simple-range-control input{width:100%;min-width:0;box-sizing:border-box}
+@media (max-width:760px){.active-rule-row{grid-template-columns:1fr}.rule-action-wrap{grid-template-rows:auto 34px 34px auto}}
