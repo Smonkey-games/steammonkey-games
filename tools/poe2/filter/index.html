@@ -4,9 +4,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0e1116">
 <meta name="description" content="SteamMonkey.games POE2 visual loot filter builder."><title>POE2 Filter Builder — SteamMonkey.games</title>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="stylesheet" href="/css/styles.css"><link href="https://fonts.cdnfonts.com/css/fontin" rel="stylesheet">
-<link rel="stylesheet" href="/tools/poe2/filter/filter.css?v=0.11.0">
+<link rel="stylesheet" href="/tools/poe2/filter/filter.css?v=0.12.0">
 </head>
-<body class="filter-page" data-filter-data="/tools/poe2/filter/data/armour-filter-data.json?v=0.11.0">
+<body class="filter-page" data-filter-data="/tools/poe2/filter/data/armour-filter-data.json?v=0.12.0">
 <header class="site-header"><button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button><a class="brand" href="/" aria-label="SteamMonkey.games home"><span class="brand-primary">SteamMonkey</span><span class="brand-dot">.</span><span class="brand-tld">games</span></a></header>
 <div class="nav-scrim" id="navScrim" hidden></div>
 <aside class="nav-drawer" id="siteNav" aria-hidden="true"><div class="nav-header"><div><div class="nav-eyebrow">SteamMonkey.games</div><div class="nav-title">Tools</div></div><button class="nav-close" id="navClose" type="button" aria-label="Close navigation">×</button></div><nav aria-label="Tool navigation">
@@ -19,7 +19,7 @@
       <div class="nav-section-label">More tools</div>
       <div class="nav-placeholder"><span>Coming Soon</span><span class="status-pill">Soon</span></div>
     </nav><div class="nav-footer">Smonkey</div></aside>
-<main class="filter-app"><section class="filter-tool-header"><div class="tool-kicker">Path of Exile 2</div><h1>Visual Filter Builder <span class="tool-version">V0.11.0</span></h1><p>Build filter rules by drilling into real POE2 item data. Multiple selections inside a layer are OR; each layer you add narrows the same visual rule.</p></section><section class="filter-content"><div class="data-row"><div class="data-pill" id="dataVersion">Loading game data…</div></div>
+<main class="filter-app"><section class="filter-tool-header"><div class="tool-kicker">Path of Exile 2</div><h1>Visual Filter Builder <span class="tool-version">V0.12.0</span></h1><p>Build filter rules by drilling into real POE2 item data. Multiple selections inside a layer are OR; each layer you add narrows the same visual rule.</p></section><section class="filter-content"><div class="data-row"><div class="data-pill" id="dataVersion">Loading game data…</div></div>
 
 <section class="top-control-grid">
 <section class="panel palette-panel"><div class="panel-head"><h2>Item Palette</h2><p>Drag an item type down into Active Rule. Pull another copy whenever you need another independent rule.</p></div><div class="palette palette-horizontal" id="itemPalette"><div class="palette-loading">Loading item palette…</div></div></section>
@@ -49,4 +49,4 @@
 <div class="editor" id="editor"></div></section>
 
 <aside class="panel preview-panel"><div><div class="panel-head"><h2>In-Game-Style Drop Preview</h2><p>Real matching bases shown as ground labels so cosmetics are easier to judge.</p></div><div class="loot-stage" id="lootStage"><div class="stage-empty">No active rule</div></div><div class="preview-details" id="previewDetails"></div></div><div class="compiler"><div class="compiler-toolbar"><div><strong>Full Filter Preview</strong><small class="compiler-subtitle">Saved filter blocks only. The active saved rule is highlighted while editing.</small></div><div class="compiler-actions"><button class="copy-btn" id="copyFilter">Copy Filter</button><button class="copy-btn" id="downloadFilter">Export Filter</button></div></div><div class="execution-order" id="executionOrder"></div><pre class="code" id="compiled"></pre><div class="warning">Armour defence-family selections are exact. For example, Armour / Energy Shield requires <code>BaseArmour &gt; 0</code> and <code>BaseEnergyShield &gt; 0</code> while excluding the unselected defence families.</div></div></aside>
-</div></section></main><script src="/js/app.js"></script><script src="/tools/poe2/filter/filter.js?v=0.11.0"></script></body></html>
+</div></section></main><script src="/js/app.js"></script><script src="/tools/poe2/filter/filter.js?v=0.12.0"></script></body></html>

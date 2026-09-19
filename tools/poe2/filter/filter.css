@@ -1198,3 +1198,23 @@
 .simple-range-control{display:grid;grid-template-columns:auto minmax(52px,1fr) auto minmax(52px,1fr);align-items:center;gap:6px;min-width:180px}
 .simple-range-control input{width:100%;min-width:0;box-sizing:border-box}
 @media (max-width:760px){.active-rule-row{grid-template-columns:1fr}.rule-action-wrap{grid-template-rows:auto 34px 34px auto}}
+
+/* v0.12.0 primary Add/Save action */
+.rule-action-wrap .add-to-filter{
+  background:linear-gradient(180deg,#f08a35,#c95b18);
+  border-color:var(--sm-purple-hi);
+  color:#171019;
+  font-weight:900;
+  text-shadow:0 1px 0 rgba(255,255,255,.18);
+}
+.rule-action-wrap .add-to-filter:hover:not(:disabled){
+  background:linear-gradient(180deg,#ff9a45,#df6a20);
+  border-color:#c77cff;
+  color:#130d16;
+}
+.rule-action-wrap .add-to-filter:disabled{
+  background:linear-gradient(180deg,#8c542f,#683a24);
+  border-color:rgba(199,119,255,.55);
+  color:rgba(23,16,25,.72);
+  opacity:.58;
+}

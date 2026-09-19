@@ -185,6 +185,7 @@ function renderEditor(){
    <div class="simple-property-grid">
     <label class="simple-property-row"><span class="simple-property-label"><b>Item Level</b><small>Filter generated item level. Set both bounds the same for an exact level.</small></span><div class="simple-range-control"><span>≥</span><input id="itemLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='ItemLevel'&&x.op==='>=')||{}).value??''}"><span>≤</span><input id="itemLevelMax" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='ItemLevel'&&x.op==='<=')||{}).value??''}"></div></label>
     <label class="simple-property-row"><span class="simple-property-label"><b>Required Level</b><small>Base level requirement. Set both bounds the same for an exact level.</small></span><div class="simple-range-control"><span>≥</span><input id="requiredLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='DropLevel'&&x.op==='>=')||{}).value??''}"><span>≤</span><input id="requiredLevelMax" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='DropLevel'&&x.op==='<=')||{}).value??''}"></div></label>
+    <label class="simple-property-row"><span class="simple-property-label"><b>Area Level</b><small>Apply this rule only in areas within this level range. Set both bounds the same for an exact area level.</small></span><div class="simple-range-control"><span>≥</span><input id="areaLevelMin" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='AreaLevel'&&x.op==='>=')||{}).value??''}"><span>≤</span><input id="areaLevelMax" type="number" min="1" max="100" placeholder="Any" value="${(r.stats.find(x=>x.field==='AreaLevel'&&x.op==='<=')||{}).value??''}"></div></label>
     <label class="simple-property-row simple-toggle-row"><span class="simple-property-label"><b>Has Sockets</b><small>Require the item to have one or more sockets.</small></span><input id="hasSockets" type="checkbox" ${r.hasSockets?'checked':''}></label>
     <label class="simple-property-row simple-toggle-row"><span class="simple-property-label"><b>Has Quality</b><small>Require the item to have quality above 0%.</small></span><input id="hasQuality" type="checkbox" ${r.hasQuality?'checked':''}></label>
    </div>
@@ -241,6 +242,7 @@ function colorCtl(id,label,val,overrideKey){
 
 const ITEM_PROPERTY_META={
  ItemLevel:{label:'Item Level',group:'Progression',hint:'The item level of the dropped item.'},
+ AreaLevel:{label:'Area Level',group:'Progression',hint:'The level of the area where this rule is allowed to apply.'},
  DropLevel:{label:'Required Level',group:'Progression',hint:'Base level requirement / native DropLevel filter condition.'},
  Quality:{label:'Quality',group:'Item Quality',hint:'The quality shown on the item.'},
  BaseArmour:{label:'Base Armour',group:'Base Defences',hint:'Armour on the base item before explicit affixes.'},
@@ -328,6 +330,8 @@ function bindEditor(){const r=active();
  bindRange('#itemLevelMax','ItemLevel','<=');
  bindRange('#requiredLevelMin','DropLevel','>=');
  bindRange('#requiredLevelMax','DropLevel','<=');
+ bindRange('#areaLevelMin','AreaLevel','>=');
+ bindRange('#areaLevelMax','AreaLevel','<=');
  const hasSockets=$('#hasSockets');
  if(hasSockets)hasSockets.onchange=e=>{r.hasSockets=e.target.checked;renderPreview()};
  const hasQuality=$('#hasQuality');
